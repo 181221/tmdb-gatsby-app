@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { Link } from "gatsby"
+import Img from "gatsby-image"
 
 export const MovieBlock = styled.div`
   margin-top: 20px;
@@ -15,31 +16,57 @@ const MoviePoster = styled.div`
   margin: 0 20px;
   justify-content: center;
 `
-const Img = styled.img`
-  content: url(${props => props.url});
-  max-width: 100%;
+const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
   border-radius: 10px;
 `
 const P = styled.p`
   text-align: center;
+  min-height: 24px;
+  max-height: 24px;
+  margin: 0;
 `
-const Card = () => {
+const Card = ({ img, title, genres }) => {
   return (
     <>
       <MovieBlock>
         <MoviePoster>
           <Link to={`/account/movies/${123}`} state={{ title: "breaking bad" }}>
-            <Img url="https://image.tmdb.org/t/p/w500/1yeVJox3rjo2jBKrrihIMj7uoS9.jpg" />
+            <Image fixed={img} />
           </Link>
-          <Typography variant="h3" component="h3" align="center">
-            Breaking bad
+          <Typography variant="h4" component="h4" align="center">
+            {title}
           </Typography>
-          <P>Adventure, Drama, Mystery, Science Fiction, Thriller</P>
+          <P>
+            {genres.map((el, index) => {
+              return genres.length - 1 === index ? gen[el] + "" : gen[el] + ", "
+            })}
+          </P>
         </MoviePoster>
       </MovieBlock>
     </>
   )
 }
 export default Card
+const gen = {
+  28: "Action",
+  12: "Adventure",
+  16: "Animation",
+  35: "Comedy",
+  80: "Crime",
+  99: "Documentary",
+  18: "Drama",
+  10751: "Family",
+  14: "Fantasy",
+  36: "History",
+  27: "Horror",
+  10402: "Music",
+  9648: "Mystery",
+  10749: "Romance",
+  878: "Science Fiction",
+  10770: "TV Movie",
+  53: "Thriller",
+  10752: "War",
+  37: "Western",
+}

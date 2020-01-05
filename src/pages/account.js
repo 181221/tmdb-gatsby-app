@@ -23,23 +23,6 @@ const Account = () => {
   return (
     <>
       <ButtonAppBar />
-
-      <Button color="inherit">Login</Button>
-      <nav>
-        <Link to="/account/">Home</Link>{" "}
-        <Link to="/account/settings/">Settings</Link>{" "}
-        <Link to="/account/billing/">Billing</Link>{" "}
-        <Link to="/account/movies">Movies</Link>{" "}
-        <a
-          href="#logout"
-          onClick={e => {
-            logout()
-            e.preventDefault()
-          }}
-        >
-          Log Out
-        </a>
-      </nav>
       <Router>
         <Home path="/account/" user={user} />
         <Settings path="/account/settings" />

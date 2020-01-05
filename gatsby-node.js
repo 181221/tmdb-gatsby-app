@@ -62,7 +62,7 @@ exports.sourceNodes = async ({
 }) => {
   // get data from GitHub API at build time
   const result = await fetch(
-    `https://api.themoviedb.org/3/movie/419704?api_key=cfe422613b250f702980a3bbf9e90716`
+    `https://api.themoviedb.org/3/discover/movie?api_key=cfe422613b250f702980a3bbf9e90716`
   )
   const resultData = await result.json()
   // create node for build time data example in the docs

@@ -1,7 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Card from "../components/card"
+import SearchBar from "material-ui-search-bar"
+import Img from "gatsby-image"
 
 const CardContainer = styled.div`
   display: flex;
@@ -12,26 +14,55 @@ const CardContainer = styled.div`
 `
 
 const Home = ({ user }) => {
+  const [value, setValue] = useState("")
   const gatsbyRepoData = useStaticQuery(graphql`
-    query {
-      tmdb {
-        data {
-          backdrop_path
+    query MyQuery {
+      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {
+        nodes {
+          title
+          vote_average
+          vote_count
+          original_title
+          id
+          genre_ids
+          poster_path {
+            childImageSharp {
+              fixed(height: 450, quality: 100) {
+                ...GatsbyImageSharpFixed
+              }
+            }
+          }
         }
       }
     }
   `)
-  console.log(gatsbyRepoData)
+  const nodes = gatsbyRepoData.allTmdbMiscPopularMovies.nodes
+
   return (
     <>
       <p>Hi, {user.name ? user.name : "friend"}!</p>
-      <p>Build Time Data: Gatsby repo{` `}</p>
+      <SearchBar
+        value={value}
+        onChange={newValue => setValue(newValue)}
+        onRequestSearch={() => console.log("onRequestSearch")}
+        style={{
+          margin: "0 auto",
+          maxWidth: 800,
+        }}
+      />
+
       <CardContainer>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        {nodes.map(el => {
+          return (
+            <Card
+              key={el.id}
+              img={el.poster_path.childImageSharp.fixed}
+              title={el.title}
+              overview={el.overview}
+              genres={el.genre_ids}
+            />
+          )
+        })}
       </CardContainer>
     </>
   )

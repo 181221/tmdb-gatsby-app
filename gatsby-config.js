@@ -1,3 +1,6 @@
+require("dotenv").config({
+  path: `.env.development`,
+})
 module.exports = {
   plugins: [
     {
@@ -12,6 +15,27 @@ module.exports = {
     "gatsby-plugin-sharp",
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-less`,
+    {
+      resolve: "gatsby-source-tmdb",
+      options: {
+        // apiKey and sessionID are mandatory
+        apiKey: process.env.API_KEY,
+        sessionID: process.env.SESSION_ID,
+        modules: {
+          account: {
+            activate: false,
+          },
+          tv: {
+            activate: true,
+            endpoints: [["tvAiringToday"], ["tvOnTheAir", 2]],
+          },
+          misc: {
+            activate: true,
+            endpoints: [["miscUpcomingMovies"], ["miscPopularMovies", 2]],
+          },
+        },
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

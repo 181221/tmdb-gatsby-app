@@ -4,11 +4,19 @@ import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
+import { Link } from "gatsby"
 import IconButton from "@material-ui/core/IconButton"
 import MenuIcon from "@material-ui/icons/Menu"
 import { logout } from "../utils/auth"
 import SearchIcon from "@material-ui/icons/Search"
+import styled from "styled-components"
 import InputBase from "@material-ui/core/InputBase"
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: white;
+  margin: 10px;
+`
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,17 +72,16 @@ export default function ButtonAppBar() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Home
-          </Typography>
+          <StyledLink to="/account/">
+            <Typography variant="h6">Home</Typography>
+          </StyledLink>
+          <StyledLink to="/account/settings">
+            <Typography variant="h6">Settings</Typography>
+          </StyledLink>
+          <StyledLink to="/account/movies">
+            <Typography variant="h6">Movie</Typography>
+          </StyledLink>
+          <div className={classes.title}></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
