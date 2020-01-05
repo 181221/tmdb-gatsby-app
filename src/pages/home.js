@@ -24,6 +24,8 @@ const Home = ({ user }) => {
           vote_count
           original_title
           id
+          overview
+          miscPopularMoviesId
           genre_ids
           poster_path {
             childImageSharp {
@@ -60,6 +62,8 @@ const Home = ({ user }) => {
               title={el.title}
               overview={el.overview}
               genres={el.genre_ids}
+              vote_average={el.vote_average}
+              id={el.miscPopularMoviesId}
             />
           )
         })}

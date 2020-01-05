@@ -27,12 +27,15 @@ const P = styled.p`
   max-height: 24px;
   margin: 0;
 `
-const Card = ({ img, title, genres }) => {
+const Card = ({ img, title, genres, id, vote_average, overview }) => {
   return (
     <>
       <MovieBlock>
         <MoviePoster>
-          <Link to={`/account/movies/${123}`} state={{ title: "breaking bad" }}>
+          <Link
+            to={`/account/movies/${id}`}
+            state={{ img, title, genres, id, vote_average, overview }}
+          >
             <Image fixed={img} />
           </Link>
           <Typography variant="h4" component="h4" align="center">
