@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 `
 const StarDiv = styled.div`
   display: flex;
+  margin-top: 12px;
 `
 
 const Image = styled(Img)`
@@ -42,6 +43,13 @@ const ImgCards = styled.div`
 const ImgCard = styled.div`
   margin: 0 20px;
 `
+const ChipContent = styled.div`
+  flex-wrap: wrap;
+  display: flex;
+  margin-top: 12px;
+  max-width: 250px;
+`
+
 const useFetch = ({ id }) => {
   console.log("useFetch", id)
   const [data, setData] = useState(null)
@@ -92,14 +100,26 @@ const Movie = ({ location }) => {
                 {vote_average}
               </Typography>
             </StarDiv>
-            <div>
+            <ChipContent>
               {genres &&
                 genres.map((el, index) => {
-                  return genres.length - 1 === index
-                    ? gen[el] + ""
-                    : gen[el] + ", "
+                  return (
+                    <div
+                      style={{
+                        margin: "2px",
+                      }}
+                    >
+                      <Chip
+                        key={el}
+                        label={gen[el]}
+                        clickable
+                        variant="outlined"
+                        style={{ background: "white" }}
+                      />
+                    </div>
+                  )
                 })}
-            </div>
+            </ChipContent>
             <Overview>
               <Typography variant="h4" component="h4">
                 Overview

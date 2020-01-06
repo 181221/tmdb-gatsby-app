@@ -32,7 +32,7 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
     })
   }
 }
-
+/*
 const fetch = require(`node-fetch`)
 exports.sourceNodes = async ({
   actions: { createNode },
@@ -78,3 +78,4 @@ exports.sourceNodes = async ({
     },
   })
 }
+*/

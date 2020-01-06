@@ -11,6 +11,7 @@ module.exports = {
         },
       },
     },
+    "gatsby-plugin-offline",
     "gatsby-transformer-sharp",
     "gatsby-plugin-sharp",
     `gatsby-plugin-styled-components`,
@@ -26,16 +27,21 @@ module.exports = {
             activate: false,
           },
           tv: {
-            activate: true,
+            activate: false,
             endpoints: [["tvAiringToday"], ["tvOnTheAir", 2]],
           },
           misc: {
             activate: true,
-            endpoints: [["miscUpcomingMovies"], ["miscPopularMovies", 2]],
+            endpoints: [
+              ,
+              //["miscUpcomingMovies"]
+              ["miscPopularMovies", 2],
+            ],
           },
         },
       },
     },
+    /*
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -46,6 +52,6 @@ module.exports = {
         theme_color: "#00d374",
         display: `standalone`,
       },
-    },
+    },*/
   ],
 }

@@ -12,12 +12,12 @@ const Settings = () => <p>Settings</p>
 const Billing = () => <p>Billing</p>
 
 const Account = () => {
-  if (!isAuthenticated()) {
+  /*if (!isAuthenticated()) {
     login()
     return <p>Redirecting to login...</p>
-  }
+  }*/
 
-  const user = getProfile()
+  const user = "test" // getProfile()
 
   return (
     <Layout>
