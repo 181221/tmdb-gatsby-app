@@ -27,6 +27,10 @@ const P = styled.p`
   max-height: 24px;
   margin: 0;
 `
+const Test = styled(Typography)`
+  min-height: 24px;
+  max-height: 24px;
+`
 const Card = ({ img, title, genres, id, vote_average, overview }) => {
   return (
     <>
@@ -41,11 +45,15 @@ const Card = ({ img, title, genres, id, vote_average, overview }) => {
           <Typography variant="h4" component="h4" align="center">
             {title}
           </Typography>
-          <P>
-            {genres.map((el, index) => {
-              return genres.length - 1 === index ? gen[el] + "" : gen[el] + ", "
-            })}
-          </P>
+          <div style={{ "min-height": "24px", "max-height": "24px" }}>
+            <Typography variant="body1" component="p" align="center">
+              {genres.map((el, index) => {
+                return genres.length - 1 === index
+                  ? gen[el] + ""
+                  : gen[el] + ", "
+              })}
+            </Typography>
+          </div>
         </MoviePoster>
       </MovieBlock>
     </>

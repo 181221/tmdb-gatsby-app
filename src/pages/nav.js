@@ -11,6 +11,11 @@ import { logout } from "../utils/auth"
 import SearchIcon from "@material-ui/icons/Search"
 import styled from "styled-components"
 import InputBase from "@material-ui/core/InputBase"
+/*
+<div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+*/
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -85,19 +90,6 @@ export default function ButtonAppBar() {
             <Typography variant="h6">Movie</Typography>
           </StyledLink>
           <div className={classes.title}></div>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
           <Button
             href="#logout"
             onClick={e => {

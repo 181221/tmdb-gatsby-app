@@ -15,6 +15,11 @@ const StarDiv = styled.div`
   margin-top: 12px;
 `
 
+const Image_fetch = styled.img`
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
+  box-sizing: border-box;
+  border-radius: 10px;
+`
 const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
@@ -73,18 +78,25 @@ const useFetch = ({ id }) => {
 
 const Movie = ({ location }) => {
   const { state = {} } = location
-  console.log("state", state)
+  let img_test = false
+  if (state && state.image_load) {
+    console.log("need to render another image")
+    img_test = `http://image.tmdb.org/t/p/original${state.img}`
+  }
   const { title, img, id, overview, genres, vote_average } = state
-  const [data, isLoading] = useFetch({ id })
-  console.log(data)
+  //const [data, isLoading] = useFetch({ id })
+  //console.log(data)
   const [imgIsLoading, setImgIsLoading] = useState(false)
-
+  if (!state) {
+    console.log("no state")
+  }
   return (
     <>
       <Wrapper>
         <MovieContainer>
           <Left>
-            <Image fixed={img} />
+            {img && <Image fixed={img} />}
+            {img_test && <Image_fetch src={img_test} />}
           </Left>
           <Right>
             <Typography variant="h4" component="h4">

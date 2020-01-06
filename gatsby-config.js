@@ -28,30 +28,13 @@ module.exports = {
           },
           tv: {
             activate: false,
-            endpoints: [["tvAiringToday"], ["tvOnTheAir", 2]],
           },
           misc: {
             activate: true,
-            endpoints: [
-              ,
-              //["miscUpcomingMovies"]
-              ["miscPopularMovies", 2],
-            ],
+            endpoints: [["miscPopularMovies", 2]],
           },
         },
       },
     },
-    /*
-    {
-      resolve: `gatsby-plugin-manifest`,
-      options: {
-        name: `GatsbyJS`,
-        short_name: `GatsbyJS`,
-        start_url: `/`,
-        background_color: "#272B35",
-        theme_color: "#00d374",
-        display: `standalone`,
-      },
-    },*/
   ],
 }
