@@ -3,10 +3,16 @@ import styled from "styled-components"
 import Img from "gatsby-image"
 import { Link } from "gatsby"
 import { graphql, useStaticQuery } from "gatsby"
-
+import Typography from "@material-ui/core/Typography"
+import StarRateIcon from "@material-ui/icons/StarRate"
 import Chip from "@material-ui/core/Chip"
-
-const Wrapper = styled.div``
+import { gen } from "../components/card"
+const Wrapper = styled.div`
+  margin-top: 48px;
+`
+const StarDiv = styled.div`
+  display: flex;
+`
 
 const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
@@ -73,11 +79,34 @@ const Movie = ({ location }) => {
             <Image fixed={img} />
           </Left>
           <Right>
-            <h2>{title}</h2>
-            <div>{vote_average}</div>
+            <Typography variant="h4" component="h4">
+              {title}
+            </Typography>
+            <StarDiv>
+              <StarRateIcon style={{ "font-size": "42px" }} />
+              <Typography
+                variant="h4"
+                component="h4"
+                style={{ "line-heigh": 2 }}
+              >
+                {vote_average}
+              </Typography>
+            </StarDiv>
+            <div>
+              {genres &&
+                genres.map((el, index) => {
+                  return genres.length - 1 === index
+                    ? gen[el] + ""
+                    : gen[el] + ", "
+                })}
+            </div>
             <Overview>
-              <h3>Overview</h3>
-              <p>{overview}</p>
+              <Typography variant="h4" component="h4">
+                Overview
+              </Typography>
+              <Typography variant="body1" component="p">
+                {overview}
+              </Typography>
             </Overview>
           </Right>
         </MovieContainer>

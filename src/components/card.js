@@ -52,7 +52,7 @@ const Card = ({ img, title, genres, id, vote_average, overview }) => {
   )
 }
 export default Card
-const gen = {
+export const gen = {
   28: "Action",
   12: "Adventure",
   16: "Animation",
