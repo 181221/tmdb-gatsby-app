@@ -68,7 +68,6 @@ const Movie = ({ location }) => {
   return (
     <>
       <Wrapper>
-        <div>Welcome to the Some Page Component! {title}</div>
         <MovieContainer>
           <Left>
             <Image fixed={img} />
@@ -82,24 +81,6 @@ const Movie = ({ location }) => {
             </Overview>
           </Right>
         </MovieContainer>
-        <div>
-          <h2>Top Billed Cast</h2>
-          <ImgCards>
-            <ImgCard>
-              <p>Bryan Cranston</p>
-              <p>Walter White</p>
-            </ImgCard>
-          </ImgCards>
-        </div>
-        <div>
-          <h2>Similar Shows</h2>
-          <Chip
-            label="Clickable link"
-            component="a"
-            clickable
-            variant="outlined"
-          />
-        </div>
       </Wrapper>
     </>
   )

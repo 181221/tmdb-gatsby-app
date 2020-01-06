@@ -6,6 +6,7 @@ import ButtonAppBar from "./nav"
 import Card from "../components/card"
 import Movie from "./movie"
 import styled from "styled-components"
+import Layout from "../components/layout"
 
 const Settings = () => <p>Settings</p>
 const Billing = () => <p>Billing</p>
@@ -19,7 +20,7 @@ const Account = () => {
   const user = getProfile()
 
   return (
-    <>
+    <Layout>
       <ButtonAppBar />
       <Router>
         <Home path="/account/" user={user} />
@@ -28,7 +29,7 @@ const Account = () => {
         <Movies path="/account/movies/" />
         <Movie path="/account/movies/:movieId" />
       </Router>
-    </>
+    </Layout>
   )
 }
 

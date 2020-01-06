@@ -17,8 +17,11 @@ const StyledLink = styled(Link)`
   color: white;
   margin: 10px;
 `
-
+const StyledDiv = styled.div``
 const useStyles = makeStyles(theme => ({
+  test: {
+    background: "linear-gradient(to right, #2c3e50, #243b55)",
+  },
   root: {
     flexGrow: 1,
   },
@@ -69,8 +72,8 @@ export default function ButtonAppBar() {
   const classes = useStyles()
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    <StyledDiv className={classes.root}>
+      <AppBar position="static" className={classes.test}>
         <Toolbar>
           <StyledLink to="/account/">
             <Typography variant="h6">Home</Typography>
@@ -107,6 +110,6 @@ export default function ButtonAppBar() {
           </Button>
         </Toolbar>
       </AppBar>
-    </div>
+    </StyledDiv>
   )
 }
