@@ -1,5 +1,3 @@
-import { resolve } from "path"
-
 export const handleRequest = (user, url, setUserData) => {
   const ql = `mutation {
         createToken(

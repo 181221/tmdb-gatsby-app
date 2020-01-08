@@ -5,7 +5,14 @@ import { Link } from "gatsby"
 import styled from "styled-components"
 import { theme } from "./styles"
 
-const StyledLink = styled(Link)``
+const StyledLink = styled(Link)`
+  color: black;
+  min-width: 200px;
+`
+const StyledSpan = styled.span`
+  min-width: 200px;
+`
+const StyledContainer = styled.div``
 
 const handleRequest = query => {
   const uri = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${process.env.API_KEY}`
@@ -45,7 +52,7 @@ const getSuggestionValue = suggestion => suggestion.name
 const renderSuggestion = suggestion => {
   const { img, title, genres, id, vote_average, overview, name } = suggestion
   return (
-    <div>
+    <StyledContainer>
       <StyledLink
         to={`/account/movies/${id}`}
         state={{
@@ -58,9 +65,9 @@ const renderSuggestion = suggestion => {
           image_load: true,
         }}
       >
-        {name}
+        <StyledSpan>{name}</StyledSpan>
       </StyledLink>
-    </div>
+    </StyledContainer>
   )
 }
 const useSuggestion = (val, sugges) => {
@@ -82,7 +89,7 @@ const useSuggestion = (val, sugges) => {
     event,
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
-    let test = event
+    return event
   }
 
   return {

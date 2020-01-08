@@ -17,6 +17,13 @@ export const theme = {
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
   },
+  sectionTitle: {
+    width: "100%",
+    color: "blue",
+  },
+  suggestion: {
+    color: "blue",
+  },
   inputFocused: {
     outline: "none",
   },
@@ -35,9 +42,11 @@ export const theme = {
     color: "black",
     border: "1px solid #aaa",
     backgroundColor: "#fff",
-    fontFamily: "Helvetica, sans-serif",
-    fontWeight: 300,
-    fontSize: 16,
+    fontSize: "1.25rem",
+    fontFamily: "Roboto, Helvetica Arial sans-serif",
+    fontWeight: 400,
+    lineHeight: 1.6,
+    letterSpacing: "0.0075em",
     borderBottomLeftRadius: 4,
     paddingRight: "40px",
     borderBottomRightRadius: 4,

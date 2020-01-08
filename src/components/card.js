@@ -3,7 +3,6 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { Link } from "gatsby"
 import Img from "gatsby-image"
-import { withStyles } from "@material-ui/core/styles"
 import { makeStyles } from "@material-ui/core/styles"
 
 export const MovieBlock = styled.div`

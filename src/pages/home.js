@@ -16,12 +16,6 @@ const CardContainer = styled.div`
   margin: 42px 42px;
   justify-content: center;
 `
-const AutoContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-`
 
 const Home = () => {
   const gatsbyRepoData = useStaticQuery(graphql`

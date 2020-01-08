@@ -22,6 +22,11 @@ module.exports = {
         // apiKey and sessionID are mandatory
         apiKey: process.env.API_KEY,
         sessionID: process.env.SESSION_ID,
+        language: "en-US",
+        timezone: "Europe/Berlin",
+        reqPerTenSeconds: 36,
+        poster: true,
+        backdrop: false,
         modules: {
           account: {
             activate: false,
