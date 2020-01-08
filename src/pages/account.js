@@ -33,7 +33,7 @@ const Account = () => {
         <Settings path="/account/settings" />
         <Billing path="/account/billing" />
         <Movies path="/account/movies/" />
-        <Movie path="/account/movies/:movieId" />
+        <Movie path="/account/movies/:movieId" user={userData} />
       </Router>
     </Layout>
   )

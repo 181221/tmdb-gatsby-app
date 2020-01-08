@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography"
 import StarRateIcon from "@material-ui/icons/StarRate"
 import Chip from "@material-ui/core/Chip"
 import { gen } from "../components/card"
+import Button from "@material-ui/core/Button"
+
 const Wrapper = styled.div`
   margin-top: 48px;
 `
@@ -76,7 +78,7 @@ const useFetch = ({ id }) => {
   return [data, isLoading]
 }
 
-const Movie = ({ location }) => {
+const Movie = ({ location, user }) => {
   const { state = {} } = location
   let img_test = false
   if (state && state.image_load) {
@@ -90,6 +92,42 @@ const Movie = ({ location }) => {
   if (!state) {
     console.log("no state")
   }
+
+  const handleMovieRequest = () => {
+    const url = "http://localhost:4000"
+    const ql = `mutation {
+      createMovie(
+        title: "${title}",
+        img: "${img.src}",
+        tmdb_id: "${id}",
+        overview: "${overview}",
+        genres: "${genres}",
+        vote_average: "${vote_average}"
+      ) {
+        title
+        img
+        tmdb_id
+        genres
+        vote_average
+        overview
+      }
+    }`
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({
+        query: ql,
+      }),
+    }
+    fetch(url, options)
+      .then(res => res.json())
+      .then(json => console.log(json))
+      .catch(err => console.error(err))
+  }
+
   return (
     <>
       <Wrapper>
@@ -128,6 +166,9 @@ const Movie = ({ location }) => {
                   )
                 })}
             </ChipContent>
+            <Button onClick={handleMovieRequest} color="inherit">
+              Request movie
+            </Button>
             <Overview>
               <Typography variant="h4" component="h4">
                 Overview
