@@ -31,7 +31,7 @@ const Home = ({ user }) => {
   const [value, setValue] = useState("")
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
-      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {
+      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 50) {
         nodes {
           title
           vote_average

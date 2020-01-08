@@ -63,6 +63,10 @@ const useStyles = makeStyles(theme => ({
   inputRoot: {
     color: "inherit",
   },
+  user: {
+    textTransform: "capitalize",
+    marginRight: "24px",
+  },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create("width"),
@@ -73,7 +77,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar({ user }) {
   const classes = useStyles()
 
   return (
@@ -83,13 +87,13 @@ export default function ButtonAppBar() {
           <StyledLink to="/account/">
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          <StyledLink to="/account/settings">
-            <Typography variant="h6">Settings</Typography>
-          </StyledLink>
           <StyledLink to="/account/movies">
             <Typography variant="h6">Movie</Typography>
           </StyledLink>
           <div className={classes.title}></div>
+          <Typography variant="h6" className={classes.user}>
+            {user.nickname}
+          </Typography>
           <Button
             href="#logout"
             onClick={e => {
@@ -98,7 +102,9 @@ export default function ButtonAppBar() {
             }}
             color="inherit"
           >
-            Logout
+            <Typography variant="body1" component="p">
+              Logout
+            </Typography>
           </Button>
         </Toolbar>
       </AppBar>

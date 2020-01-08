@@ -27,7 +27,7 @@ const Account = () => {
   console.log(userData)
   return (
     <Layout>
-      <ButtonAppBar />
+      <ButtonAppBar user={user} />
       <Router>
         <Home path="/account/" user={user} />
         <Settings path="/account/settings" />
