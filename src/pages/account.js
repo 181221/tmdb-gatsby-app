@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Router } from "@reach/router"
 import { login, isAuthenticated, getProfile } from "../utils/auth"
 import Home from "./home"
@@ -7,18 +7,24 @@ import Card from "../components/card"
 import Movie from "./movie"
 import styled from "styled-components"
 import Layout from "../components/layout"
+import { handleRequest } from "../utils/handleRequest"
 
 const Settings = () => <p>Settings</p>
 const Billing = () => <p>Billing</p>
 
 const Account = () => {
-  /*if (!isAuthenticated()) {
+  const [userData, setUserData] = useState("")
+  useEffect(() => {
+    console.log("useEffect from user", user)
+    handleRequest(user, "http://localhost:4000", setUserData)
+  }, [user])
+  if (!isAuthenticated()) {
     login()
     return <p>Redirecting to login...</p>
-  }*/
+  }
 
-  const user = "test" // getProfile()
-
+  const user = getProfile()
+  console.log(userData)
   return (
     <Layout>
       <ButtonAppBar />

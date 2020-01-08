@@ -45,7 +45,7 @@ const Card = ({ img, title, genres, id, vote_average, overview }) => {
           <Typography variant="h4" component="h4" align="center">
             {title}
           </Typography>
-          <div style={{ "min-height": "24px", "max-height": "24px" }}>
+          <div style={{ minHeight: "24px", maxHeight: "24px" }}>
             <Typography variant="body1" component="p" align="center">
               {genres.map((el, index) => {
                 return genres.length - 1 === index

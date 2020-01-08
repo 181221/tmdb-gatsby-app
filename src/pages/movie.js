@@ -103,12 +103,8 @@ const Movie = ({ location }) => {
               {title}
             </Typography>
             <StarDiv>
-              <StarRateIcon style={{ "font-size": "42px" }} />
-              <Typography
-                variant="h4"
-                component="h4"
-                style={{ "line-heigh": 2 }}
-              >
+              <StarRateIcon style={{ fontSize: "42px" }} />
+              <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
                 {vote_average}
               </Typography>
             </StarDiv>
@@ -117,12 +113,12 @@ const Movie = ({ location }) => {
                 genres.map((el, index) => {
                   return (
                     <div
+                      key={el}
                       style={{
                         margin: "2px",
                       }}
                     >
                       <Chip
-                        key={el}
                         label={gen[el]}
                         clickable
                         variant="outlined"

@@ -33,7 +33,6 @@ export const login = () => {
   if (!isBrowser) {
     return
   }
-
   auth.authorize()
 }
 
@@ -51,11 +50,10 @@ const setSession = (cb = () => {}) => (err, authResult) => {
     tokens.expiresAt = expiresAt
     user = authResult.idTokenPayload
     localStorage.setItem("isLoggedIn", true)
-    localStorage.setItem("accessToken", tokens.accessToken)
-    localStorage.setItem("idToken", tokens.idToken)
-    localStorage.setItem("expiresAt", tokens.expiresAt)
     localStorage.setItem("user", user)
+    console.log("user", user)
 
+    console.log("setting session")
     navigate("/account")
     cb()
   }
