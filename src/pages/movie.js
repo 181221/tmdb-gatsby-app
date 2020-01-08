@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import styled from "styled-components"
 import Img from "gatsby-image"
-import { Link } from "gatsby"
-import { graphql, useStaticQuery } from "gatsby"
 import Typography from "@material-ui/core/Typography"
 import StarRateIcon from "@material-ui/icons/StarRate"
 import Chip from "@material-ui/core/Chip"
@@ -18,10 +16,12 @@ const StarDiv = styled.div`
   margin-top: 12px;
 `
 
-const Image_fetch = styled.img`
+const ImageFetch = styled.img`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
   border-radius: 10px;
+  width: 300px;
+  height: 450px;
 `
 const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
@@ -44,14 +44,6 @@ const Overview = styled.div`
   margin-top: auto;
   margin-bottom: 24px;
 `
-const ImgCards = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-`
-const ImgCard = styled.div`
-  margin: 0 20px;
-`
 const ChipContent = styled.div`
   flex-wrap: wrap;
   display: flex;
@@ -59,42 +51,13 @@ const ChipContent = styled.div`
   max-width: 250px;
 `
 
-const useFetch = ({ id }) => {
-  console.log("useFetch", id)
-  const [data, setData] = useState(null)
-  const [isLoading, setLoading] = useState(true)
-  const fetchData = async () => {
-    setLoading(true)
-    const url = `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.API_KEY}`
-    console.log("url", url)
-    const response = await fetch(url)
-    const json = await response.json()
-    console.log("json", json)
-    setData(json)
-    setLoading(false)
-  }
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  return [data, isLoading]
-}
-
 const Movie = ({ location, user }) => {
   const { state = {} } = location
-  let img_test = false
+  let imgToFetch = false
   if (state && state.image_load) {
-    console.log("need to render another image")
-    img_test = `http://image.tmdb.org/t/p/original${state.img}`
+    imgToFetch = `http://image.tmdb.org/t/p/original${state.img}`
   }
   const { title, img, id, overview, genres, vote_average } = state
-  //const [data, isLoading] = useFetch({ id })
-  //console.log(data)
-  const [imgIsLoading, setImgIsLoading] = useState(false)
-  if (!state) {
-    console.log("no state")
-  }
-
   const handleMovieRequest = () => {
     const url = "http://localhost:4000"
     const ql = `mutation {
@@ -135,8 +98,8 @@ const Movie = ({ location, user }) => {
       <Wrapper>
         <MovieContainer>
           <Left>
-            {img && <Image fixed={img} />}
-            {img_test && <Image_fetch src={img_test} />}
+            {img && !imgToFetch && <Image fixed={img} />}
+            {imgToFetch && <ImageFetch src={imgToFetch} />}
           </Left>
           <Right>
             <div style={{ paddingLeft: "10px" }}>
@@ -161,7 +124,7 @@ const Movie = ({ location, user }) => {
                         margin: "5px",
                       }}
                     >
-                      <StyledChip label={gen[el]} variant="outlined" />
+                      <StyledChip key={el} label={gen[el]} variant="outlined" />
                     </div>
                   )
                 })}

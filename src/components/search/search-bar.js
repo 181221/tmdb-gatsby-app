@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Autosuggest from "react-autosuggest"
 import AwesomeDebouncePromise from "awesome-debounce-promise"
 import { Link } from "gatsby"
 import styled from "styled-components"
-import { navigate } from "@reach/router"
+import { theme } from "./styles"
 
 const StyledLink = styled(Link)``
 
@@ -13,6 +13,7 @@ const handleRequest = query => {
   return fetch(encodedsearch)
     .then(res => res.json())
     .then(json => json)
+    .catch(err => console.error(err))
 }
 const searchAPIDebounced = AwesomeDebouncePromise(handleRequest, 100)
 
@@ -25,7 +26,7 @@ const getSuggestions = req => {
       id: el.id,
       title: el.title,
       overview: el.overview,
-      genres: el.genres_id,
+      genres: el.genre_ids,
       vote_average: el.vote_average,
       img: el.poster_path,
       release: el.release_date,
@@ -124,62 +125,3 @@ const SearchBar = () => {
 }
 
 export default SearchBar
-const theme = {
-  container: {
-    position: "relative",
-    width: "50%",
-    margin: "auto",
-  },
-  input: {
-    width: "100%",
-    height: 30,
-    padding: "10px 20px",
-    fontFamily: "Helvetica, sans-serif",
-    fontWeight: 300,
-    fontSize: 16,
-    border: "1px solid #aaa",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  inputFocused: {
-    outline: "none",
-  },
-  inputOpen: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  suggestionsContainer: {
-    display: "none",
-    widht: "100%",
-  },
-  suggestionsContainerOpen: {
-    display: "block",
-    top: 51,
-    width: "100%",
-    color: "black",
-    border: "1px solid #aaa",
-    backgroundColor: "#fff",
-    fontFamily: "Helvetica, sans-serif",
-    fontWeight: 300,
-    fontSize: 16,
-    borderBottomLeftRadius: 4,
-    paddingRight: "40px",
-    borderBottomRightRadius: 4,
-    zIndex: 2,
-    transition: "all 300ms",
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  },
-  suggestion: {
-    cursor: "pointer",
-    padding: "10px 20px",
-  },
-  suggestionHighlighted: {
-    backgroundColor: "#ddd",
-  },
-}

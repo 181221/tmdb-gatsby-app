@@ -1,11 +1,8 @@
-import React, { useState } from "react"
+import React from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Card from "../components/card"
-
-import SearchBar from "../components/search-bar"
-import Img from "gatsby-image"
-
+import SearchBar from "../components/search/search-bar"
 import Typography from "@material-ui/core/Typography"
 
 const Heading = styled.div`
@@ -19,7 +16,6 @@ const CardContainer = styled.div`
   margin: 42px 42px;
   justify-content: center;
 `
-const AutoSuggest = styled.div``
 const AutoContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -27,11 +23,10 @@ const AutoContainer = styled.div`
   flex-direction: column;
 `
 
-const Home = ({ user }) => {
-  const [value, setValue] = useState("")
+const Home = () => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
-      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 50) {
+      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {
         nodes {
           title
           vote_average
@@ -53,9 +48,6 @@ const Home = ({ user }) => {
     }
   `)
   const nodes = gatsbyRepoData.allTmdbMiscPopularMovies.nodes
-
-  const [autoSuggestions, setAutoSuggestions] = useState([])
-  console.log("autoSuggestions", autoSuggestions)
   return (
     <>
       <Heading>
@@ -63,12 +55,7 @@ const Home = ({ user }) => {
           Discover
         </Typography>
       </Heading>
-
       <SearchBar />
-      <AutoContainer>
-        {autoSuggestions && autoSuggestions.map(el => <select>{el}</select>)}
-      </AutoContainer>
-
       <CardContainer>
         {nodes.map(el => {
           return (
@@ -86,34 +73,5 @@ const Home = ({ user }) => {
       </CardContainer>
     </>
   )
-}
-const onChange = (value, setAutoSuggestions) => {
-  if (value && value.length >= 2) {
-    const request = setTimeout(
-      () => handleRequestoffline(value, setAutoSuggestions),
-      2000
-    )
-    console.log(request)
-    console.log(request.results)
-    //setAutoSuggestions(["hei", "hadet"])
-    //setAutoSuggestions(request.results)
-  }
-}
-
-const handleRequestoffline = (query, setAutoSuggestions) => {
-  console.log("asdasd")
-  const uri = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${process.env.API_KEY}`
-  const encodedsearch = encodeURI(uri)
-  setAutoSuggestions(["lion king", " king kong"])
-
-  console.log(uri)
-}
-const handleRequest = query => {
-  const uri = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${process.env.API_KEY}`
-  const encodedsearch = encodeURI(uri)
-  fetch(encodedsearch)
-    .then(res => res.json())
-    .then(json => console.log(json))
-  console.log(uri)
 }
 export default Home
