@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Card from "../components/card"
+
 import SearchBar from "../components/search-bar"
 import Img from "gatsby-image"
 

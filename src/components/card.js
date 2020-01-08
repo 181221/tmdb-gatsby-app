@@ -3,10 +3,10 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { Link } from "gatsby"
 import Img from "gatsby-image"
+import { withStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles"
 
 export const MovieBlock = styled.div`
-  margin-top: 20px;
-  margin-right: 20px;
   width: 350px;
   position: relative;
 `
@@ -21,17 +21,14 @@ const Image = styled(Img)`
   box-sizing: border-box;
   border-radius: 10px;
 `
-const P = styled.p`
-  text-align: center;
-  min-height: 24px;
-  max-height: 24px;
-  margin: 0;
-`
-const Test = styled(Typography)`
-  min-height: 24px;
-  max-height: 24px;
+const Div = styled.div`
+  max-height: 75px;
+  min-height: 75px;
+  margin-bottom: 48px;
 `
 const Card = ({ img, title, genres, id, vote_average, overview }) => {
+  const classes = useStyles()
+
   return (
     <>
       <MovieBlock>
@@ -42,23 +39,44 @@ const Card = ({ img, title, genres, id, vote_average, overview }) => {
           >
             <Image fixed={img} />
           </Link>
-          <Typography variant="h4" component="h4" align="center">
-            {title}
-          </Typography>
-          <div style={{ minHeight: "24px", maxHeight: "24px" }}>
-            <Typography variant="body1" component="p" align="center">
-              {genres.map((el, index) => {
-                return genres.length - 1 === index
-                  ? gen[el] + ""
-                  : gen[el] + ", "
-              })}
+          <Div>
+            <Typography
+              variant="h4"
+              component="h4"
+              align="center"
+              className={classes.root}
+            >
+              {title}
             </Typography>
-          </div>
+            <div style={{ minHeight: "24px", maxHeight: "24px" }}>
+              <Typography
+                variant="body1"
+                component="p"
+                align="center"
+                className={classes.genres}
+              >
+                {genres.map((el, index) => {
+                  return genres.length - 1 === index
+                    ? gen[el] + ""
+                    : gen[el] + ", "
+                })}
+              </Typography>
+            </div>
+          </Div>
         </MoviePoster>
       </MovieBlock>
     </>
   )
 }
+
+const useStyles = makeStyles({
+  root: { maxHeight: "50px", overflow: "hidden" },
+  genres: {
+    maxHeight: "24px",
+    overflow: "hidden",
+  },
+})
+
 export default Card
 export const gen = {
   28: "Action",

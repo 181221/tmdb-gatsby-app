@@ -8,6 +8,7 @@ import StarRateIcon from "@material-ui/icons/StarRate"
 import Chip from "@material-ui/core/Chip"
 import { gen } from "../components/card"
 import Button from "@material-ui/core/Button"
+import { withStyles } from "@material-ui/core/styles"
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -41,6 +42,7 @@ const Right = styled.div`
 `
 const Overview = styled.div`
   margin-top: auto;
+  margin-bottom: 24px;
 `
 const ImgCards = styled.div`
   display: flex;
@@ -137,11 +139,14 @@ const Movie = ({ location, user }) => {
             {img_test && <Image_fetch src={img_test} />}
           </Left>
           <Right>
-            <Typography variant="h4" component="h4">
-              {title}
-            </Typography>
+            <div style={{ paddingLeft: "10px" }}>
+              <Typography variant="h4" component="h4">
+                {title}
+              </Typography>
+            </div>
+
             <StarDiv>
-              <StarRateIcon style={{ fontSize: "42px" }} />
+              <StarRateIcon style={{ fontSize: "42px", color: "#ff6987e6" }} />
               <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
                 {vote_average}
               </Typography>
@@ -153,22 +158,14 @@ const Movie = ({ location, user }) => {
                     <div
                       key={el}
                       style={{
-                        margin: "2px",
+                        margin: "5px",
                       }}
                     >
-                      <Chip
-                        label={gen[el]}
-                        clickable
-                        variant="outlined"
-                        style={{ background: "white" }}
-                      />
+                      <StyledChip label={gen[el]} variant="outlined" />
                     </div>
                   )
                 })}
             </ChipContent>
-            <Button onClick={handleMovieRequest} color="inherit">
-              Request movie
-            </Button>
             <Overview>
               <Typography variant="h4" component="h4">
                 Overview
@@ -177,10 +174,37 @@ const Movie = ({ location, user }) => {
                 {overview}
               </Typography>
             </Overview>
+            <StyledButton onClick={handleMovieRequest} color="primary">
+              <Typography variant="body1" component="p">
+                Request Movie
+              </Typography>
+            </StyledButton>
           </Right>
         </MovieContainer>
       </Wrapper>
     </>
   )
 }
+const StyledChip = withStyles({
+  root: {
+    borderRadius: 3,
+    border: 0,
+    color: "white",
+    boxShadow: "0 0px 1px 2px rgba(255, 105, 135, .3)",
+    "&:hover": {
+      backgroundColor: "#e4637f",
+      opacity: 0.9,
+    },
+  },
+})(Chip)
+const StyledButton = withStyles({
+  root: {
+    background: "linear-gradient(45deg, #e4637f 30%, #FF8E53 90%)",
+    borderRadius: 3,
+    border: 0,
+    color: "white",
+    boxShadow: "0 0px 1px 1px rgba(255, 105, 135, .3)",
+  },
+})(Button)
+
 export default Movie
