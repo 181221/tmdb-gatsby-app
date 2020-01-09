@@ -22,7 +22,6 @@
     "auth0-js": "^9.12.1",
     "awesome-debounce-promise": "^2.1.0",
     "babel-plugin-styled-components": "^1.10.6",
-    "date-fns": "^2.8.1",
     "gatsby": "^2.18.12",
     "gatsby-image": "^2.2.37",
     "gatsby-plugin-less": "^3.0.17",
