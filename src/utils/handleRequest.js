@@ -17,6 +17,7 @@ export const handleRequest = (user, url, setUserData) => {
           token
           user {
             email
+            role
             movies {id title }
           }
         }

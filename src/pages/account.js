@@ -23,6 +23,7 @@ const Account = () => {
       })
       .catch(err => console.error(err))
   }, [user])
+  console.log(userData)
   if (!isAuthenticated()) {
     login()
     return <p>Redirecting to login...</p>
