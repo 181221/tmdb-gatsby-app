@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Card from "../components/card"
 import SearchBar from "../components/search/search-bar"
 import Typography from "@material-ui/core/Typography"
+import { radarr_url } from "../constants/route"
 
 const Heading = styled.div`
   margin: 24px;
@@ -18,6 +19,7 @@ const CardContainer = styled.div`
 `
 
 const Home = () => {
+  const [collection, setCollection] = useState(undefined)
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {
@@ -30,7 +32,9 @@ const Home = () => {
           overview
           miscPopularMoviesId
           genre_ids
+          release_date
           poster_path {
+            url
             childImageSharp {
               fixed(height: 450, quality: 100) {
                 ...GatsbyImageSharpFixed
@@ -42,6 +46,17 @@ const Home = () => {
     }
   `)
   const nodes = gatsbyRepoData.allTmdbMiscPopularMovies.nodes
+  useEffect(() => {
+    let url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`
+    fetch(url_collection)
+      .then(res => res.json())
+      .then(json => {
+        setCollection(json)
+      })
+      .catch(err => console.error(err))
+  }, [])
+  console.log("collectin", collection)
+  console.log("nodes", nodes)
   return (
     <>
       <Heading>
@@ -61,6 +76,8 @@ const Home = () => {
               genres={el.genre_ids}
               vote_average={el.vote_average}
               id={el.miscPopularMoviesId}
+              release_date={el.release_date}
+              posterUrl={el.poster_path.url}
             />
           )
         })}

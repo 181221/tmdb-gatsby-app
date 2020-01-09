@@ -36,7 +36,8 @@ const getSuggestions = req => {
       genres: el.genre_ids,
       vote_average: el.vote_average,
       img: el.poster_path,
-      release: el.release_date,
+      posterUrl: el.poster_path.url,
+      release_date: el.release_date,
     }
     return obj
   })
@@ -50,7 +51,16 @@ const getSuggestionValue = suggestion => suggestion.name
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => {
-  const { img, title, genres, id, vote_average, overview, name } = suggestion
+  const {
+    img,
+    title,
+    genres,
+    id,
+    vote_average,
+    overview,
+    name,
+    posterUrl,
+  } = suggestion
   return (
     <StyledContainer>
       <StyledLink
@@ -61,6 +71,7 @@ const renderSuggestion = suggestion => {
           genres,
           id,
           vote_average,
+          posterUrl,
           overview,
           image_load: true,
         }}

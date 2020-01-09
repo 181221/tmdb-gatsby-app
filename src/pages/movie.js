@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 import Img from "gatsby-image"
 import Typography from "@material-ui/core/Typography"
@@ -7,6 +7,8 @@ import Chip from "@material-ui/core/Chip"
 import { gen } from "../components/card"
 import Button from "@material-ui/core/Button"
 import { withStyles } from "@material-ui/core/styles"
+import { radarr_url, prisma_endpoint, img_tmdb } from "../constants/route"
+import FlashMessage from "../components/flash"
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -54,12 +56,51 @@ const ChipContent = styled.div`
 const Movie = ({ location, user }) => {
   const { state = {} } = location
   let imgToFetch = false
+  const [loading, setLoading] = useState(undefined)
+  const [created, setCreated] = useState(undefined)
+  const [error, setError] = useState(undefined)
+
   if (state && state.image_load) {
-    imgToFetch = `http://image.tmdb.org/t/p/original${state.img}`
+    imgToFetch = img_tmdb + state.img
   }
-  const { title, img, id, overview, genres, vote_average } = state
+  const {
+    title,
+    img,
+    id,
+    overview,
+    genres,
+    vote_average,
+    posterUrl,
+    release_date,
+  } = state
+  const Fetch = (url, options) => {
+    fetch(url, options)
+      .then(res => {
+        console.log("res", res)
+        if (res.ok) {
+          setCreated(true)
+          setTimeout(() => {
+            setCreated(undefined)
+          }, 5000)
+          return res.json()
+        }
+        return Promise.reject(Error(res.statusText))
+      })
+      .then(json => {
+        setLoading(false)
+        console.log("json")
+        return Promise.resolve(json)
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setTimeout(() => {
+          setError(undefined)
+        }, 5000)
+      })
+  }
   const handleMovieRequest = () => {
-    const url = "http://localhost:4000"
+    const url = prisma_endpoint
     const ql = `mutation {
       createMovie(
         title: "${title}",
@@ -87,15 +128,65 @@ const Movie = ({ location, user }) => {
         query: ql,
       }),
     }
-    fetch(url, options)
+    /*fetch(url, options)
       .then(res => res.json())
       .then(json => console.log(json))
-      .catch(err => console.error(err))
+      .catch(err => console.error(err))*/
+    const obj = {
+      title: title,
+      qualityProfileId: 3,
+      titleSlug: title.replace(" ", "-").toLowerCase() + "-" + id,
+      images: [
+        {
+          coverType: "poster",
+          url: posterUrl,
+        },
+      ],
+      tmdbId: id,
+      year: Number(new Date(release_date).getFullYear()),
+      rootFolderPath: "/tmp",
+    }
+    console.log("obj", obj)
+    const options1 = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
+      method: "POST",
+    }
+
+    let url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`
+    setLoading(true)
+    fetch(url_collection, options1)
+      .then(res => {
+        console.log("res", res)
+        if (res.ok) {
+          setCreated(true)
+          setTimeout(() => {
+            setCreated(undefined)
+          }, 5000)
+        }
+        return res.json()
+      })
+      .then(json => {
+        setLoading(false)
+        console.log("json")
+        return json
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setTimeout(() => {
+          setError(undefined)
+        }, 5000)
+      })
   }
+  const click = error || loading
 
   return (
     <>
       <Wrapper>
+        <FlashMessage error={error} success={created} />
         <MovieContainer>
           <Left>
             {img && !imgToFetch && <Image fixed={img} />}
@@ -137,7 +228,11 @@ const Movie = ({ location, user }) => {
                 {overview}
               </Typography>
             </Overview>
-            <StyledButton onClick={handleMovieRequest} color="primary">
+            <StyledButton
+              onClick={handleMovieRequest}
+              disabled={click}
+              color="primary"
+            >
               <Typography variant="body1" component="p">
                 Request Movie
               </Typography>

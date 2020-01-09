@@ -25,7 +25,16 @@ const Div = styled.div`
   min-height: 75px;
   margin-bottom: 48px;
 `
-const Card = ({ img, title, genres, id, vote_average, overview }) => {
+const Card = ({
+  img,
+  title,
+  genres,
+  id,
+  vote_average,
+  overview,
+  release_date,
+  posterUrl,
+}) => {
   const classes = useStyles()
 
   return (
@@ -34,7 +43,16 @@ const Card = ({ img, title, genres, id, vote_average, overview }) => {
         <MoviePoster>
           <Link
             to={`/account/movies/${id}`}
-            state={{ img, title, genres, id, vote_average, overview }}
+            state={{
+              img,
+              title,
+              genres,
+              id,
+              vote_average,
+              overview,
+              release_date,
+              posterUrl,
+            }}
           >
             <Image fixed={img} />
           </Link>
