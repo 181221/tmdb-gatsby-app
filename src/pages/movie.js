@@ -199,7 +199,7 @@ const Movie = ({ location, user }) => {
         }, 5000)
       })
   }
-  const click = error || loading
+  const click = error || loading || created
 
   return (
     <>

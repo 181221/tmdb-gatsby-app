@@ -40,7 +40,12 @@ export const handleRequest = (user, url, setUserData) => {
     }),
   }
   fetch(url, options)
-    .then(res => res.json())
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      }
+      return Promise.reject(Error(res.statusText))
+    })
     .then(json => {
       if (json.errors && json.errors.length > 0) {
         let error = json.errors[0]
@@ -52,6 +57,8 @@ export const handleRequest = (user, url, setUserData) => {
             })
             .catch(err => console.error(err))
         }
+      } else {
+        setUserData(json.data.getToken)
       }
     })
     .catch(err => console.error(err))
