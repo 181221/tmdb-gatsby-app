@@ -6,15 +6,19 @@ import ButtonAppBar from "../components/navbar/nav"
 import Movie from "./movie"
 import Layout from "../components/layout"
 import { handleRequest } from "../utils/handleRequest"
-import { radarr_url, account_movie, landing } from "../constants/route"
+import {
+  radarr_url,
+  account_movie,
+  landing,
+  prisma_endpoint,
+} from "../constants/route"
 
 const Account = () => {
   const [userData, setUserData] = useState("")
   const [collection, setCollection] = useState(undefined)
-
   const user = getProfile()
   useEffect(() => {
-    handleRequest(user, "http://localhost:4000", setUserData)
+    handleRequest(user, prisma_endpoint, setUserData)
     let url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`
     fetch(url_collection)
       .then(res => res.json())
@@ -23,7 +27,6 @@ const Account = () => {
       })
       .catch(err => console.error(err))
   }, [user])
-  console.log(userData)
   if (!isAuthenticated()) {
     login()
     return <p>Redirecting to login...</p>
