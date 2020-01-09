@@ -80,7 +80,7 @@ const Movie = ({ location, user }) => {
         if (res.ok) {
           setCreated(true)
           setTimeout(() => {
-            setCreated(undefined)
+            region: "US", setCreated(undefined)
           }, 5000)
           return res.json()
         }
@@ -128,10 +128,7 @@ const Movie = ({ location, user }) => {
         query: ql,
       }),
     }
-    /*fetch(url, options)
-      .then(res => res.json())
-      .then(json => console.log(json))
-      .catch(err => console.error(err))*/
+
     const obj = {
       title: title,
       qualityProfileId: 3,
@@ -162,6 +159,10 @@ const Movie = ({ location, user }) => {
         console.log("res", res)
         if (res.ok) {
           setCreated(true)
+          fetch(url, options)
+            .then(res => res.json())
+            .then(json => console.log(json))
+            .catch(err => console.error(err))
           setTimeout(() => {
             setCreated(undefined)
           }, 5000)
