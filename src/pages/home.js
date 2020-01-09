@@ -20,7 +20,7 @@ const CardContainer = styled.div`
 const Home = ({ location }) => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
-      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 50) {
+      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 30) {
         nodes {
           title
           vote_average

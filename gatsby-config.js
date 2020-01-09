@@ -37,7 +37,7 @@ module.exports = {
           },
           misc: {
             activate: true,
-            endpoints: [["miscPopularMovies", 2]],
+            endpoints: [["miscPopularMovies", 3]],
           },
         },
       },

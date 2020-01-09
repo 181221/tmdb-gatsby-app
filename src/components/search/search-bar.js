@@ -59,6 +59,7 @@ const renderSuggestion = suggestion => {
     id,
     vote_average,
     overview,
+    release_date,
     name,
     posterUrl,
   } = suggestion
@@ -72,6 +73,7 @@ const renderSuggestion = suggestion => {
           genres,
           id,
           vote_average,
+          release_date,
           posterUrl,
           overview,
           image_load: true,

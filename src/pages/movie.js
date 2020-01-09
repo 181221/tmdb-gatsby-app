@@ -154,19 +154,23 @@ const Movie = ({ location, user, collection }) => {
   } = movie
   const handleMovieRequest = () => {
     const url = prisma_endpoint
+
+    let rightImg = imgToFetch ? imgToFetch : img.src
     const ql = `mutation {
       createMovie(
         title: "${title}",
-        img: "${img.src}",
+        img: "${rightImg}",
         tmdb_id: "${id}",
         overview: "${overview}",
         genres: "${genres}",
+        release_date: "${release_date}",
         vote_average: "${vote_average}"
       ) {
         title
         img
         tmdb_id
         genres
+        release_date
         vote_average
         overview
       }
@@ -181,7 +185,6 @@ const Movie = ({ location, user, collection }) => {
         query: ql,
       }),
     }
-
     const obj = {
       title: title,
       qualityProfileId: 3,
@@ -189,7 +192,7 @@ const Movie = ({ location, user, collection }) => {
       images: [
         {
           coverType: "poster",
-          url: posterUrl,
+          url: posterUrl ? posterUrl : rightImg,
         },
       ],
       tmdbId: id,
