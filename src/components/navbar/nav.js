@@ -7,7 +7,7 @@ import { Link } from "gatsby"
 import { logout } from "../../utils/auth"
 import styled from "styled-components"
 import { useStyles } from "./styles"
-
+import { landing } from "../../constants/route"
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: white;
@@ -22,7 +22,7 @@ export default function ButtonAppBar({ user }) {
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
         <Toolbar>
-          <StyledLink to="/account/">
+          <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
           <div className={classes.title}></div>

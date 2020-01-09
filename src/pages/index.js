@@ -2,7 +2,15 @@ import React from "react"
 import { Link } from "gatsby"
 import { isAuthenticated, login } from "../utils/auth"
 import Layout from "../components/layout"
+import { landing } from "../constants/route"
+import Typography from "@material-ui/core/Typography"
+import styled from "styled-components"
 
+const StyledLink = styled(Link)`
+  color: white;
+  margin: 10px;
+  text-align: center;
+`
 export default () => {
   if (!isAuthenticated()) {
     login()
@@ -10,7 +18,12 @@ export default () => {
   }
   return (
     <Layout>
-      <Link to="/account">Go to your account</Link>
+      <Typography variant="h4" component="h4" align="center">
+        Landing page
+      </Typography>
+      <StyledLink to={landing}>
+        <Typography variant="h6">Discover movies</Typography>
+      </StyledLink>
     </Layout>
   )
 }

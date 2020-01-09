@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import { Link } from "gatsby"
 import Img from "gatsby-image"
 import { makeStyles } from "@material-ui/core/styles"
+import { account_movie } from "../constants/route"
 
 export const MovieBlock = styled.div`
   width: 350px;
@@ -42,7 +43,7 @@ const Card = ({
       <MovieBlock>
         <MoviePoster>
           <Link
-            to={`/account/movies/${id}`}
+            to={`${account_movie}/${id}`}
             state={{
               img,
               title,

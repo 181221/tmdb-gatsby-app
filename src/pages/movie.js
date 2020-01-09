@@ -101,7 +101,7 @@ const Movie = ({ location, user, collection }) => {
         }
       })
     if (!state.id) {
-      const regex = /account\/movies\/[0-9]*/gm
+      const regex = /account\/movie\/[0-9]*/gm
       const location_id = location.pathname.match(regex)[0].match(/[0-9]+/)[0]
       const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.API_KEY}`
       fetch(uri)

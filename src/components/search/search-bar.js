@@ -4,7 +4,7 @@ import AwesomeDebouncePromise from "awesome-debounce-promise"
 import { Link } from "gatsby"
 import styled from "styled-components"
 import { theme } from "./styles"
-import { tmdb_endpoint } from "../../constants/route"
+import { tmdb_endpoint, account_movie } from "../../constants/route"
 const StyledLink = styled(Link)`
   color: black;
   min-width: 200px;
@@ -65,7 +65,7 @@ const renderSuggestion = suggestion => {
   return (
     <StyledContainer>
       <StyledLink
-        to={`/account/movies/${id}`}
+        to={`${account_movie}/${id}`}
         state={{
           img,
           title,

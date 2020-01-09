@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
-import { Router, Location } from "@reach/router"
+import { Router } from "@reach/router"
 import { login, isAuthenticated, getProfile } from "../utils/auth"
 import Home from "./home"
 import ButtonAppBar from "../components/navbar/nav"
 import Movie from "./movie"
 import Layout from "../components/layout"
 import { handleRequest } from "../utils/handleRequest"
-import { radarr_url } from "../constants/route"
+import { radarr_url, account_movie, landing } from "../constants/route"
 
 const Account = () => {
   const [userData, setUserData] = useState("")
@@ -28,21 +28,17 @@ const Account = () => {
     return <p>Redirecting to login...</p>
   }
   return (
-    <Location>
-      {({ location, navigation }) => (
-        <Layout>
-          <ButtonAppBar user={user} />
-          <Router location={location}>
-            <Home path="/account/" user={user} location={location} />
-            <Movie
-              path="/account/movies/:movieId"
-              user={userData}
-              collection={collection}
-            />
-          </Router>
-        </Layout>
-      )}
-    </Location>
+    <Layout>
+      <ButtonAppBar user={user} />
+      <Router>
+        <Home path={`${landing}`} user={user} />
+        <Movie
+          path={`${account_movie}/:movieId`}
+          user={userData}
+          collection={collection}
+        />
+      </Router>
+    </Layout>
   )
 }
 export default Account
