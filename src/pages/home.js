@@ -11,8 +11,7 @@ const Heading = styled.div`
 `
 
 const CardContainer = styled.div`
-  display: flex;) {
-    silentAu
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   margin: 42px 42px;

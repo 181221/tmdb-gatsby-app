@@ -15,6 +15,7 @@ module.exports = {
     "gatsby-transformer-sharp",
     "gatsby-plugin-sharp",
     `gatsby-plugin-styled-components`,
+    "babel-plugin-styled-components",
     `gatsby-plugin-less`,
     {
       resolve: "gatsby-source-tmdb",
