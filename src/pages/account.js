@@ -6,13 +6,22 @@ import ButtonAppBar from "../components/navbar/nav"
 import Movie from "./movie"
 import Layout from "../components/layout"
 import { handleRequest } from "../utils/handleRequest"
+import { radarr_url } from "../constants/route"
 
 const Account = () => {
   const [userData, setUserData] = useState("")
+  const [collection, setCollection] = useState(undefined)
 
   const user = getProfile()
   useEffect(() => {
     handleRequest(user, "http://localhost:4000", setUserData)
+    let url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`
+    fetch(url_collection)
+      .then(res => res.json())
+      .then(json => {
+        setCollection(json)
+      })
+      .catch(err => console.error(err))
   }, [user])
   if (!isAuthenticated()) {
     login()
@@ -23,7 +32,11 @@ const Account = () => {
       <ButtonAppBar user={user} />
       <Router>
         <Home path="/account/" user={user} />
-        <Movie path="/account/movies/:movieId" user={userData} />
+        <Movie
+          path="/account/movies/:movieId"
+          user={userData}
+          collection={collection}
+        />
       </Router>
     </Layout>
   )

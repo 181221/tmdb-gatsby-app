@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import Img from "gatsby-image"
 import Typography from "@material-ui/core/Typography"
@@ -69,14 +69,31 @@ const useStyles = makeStyles({
   },
 })
 
-const Movie = ({ location, user }) => {
+const Movie = ({ location, user, collection }) => {
   const classes = useStyles()
   const { state = {} } = location
   let imgToFetch = false
   const [loading, setLoading] = useState(undefined)
   const [created, setCreated] = useState(undefined)
-  const [error, setError] = useState(undefined)
+  const [inCollection, setInCollection] = useState(undefined)
+  const [downloaded, setDownloaded] = useState(undefined)
+  const [hasFile, setHasFile] = useState(undefined)
 
+  const [error, setError] = useState(undefined)
+  useEffect(() => {
+    collection &&
+      collection.map(el => {
+        if (state.id === el.tmdbId) {
+          setInCollection(true)
+        }
+        if (el.hasFile) {
+          setHasFile(true)
+        }
+        if (el.downloaded) {
+          setDownloaded(true)
+        }
+      })
+  }, [collection])
   if (state && state.image_load) {
     imgToFetch = img_tmdb + state.img
   }
@@ -90,32 +107,6 @@ const Movie = ({ location, user }) => {
     posterUrl,
     release_date,
   } = state
-  const Fetch = (url, options) => {
-    fetch(url, options)
-      .then(res => {
-        console.log("res", res)
-        if (res.ok) {
-          setCreated(true)
-          setTimeout(() => {
-            setCreated(undefined)
-          }, 5000)
-          return res.json()
-        }
-        return Promise.reject(Error(res.statusText))
-      })
-      .then(json => {
-        setLoading(false)
-        console.log("json")
-        return Promise.resolve(json)
-      })
-      .catch(err => {
-        console.error(err)
-        setError(true)
-        setTimeout(() => {
-          setError(undefined)
-        }, 5000)
-      })
-  }
   const handleMovieRequest = () => {
     const url = prisma_endpoint
     const ql = `mutation {
@@ -124,6 +115,7 @@ const Movie = ({ location, user }) => {
         img: "${img.src}",
         tmdb_id: "${id}",
         overview: "${overview}",
+        console.log("collection", collection)
         genres: "${genres}",
         vote_average: "${vote_average}"
       ) {
@@ -173,7 +165,6 @@ const Movie = ({ location, user }) => {
     setLoading(true)
     fetch(url_collection, options1)
       .then(res => {
-        console.log("res", res)
         if (res.ok) {
           setCreated(true)
           fetch(url, options)
@@ -199,12 +190,19 @@ const Movie = ({ location, user }) => {
         }, 5000)
       })
   }
-  const click = error || loading || created
+  const click =
+    error || loading || created || downloaded || inCollection || hasFile
 
   return (
     <>
       <Wrapper>
-        <FlashMessage error={error} success={created} />
+        <FlashMessage
+          error={error}
+          success={created}
+          downloaded={downloaded}
+          hasFile={hasFile}
+          inCollection={inCollection}
+        />
         <MovieContainer>
           <Left>
             {img && !imgToFetch && <Image fixed={img} />}
