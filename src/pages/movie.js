@@ -9,6 +9,7 @@ import Button from "@material-ui/core/Button"
 import { withStyles } from "@material-ui/core/styles"
 import { radarr_url, prisma_endpoint, img_tmdb } from "../constants/route"
 import FlashMessage from "../components/flash"
+import { makeStyles } from "@material-ui/core/styles"
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -52,8 +53,24 @@ const ChipContent = styled.div`
   margin-top: 12px;
   max-width: 250px;
 `
+const useStyles = makeStyles({
+  root: {
+    background: "linear-gradient(45deg, #e4637f 30%, #FF8E53 90%)",
+    borderRadius: 3,
+    border: 0,
+    color: "white",
+    boxShadow: "0 0px 1px 1px rgba(255, 105, 135, .3)",
+  },
+  disabled: {
+    "&$disabled": {
+      cursor: "not-allowed",
+      pointerEvents: "all",
+    },
+  },
+})
 
 const Movie = ({ location, user }) => {
+  const classes = useStyles()
   const { state = {} } = location
   let imgToFetch = false
   const [loading, setLoading] = useState(undefined)
@@ -229,15 +246,16 @@ const Movie = ({ location, user }) => {
                 {overview}
               </Typography>
             </Overview>
-            <StyledButton
+            <Button
               onClick={handleMovieRequest}
               disabled={click}
               color="primary"
+              className={`${classes.root} ${click && classes.disabled}`}
             >
               <Typography variant="body1" component="p">
                 Request Movie
               </Typography>
-            </StyledButton>
+            </Button>
           </Right>
         </MovieContainer>
       </Wrapper>
@@ -256,14 +274,5 @@ const StyledChip = withStyles({
     },
   },
 })(Chip)
-const StyledButton = withStyles({
-  root: {
-    background: "linear-gradient(45deg, #e4637f 30%, #FF8E53 90%)",
-    borderRadius: 3,
-    border: 0,
-    color: "white",
-    boxShadow: "0 0px 1px 1px rgba(255, 105, 135, .3)",
-  },
-})(Button)
 
 export default Movie
