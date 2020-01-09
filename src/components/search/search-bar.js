@@ -4,7 +4,7 @@ import AwesomeDebouncePromise from "awesome-debounce-promise"
 import { Link } from "gatsby"
 import styled from "styled-components"
 import { theme } from "./styles"
-
+import { tmdb_endpoint } from "../../constants/route"
 const StyledLink = styled(Link)`
   color: black;
   min-width: 200px;
@@ -15,7 +15,7 @@ const StyledSpan = styled.span`
 const StyledContainer = styled.div``
 
 const handleRequest = query => {
-  const uri = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${process.env.API_KEY}`
+  const uri = `${tmdb_endpoint}/search/movie?query=${query}&api_key=${process.env.API_KEY}`
   const encodedsearch = encodeURI(uri)
   return fetch(encodedsearch)
     .then(res => res.json())

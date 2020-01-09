@@ -7,8 +7,14 @@ import Chip from "@material-ui/core/Chip"
 import { gen } from "../components/card"
 import Button from "@material-ui/core/Button"
 import { withStyles } from "@material-ui/core/styles"
-import { radarr_url, prisma_endpoint, img_tmdb } from "../constants/route"
+import {
+  radarr_url,
+  prisma_endpoint,
+  img_tmdb,
+  tmdb_endpoint,
+} from "../constants/route"
 import FlashMessage from "../components/flash"
+
 import { makeStyles } from "@material-ui/core/styles"
 
 const Wrapper = styled.div`
@@ -71,8 +77,9 @@ const useStyles = makeStyles({
 
 const Movie = ({ location, user, collection }) => {
   const classes = useStyles()
-  const { state = {} } = location
-  let imgToFetch = false
+  let { state = {} } = location
+  const [movie, setMovie] = useState(state)
+  let [imgToFetch, setImgToFetch] = useState(false)
   const [loading, setLoading] = useState(undefined)
   const [created, setCreated] = useState(undefined)
   const [inCollection, setInCollection] = useState(undefined)
@@ -83,7 +90,7 @@ const Movie = ({ location, user, collection }) => {
   useEffect(() => {
     collection &&
       collection.map(el => {
-        if (state.id === el.tmdbId) {
+        if (movie.id === el.tmdbId) {
           setInCollection(true)
         }
         if (el.hasFile) {
@@ -93,7 +100,28 @@ const Movie = ({ location, user, collection }) => {
           setDownloaded(true)
         }
       })
-  }, [collection, state.id])
+    if (!state.id) {
+      const regex = /account\/movies\/[0-9]*/gm
+      const location_id = location.pathname.match(regex)[0].match(/[0-9]+/)[0]
+      const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.API_KEY}`
+      fetch(uri)
+        .then(res => res.json())
+        .then(json => {
+          const obj = {
+            title: json.title,
+            posterUrl: img_tmdb + json.poster_path,
+            img: img_tmdb + json.poster_path,
+            id: json.id,
+            overview: json.overview,
+            genres: json.genres.map(el => el.id),
+            vote_average: json.vote_average,
+            release_date: json.release_date,
+          }
+          setImgToFetch(img_tmdb + json.poster_path)
+          setMovie(obj)
+        })
+    }
+  }, [collection, movie, movie.id])
   if (state && state.image_load) {
     imgToFetch = img_tmdb + state.img
   }
@@ -106,7 +134,7 @@ const Movie = ({ location, user, collection }) => {
     vote_average,
     posterUrl,
     release_date,
-  } = state
+  } = movie
   const handleMovieRequest = () => {
     const url = prisma_endpoint
     const ql = `mutation {
@@ -115,7 +143,6 @@ const Movie = ({ location, user, collection }) => {
         img: "${img.src}",
         tmdb_id: "${id}",
         overview: "${overview}",
-        console.log("collection", collection)
         genres: "${genres}",
         vote_average: "${vote_average}"
       ) {
@@ -150,7 +177,7 @@ const Movie = ({ location, user, collection }) => {
       ],
       tmdbId: id,
       year: Number(new Date(release_date).getFullYear()),
-      rootFolderPath: "/tmp",
+      rootFolderPath: process.env.RADARR_ROOT_FOLDER_PATH,
     }
     console.log("obj", obj)
     const options1 = {

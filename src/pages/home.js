@@ -17,7 +17,7 @@ const CardContainer = styled.div`
   justify-content: center;
 `
 
-const Home = () => {
+const Home = ({ location }) => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {

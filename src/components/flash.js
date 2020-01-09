@@ -28,7 +28,7 @@ const FlashMessage = ({
   return (
     <Container>
       {error && (
-        <Alert>
+        <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
           Something went wrong
         </Alert>
@@ -40,13 +40,13 @@ const FlashMessage = ({
         </Alert>
       )}
       {hasFile && (
-        <Alert severity="Info" className={classes.root}>
+        <Alert severity="info" className={classes.root}>
           <AlertTitle>File on server</AlertTitle>
           This movie is alreaddy on server
         </Alert>
       )}
       {downloaded && (
-        <Alert severity="Info" className={classes.root}>
+        <Alert severity="info" className={classes.root}>
           <AlertTitle>Movie is downloaded</AlertTitle>
           This movie is alreaddy on server
         </Alert>
@@ -54,7 +54,7 @@ const FlashMessage = ({
       {inCollection && (
         <Collapse in={open} className={classes.root}>
           <Alert
-            severity="Info"
+            severity="info"
             action={
               <IconButton
                 aria-label="close"

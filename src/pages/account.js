@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Router } from "@reach/router"
+import { Router, Location } from "@reach/router"
 import { login, isAuthenticated, getProfile } from "../utils/auth"
 import Home from "./home"
 import ButtonAppBar from "../components/navbar/nav"
@@ -28,17 +28,21 @@ const Account = () => {
     return <p>Redirecting to login...</p>
   }
   return (
-    <Layout>
-      <ButtonAppBar user={user} />
-      <Router>
-        <Home path="/account/" user={user} />
-        <Movie
-          path="/account/movies/:movieId"
-          user={userData}
-          collection={collection}
-        />
-      </Router>
-    </Layout>
+    <Location>
+      {({ location, navigation }) => (
+        <Layout>
+          <ButtonAppBar user={user} />
+          <Router location={location}>
+            <Home path="/account/" user={user} location={location} />
+            <Movie
+              path="/account/movies/:movieId"
+              user={userData}
+              collection={collection}
+            />
+          </Router>
+        </Layout>
+      )}
+    </Location>
   )
 }
 export default Account

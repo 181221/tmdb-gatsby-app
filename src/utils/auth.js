@@ -51,7 +51,6 @@ const setSession = (cb = () => {}) => (err, authResult) => {
     user = authResult.idTokenPayload
     localStorage.setItem("isLoggedIn", true)
     localStorage.setItem("user", user)
-    navigate("/account")
     cb()
   }
 }

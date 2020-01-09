@@ -1,5 +1,7 @@
 import React from "react"
+import { Location } from "@reach/router"
 import { silentAuth } from "./src/utils/auth"
+import { navigate } from "gatsby"
 
 class SessionCheck extends React.Component {
   constructor(props) {
@@ -11,6 +13,10 @@ class SessionCheck extends React.Component {
 
   handleCheckSession = () => {
     this.setState({ loading: false })
+    if (this.props.location.pathname === "/callback") {
+      navigate("/account")
+    }
+    navigate(this.props.location.pathname)
   }
 
   componentDidMount() {
@@ -27,5 +33,11 @@ class SessionCheck extends React.Component {
 }
 
 export const wrapRootElement = ({ element }) => {
-  return <SessionCheck>{element}</SessionCheck>
+  return (
+    <Location>
+      {({ location, navigation }) => (
+        <SessionCheck location={location}>{element}</SessionCheck>
+      )}
+    </Location>
+  )
 }
