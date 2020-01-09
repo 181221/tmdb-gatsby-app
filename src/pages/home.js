@@ -11,7 +11,8 @@ const Heading = styled.div`
 `
 
 const CardContainer = styled.div`
-  display: flex;
+  display: flex;) {
+    silentAu
   flex-wrap: wrap;
   align-items: center;
   margin: 42px 42px;
@@ -55,8 +56,6 @@ const Home = () => {
       })
       .catch(err => console.error(err))
   }, [])
-  console.log("collectin", collection)
-  console.log("nodes", nodes)
   return (
     <>
       <Heading>

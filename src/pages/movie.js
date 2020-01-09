@@ -80,7 +80,7 @@ const Movie = ({ location, user }) => {
         if (res.ok) {
           setCreated(true)
           setTimeout(() => {
-            region: "US", setCreated(undefined)
+            setCreated(undefined)
           }, 5000)
           return res.json()
         }
