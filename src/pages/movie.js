@@ -7,15 +7,20 @@ import Chip from "@material-ui/core/Chip"
 import { gen } from "../components/card"
 import Button from "@material-ui/core/Button"
 import { withStyles } from "@material-ui/core/styles"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import { makeStyles } from "@material-ui/core/styles"
+
+import { Link } from "gatsby"
+
 import {
   radarr_url,
   prisma_endpoint,
   img_tmdb,
+  landing,
   tmdb_endpoint,
 } from "../constants/route"
-import FlashMessage from "../components/flash"
 
-import { makeStyles } from "@material-ui/core/styles"
+import FlashMessage from "../components/flash"
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -53,6 +58,16 @@ const Overview = styled.div`
   margin-top: auto;
   margin-bottom: 24px;
 `
+const ReturnDiv = styled.div`
+  margin: auto;
+  width: 50%;
+  margin-bottom: 24px;
+`
+const StyledLink = styled(Link)`
+  color: white;
+  display: flex;
+`
+
 const ChipContent = styled.div`
   flex-wrap: wrap;
   display: flex;
@@ -72,6 +87,9 @@ const useStyles = makeStyles({
       cursor: "not-allowed",
       pointerEvents: "all",
     },
+    goBack: {
+      paddingTop: "10px",
+    },
   },
 })
 
@@ -85,7 +103,6 @@ const Movie = ({ location, user, collection }) => {
   const [inCollection, setInCollection] = useState(undefined)
   const [downloaded, setDownloaded] = useState(undefined)
   const [hasFile, setHasFile] = useState(undefined)
-
   const [error, setError] = useState(undefined)
   useEffect(() => {
     collection &&
@@ -231,6 +248,15 @@ const Movie = ({ location, user, collection }) => {
           hasFile={hasFile}
           inCollection={inCollection}
         />
+        <ReturnDiv>
+          <Typography variant="body1" component="p">
+            <StyledLink to={landing}>
+              <ArrowBackIcon />
+              Go back
+            </StyledLink>
+          </Typography>
+        </ReturnDiv>
+
         <MovieContainer>
           <Left>
             {img && !imgToFetch && <Image fixed={img} />}
