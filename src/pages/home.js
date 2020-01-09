@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Card from "../components/card"
 import SearchBar from "../components/search/search-bar"
 import Typography from "@material-ui/core/Typography"
-import { radarr_url } from "../constants/route"
 
 const Heading = styled.div`
   margin: 24px;
@@ -19,7 +18,6 @@ const CardContainer = styled.div`
 `
 
 const Home = () => {
-  const [collection, setCollection] = useState(undefined)
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMiscPopularMovies(sort: { fields: title }, limit: 10) {
@@ -46,15 +44,6 @@ const Home = () => {
     }
   `)
   const nodes = gatsbyRepoData.allTmdbMiscPopularMovies.nodes
-  useEffect(() => {
-    let url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`
-    fetch(url_collection)
-      .then(res => res.json())
-      .then(json => {
-        setCollection(json)
-      })
-      .catch(err => console.error(err))
-  }, [])
   return (
     <>
       <Heading>

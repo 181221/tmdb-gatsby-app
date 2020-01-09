@@ -93,7 +93,7 @@ const Movie = ({ location, user, collection }) => {
           setDownloaded(true)
         }
       })
-  }, [collection])
+  }, [collection, state.id])
   if (state && state.image_load) {
     imgToFetch = img_tmdb + state.img
   }
@@ -167,6 +167,7 @@ const Movie = ({ location, user, collection }) => {
       .then(res => {
         if (res.ok) {
           setCreated(true)
+          setInCollection(true)
           fetch(url, options)
             .then(res => res.json())
             .then(json => console.log(json))
