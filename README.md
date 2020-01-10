@@ -18,9 +18,6 @@
    yarn
    ```
 
-   navigate to react-autosuggest/dist/Autosuggest.js in node_modules
-   search for trim() and delete them.
-
    then setup environment variables
 
 1)  **Start developing.**

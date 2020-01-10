@@ -49,7 +49,10 @@ const getSuggestions = req => {
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = suggestion => suggestion.name;
+const getSuggestionValue = ({ name }) => {
+  if (name) return name;
+  return '';
+};
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => {
@@ -90,17 +93,23 @@ const useSuggestion = (val, sugges) => {
   const [suggestions, setSuggestions] = useState(sugges);
 
   const onChange = e => {
-    setValue(e.target.value);
+    if (e.target.value) {
+      setValue(e.target.value);
+    } else {
+      setValue('');
+    }
   };
   const onSuggestionsFetchRequested = async el => {
-    const req = await searchAPIDebounced(el.value);
-    setSuggestions(getSuggestions(req));
+    if (value) {
+      const req = await searchAPIDebounced(el.value);
+      setSuggestions(getSuggestions(req));
+    }
   };
 
   const onSuggestionsClearRequested = () => {
     setSuggestions([]);
   };
-  const onSuggestionSelected = event => event;
+  const onSuggestionSelected = event => event.name;
 
   return {
     value,

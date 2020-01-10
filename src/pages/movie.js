@@ -131,10 +131,11 @@ const Movie = ({ location, user, collection }) => {
           setMovie(obj);
         });
     }
+    if (state.image_load) {
+      setImgToFetch(img_tmdb + state.img);
+    }
   }, [collection, movie, movie.id]);
-  if (state && state.image_load) {
-    setImgToFetch(img_tmdb + state.img);
-  }
+
   const { title, img, id, overview, genres, vote_average, posterUrl, release_date } = movie;
   const handleMovieRequest = () => {
     const url = prisma_endpoint;
