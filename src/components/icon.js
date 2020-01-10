@@ -1,34 +1,35 @@
-import React from "react"
-import PropTypes from "prop-types"
-import styled from "styled-components"
+/* eslint-disable no-tabs */
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 const Wrapper = styled.svg`
   width: 1.25rem;
   height: 1.25rem;
   fill: var(--black);
   ${({ iconName }) =>
-    iconName === "running" &&
+    iconName === 'running' &&
     `
     fill: var(--primary);
     width: 1.15rem;
     height: 1.15rem;
   `};
   ${({ iconName }) =>
-    iconName === "ended" &&
+    iconName === 'ended' &&
     `
     fill: var(--white);
     width: 1.15rem;
     height: 1.15rem;
   `};
   ${({ iconName }) =>
-    iconName === "episodes" &&
+    iconName === 'episodes' &&
     `
     fill: var(--white);
     width: 1rem;
     height: 1rem;
   `};
   ${({ iconName }) =>
-    iconName === "seasons" &&
+    iconName === 'seasons' &&
     `
     fill: var(--white);
     width: 1rem;
@@ -38,7 +39,7 @@ const Wrapper = styled.svg`
     width: 0.9rem;
     height: 0.9rem;
   }
-`
+`;
 
 // The "focusable" and "aria-hidden" properties are important for screen readers. Icons should be hidden for them if they're only a styling element and are a duplication of content
 export const Icon = ({ name, hidden }) => (
@@ -46,29 +47,22 @@ export const Icon = ({ name, hidden }) => (
     iconName={name}
     data-name={name}
     data-item="custom-icon"
-    focusable={hidden ? "false" : null}
-    aria-hidden={hidden ? "true" : null}
+    focusable={hidden ? 'false' : null}
+    aria-hidden={hidden ? 'true' : null}
   >
     <use xlinkHref={`#${name}`} />
   </Wrapper>
-)
+);
 
 Icon.propTypes = {
-  name: PropTypes.oneOf([
-    "next",
-    "first",
-    "star",
-    "running",
-    "ended",
-    "episodes",
-    "seasons",
-  ]).isRequired,
+  name: PropTypes.oneOf(['next', 'first', 'star', 'running', 'ended', 'episodes', 'seasons'])
+    .isRequired,
   hidden: PropTypes.bool,
-}
+};
 
 Icon.defaultProps = {
   hidden: true,
-}
+};
 
 export const IconMother = () => (
   <svg
@@ -115,4 +109,4 @@ export const IconMother = () => (
       </symbol>
     </defs>
   </svg>
-)
+);

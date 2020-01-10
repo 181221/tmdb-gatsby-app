@@ -1,13 +1,13 @@
-import React from "react"
-import styled from "styled-components"
-import { graphql, useStaticQuery } from "gatsby"
-import Card from "../components/card"
-import SearchBar from "../components/search/search-bar"
-import Typography from "@material-ui/core/Typography"
+import React from 'react';
+import styled from 'styled-components';
+import { graphql, useStaticQuery } from 'gatsby';
+import Typography from '@material-ui/core/Typography';
+import Card from '../components/card';
+import SearchBar from '../components/search/search-bar';
 
 const Heading = styled.div`
   margin: 24px;
-`
+`;
 
 const CardContainer = styled.div`
   display: flex;
@@ -15,9 +15,9 @@ const CardContainer = styled.div`
   align-items: center;
   margin: 42px 42px;
   justify-content: center;
-`
+`;
 
-const Home = ({ location }) => {
+const Home = () => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMiscPopularMovies(sort: { fields: title }, limit: 30) {
@@ -42,8 +42,8 @@ const Home = ({ location }) => {
         }
       }
     }
-  `)
-  const nodes = gatsbyRepoData.allTmdbMiscPopularMovies.nodes
+  `);
+  const { nodes } = gatsbyRepoData.allTmdbMiscPopularMovies;
   return (
     <>
       <Heading>
@@ -53,23 +53,21 @@ const Home = ({ location }) => {
       </Heading>
       <SearchBar />
       <CardContainer>
-        {nodes.map(el => {
-          return (
-            <Card
-              key={el.id}
-              img={el.poster_path.childImageSharp.fixed}
-              title={el.title}
-              overview={el.overview}
-              genres={el.genre_ids}
-              vote_average={el.vote_average}
-              id={el.miscPopularMoviesId}
-              release_date={el.release_date}
-              posterUrl={el.poster_path.url}
-            />
-          )
-        })}
+        {nodes.map(el => (
+          <Card
+            key={el.id}
+            img={el.poster_path.childImageSharp.fixed}
+            title={el.title}
+            overview={el.overview}
+            genres={el.genre_ids}
+            vote_average={el.vote_average}
+            id={el.miscPopularMoviesId}
+            release_date={el.release_date}
+            posterUrl={el.poster_path.url}
+          />
+        ))}
       </CardContainer>
     </>
-  )
-}
-export default Home
+  );
+};
+export default Home;

@@ -1,16 +1,17 @@
-import React from "react"
-import { createGlobalStyle } from "styled-components"
+import React from 'react';
+import { createGlobalStyle } from 'styled-components';
+
 const GlobalStyle = createGlobalStyle`
   body {
-    color: ${props => (props.theme === "purple" ? "purple" : "white")};
+    color: ${props => (props.theme === 'purple' ? 'purple' : 'white')};
     margin: 0;
     background: linear-gradient(to right,#2C3E50, #243B55);
 
   }
-`
+`;
 export default ({ children }) => (
-  <React.Fragment>
+  <>
     <GlobalStyle theme="white" />
     {children}
-  </React.Fragment>
-)
+  </>
+);

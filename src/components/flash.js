@@ -1,29 +1,23 @@
-import React from "react"
-import { Alert, AlertTitle } from "@material-ui/lab"
-import { makeStyles } from "@material-ui/core/styles"
-import styled from "styled-components"
-import Collapse from "@material-ui/core/Collapse"
-import CloseIcon from "@material-ui/icons/Close"
-import IconButton from "@material-ui/core/IconButton"
+import React from 'react';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
-  root: { marginBottom: "24px" },
-})
+  root: { marginBottom: '24px' },
+});
 
 const Container = styled.div`
   width: 50%;
   margin: auto;
-`
-const FlashMessage = ({
-  error,
-  success,
-  hasFile,
-  downloaded,
-  inCollection,
-}) => {
-  const [open, setOpen] = React.useState(true)
+`;
+const FlashMessage = ({ error, success, hasFile, downloaded, inCollection }) => {
+  const [open, setOpen] = React.useState(true);
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <Container>
@@ -61,7 +55,7 @@ const FlashMessage = ({
                 color="inherit"
                 size="small"
                 onClick={() => {
-                  setOpen(false)
+                  setOpen(false);
                 }}
               >
                 <CloseIcon fontSize="inherit" />
@@ -69,12 +63,12 @@ const FlashMessage = ({
             }
           >
             <AlertTitle>Movie is requested</AlertTitle>
-            The movie is awaiting confirmation{" "}
+            The movie is awaiting confirmation{' '}
           </Alert>
         </Collapse>
       )}
     </Container>
-  )
-}
+  );
+};
 
-export default FlashMessage
+export default FlashMessage;

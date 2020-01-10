@@ -1,20 +1,20 @@
-import React from "react"
-import { Link } from "gatsby"
-import { isAuthenticated, login } from "../utils/auth"
-import Layout from "../components/layout"
-import { landing } from "../constants/route"
-import Typography from "@material-ui/core/Typography"
-import styled from "styled-components"
+import React from 'react';
+import { Link } from 'gatsby';
+import Typography from '@material-ui/core/Typography';
+import styled from 'styled-components';
+import { isAuthenticated, login } from '../utils/auth';
+import Layout from '../components/layout';
+import { landing } from '../constants/route';
 
 const StyledLink = styled(Link)`
   color: white;
   margin: 10px;
   text-align: center;
-`
+`;
 export default () => {
   if (!isAuthenticated()) {
-    login()
-    return <p>Redirecting to login...</p>
+    login();
+    return <p>Redirecting to login...</p>;
   }
   return (
     <Layout>
@@ -25,5 +25,5 @@ export default () => {
         <Typography variant="h6">Discover movies</Typography>
       </StyledLink>
     </Layout>
-  )
-}
+  );
+};

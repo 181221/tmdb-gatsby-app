@@ -8,7 +8,7 @@ export const handleRequest = (user, url, setUserData) => {
             id
           }
         }
-      }`
+      }`;
 
   const ql1 = `mutation {
         getToken(
@@ -21,46 +21,46 @@ export const handleRequest = (user, url, setUserData) => {
             movies {id title }
           }
         }
-      }`
+      }`;
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: ql,
     }),
-  }
+  };
   const options_getToken = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: ql1,
     }),
-  }
+  };
   fetch(url, options)
     .then(res => {
       if (res.ok) {
-        return res.json()
+        return res.json();
       }
-      return Promise.reject(Error(res.statusText))
+      return Promise.reject(Error(res.statusText));
     })
     .then(json => {
       if (json.errors && json.errors.length > 0) {
-        let error = json.errors[0]
-        if (error.message === "user already exists") {
+        const error = json.errors[0];
+        if (error.message === 'user already exists') {
           fetch(url, options_getToken)
             .then(res => res.json())
-            .then(json => {
-              setUserData(json.data.getToken)
+            .then(j => {
+              setUserData(j.data.getToken);
             })
-            .catch(err => console.error(err))
+            .catch(err => console.error(err));
         }
       } else {
-        setUserData(json.data.getToken)
+        setUserData(json.data.getToken);
       }
     })
-    .catch(err => console.error(err))
-}
+    .catch(err => console.error(err));
+};
