@@ -39,9 +39,22 @@ const MovieContainer = styled.div`
   display: flex;
   margin: auto;
   width: 50%;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+  }
+  @media (max-width: 1100px) {
+    width: 80%;
+  }
 `;
 const Left = styled.div`
   margin-right: 20px;
+  @media (max-width: 768px) {
+    align-self: center;
+    margin: 0;
+  }
 `;
 const Right = styled.div`
   display: flex;
@@ -55,6 +68,9 @@ const ReturnDiv = styled.div`
   margin: auto;
   width: 50%;
   margin-bottom: 24px;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
 `;
 const StyledLink = styled(Link)`
   color: white;

@@ -13,6 +13,9 @@ const useStyles = makeStyles({
 const Container = styled.div`
   width: 50%;
   margin: auto;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
 `;
 const FlashMessage = ({ error, success, hasFile, downloaded, inCollection }) => {
   const [open, setOpen] = React.useState(true);
