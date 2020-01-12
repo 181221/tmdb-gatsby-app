@@ -98,18 +98,20 @@ const Movie = ({ location, user, collection }) => {
   const [hasFile, setHasFile] = useState(undefined);
   const [error, setError] = useState(undefined);
   useEffect(() => {
-    collection.map(el => {
-      if (movie.id === el.tmdbId) {
-        setInCollection(true);
-      }
-      if (el.hasFile) {
-        setHasFile(true);
-      }
-      if (el.downloaded) {
-        setDownloaded(true);
-      }
-      return true;
-    });
+    // eslint-disable-next-line no-unused-expressions
+    collection &&
+      collection.map(el => {
+        if (movie.id === el.tmdbId) {
+          setInCollection(true);
+        }
+        if (el.hasFile) {
+          setHasFile(true);
+        }
+        if (el.downloaded) {
+          setDownloaded(true);
+        }
+        return true;
+      });
     if (!state.id) {
       const regex = /account\/movie\/[0-9]*/gm;
       const location_id = location.pathname.match(regex)[0].match(/[0-9]+/)[0];
@@ -212,7 +214,6 @@ const Movie = ({ location, user, collection }) => {
       })
       .then(json => {
         setLoading(false);
-        console.log('json');
         return json;
       })
       .catch(err => {

@@ -18,9 +18,13 @@ class SessionCheck extends React.Component {
 
   handleCheckSession = () => {
     this.setState({ loading: false });
-    if (this.props.location.pathname === '/callback/') {
+    if (
+      this.props.location.pathname === '/callback/' ||
+      this.props.location.pathname === '/callback'
+    ) {
       navigate(landing);
     }
+    console.log(this.props);
     navigate(this.props.location.pathname);
   };
 

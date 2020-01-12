@@ -132,7 +132,7 @@ const SearchBar = () => {
   } = useSuggestion('', ['']);
 
   const inputProps = {
-    placeholder: 'Type a movie',
+    placeholder: 'Type a movie..',
     value,
     onChange,
   };
