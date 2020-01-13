@@ -12,15 +12,8 @@ import Similar from '../components/movie/similar';
 
 import { gen } from '../components/movie/card';
 
-import {
-  radarr_url,
-  pushover_endpoint,
-  prisma_endpoint,
-  img_tmdb,
-  landing,
-  tmdb_endpoint,
-} from '../constants/route';
-
+import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
+import { createOptions, handlePushoverRequest } from '../utils/movieHelper';
 import FlashMessage from '../components/flash';
 
 const Wrapper = styled.div`
@@ -109,24 +102,6 @@ const useStyles = makeStyles({
     },
   },
 });
-const handlePushoverRequest = async (message, title = 'New Movie Request') => {
-  const obj = {
-    title,
-    message,
-    token: process.env.PUSHOVER_TOKEN,
-    user: process.env.PUSHOVER_USER_KEY,
-  };
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(obj),
-  };
-
-  const response = await fetch(pushover_endpoint, options);
-  await response.json();
-};
 
 const Movie = ({ location, user, collection }) => {
   const classes = useStyles();
@@ -161,7 +136,7 @@ const Movie = ({ location, user, collection }) => {
       const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.API_KEY}`;
       fetch(uri)
         .then(res => res.json())
-        .then(json => {
+        .then(async json => {
           const obj = {
             title: json.title,
             posterUrl: img_tmdb + json.poster_path,
@@ -173,76 +148,29 @@ const Movie = ({ location, user, collection }) => {
             release_date: json.release_date,
           };
           setImgToFetch(img_tmdb + json.poster_path);
-
           state.id = json.id;
           const uri1 = `${tmdb_endpoint}/movie/${location_id}/similar?api_key=${process.env.API_KEY}`;
-          fetch(uri1)
-            .then(res => res.json())
-            .then(j => {
-              obj.similar = j.results;
-              setMovie(obj);
-            });
+          const response = await fetch(uri1);
+          const jsonObj = await response.json();
+          obj.similar = jsonObj.results;
+          setMovie(obj);
         });
     }
     if (state.image_load) {
       setImgToFetch(img_tmdb + state.img);
     }
+    return () => {
+      setInCollection(undefined);
+      setHasFile(undefined);
+      setDownloaded(undefined);
+    };
   }, [collection, movie, movie.id, state.id]);
-  const { title, img, id, overview, genres, vote_average, posterUrl, release_date } = movie;
+  const { title, img, overview, genres, vote_average } = movie;
   const handleMovieRequest = () => {
     const url = prisma_endpoint;
 
     const rightImg = imgToFetch || img.src;
-    const ql = `mutation {
-      createMovie(
-        title: "${title}",
-        img: "${rightImg}",
-        tmdb_id: "${id}",
-        overview: "${overview}",
-        genres: "${genres}",
-        release_date: "${release_date}",
-        vote_average: "${vote_average}"
-      ) {
-        title
-        img
-        tmdb_id
-        genres
-        release_date
-        vote_average
-        overview
-      }
-    }`;
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify({
-        query: ql,
-      }),
-    };
-    const obj = {
-      title,
-      qualityProfileId: 3,
-      titleSlug: `${title.replace(' ', '-').toLowerCase()}-${id}`,
-      images: [
-        {
-          coverType: 'poster',
-          url: posterUrl || rightImg,
-        },
-      ],
-      tmdbId: id,
-      year: Number(new Date(release_date).getFullYear()),
-      rootFolderPath: process.env.RADARR_ROOT_FOLDER_PATH,
-    };
-    const options1 = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(obj),
-      method: 'POST',
-    };
+    const { options, options1 } = createOptions(movie, rightImg, user);
 
     const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
     setLoading(true);

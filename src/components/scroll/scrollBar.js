@@ -19,7 +19,7 @@ const ImageFetch = styled.img`
   width: 200px;
   height: 280px;
   margin: 12px 12px;
-  display: ${props => props.loading && 'none'};
+  display: ${props => (props.loading === 'true' ? 'none' : '')};
 `;
 const ImageLoader = ({ src }) => {
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ const ImageLoader = ({ src }) => {
   };
   return (
     <>
-      <ImageFetch src={src} onLoad={onLoad} loading={loading} />
+      <ImageFetch src={src} onLoad={onLoad} loading={loading.toString()} />
       <SkeletonImg variant="rect" width={210} height={280} loading={loading.toString()} />
     </>
   );
