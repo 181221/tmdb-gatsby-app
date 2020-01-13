@@ -6,11 +6,11 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { img_tmdb, account_movie } from '../constants/route';
+import { img_tmdb, account_movie } from '../../constants/route';
 
 const SkeletonImg = styled(Skeleton)`
   margin: 12px 12px;
-  display: ${props => !props.loading && 'none'};
+  display: ${props => (props.loading === 'true' ? '' : 'none')};
 `;
 const ImageFetch = styled.img`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
@@ -29,20 +29,12 @@ const ImageLoader = ({ src }) => {
   return (
     <>
       <ImageFetch src={src} onLoad={onLoad} loading={loading} />
-      <SkeletonImg variant="rect" width={210} height={280} loading={loading} />
+      <SkeletonImg variant="rect" width={210} height={280} loading={loading.toString()} />
     </>
   );
 };
-
-// One item component
-// selected prop will be passedconst MenuItem = ({text, selected}) => {
-
-// All items component
-// Important! add unique key
 export const Menu = movies => {
   if (movies && movies.length > 0) {
-    console.log('movies', movies.length);
-
     return movies.map(el => {
       return (
         <Link

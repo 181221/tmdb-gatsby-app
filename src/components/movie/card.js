@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'gatsby';
 import Img from 'gatsby-image';
 import { makeStyles } from '@material-ui/core/styles';
-import { account_movie } from '../constants/route';
+import { account_movie } from '../../constants/route';
 
 export const gen = {
   28: 'Action',

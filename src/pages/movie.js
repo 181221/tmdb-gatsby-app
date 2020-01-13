@@ -8,9 +8,9 @@ import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import Similar from '../components/similar';
+import Similar from '../components/movie/similar';
 
-import { gen } from '../components/card';
+import { gen } from '../components/movie/card';
 
 import {
   radarr_url,
@@ -110,7 +110,6 @@ const useStyles = makeStyles({
   },
 });
 const handlePushoverRequest = async (message, title = 'New Movie Request') => {
-  console.log(process.env.PUSHOVER_TOKEN);
   const obj = {
     title,
     message,
@@ -126,8 +125,7 @@ const handlePushoverRequest = async (message, title = 'New Movie Request') => {
   };
 
   const response = await fetch(pushover_endpoint, options);
-  const json = await response.json();
-  console.log(json);
+  await response.json();
 };
 
 const Movie = ({ location, user, collection }) => {
@@ -238,7 +236,6 @@ const Movie = ({ location, user, collection }) => {
       year: Number(new Date(release_date).getFullYear()),
       rootFolderPath: process.env.RADARR_ROOT_FOLDER_PATH,
     };
-    console.log('obj', obj);
     const options1 = {
       headers: {
         'Content-Type': 'application/json',

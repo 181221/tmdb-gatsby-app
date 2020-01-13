@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import ScrollBar from './scrollBar';
+import ScrollBar from '../scroll/scrollBar';
 
 const Container = styled.div`
   width: 80%;

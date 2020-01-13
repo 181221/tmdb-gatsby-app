@@ -25,7 +25,6 @@ class SessionCheck extends React.Component {
     ) {
       navigate(landing);
     }
-    console.log(this.props);
     navigate(this.props.location.pathname);
   };
 

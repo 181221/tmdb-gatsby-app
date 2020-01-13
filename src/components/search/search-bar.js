@@ -29,7 +29,6 @@ const searchAPIDebounced = AwesomeDebouncePromise(handleRequest, 100);
 const getSuggestions = req => {
   const arr = req.results.slice(0, 5).map(el => {
     const date = new Date(el.release_date).getFullYear();
-    console.log('el', el);
     const obj = {
       name: `${el.title} - ${date}`,
       id: el.id,

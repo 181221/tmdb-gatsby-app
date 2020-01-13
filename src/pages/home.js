@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
-import Card from '../components/card';
+import Card from '../components/movie/card';
 import SearchBar from '../components/search/search-bar';
 
 const Heading = styled.div`
@@ -50,7 +50,6 @@ const Home = () => {
   `);
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
-  console.log('nodes', nodes);
   return (
     <>
       <Heading>
