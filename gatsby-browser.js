@@ -3,6 +3,7 @@ import { Location } from '@reach/router';
 import { navigate } from 'gatsby';
 import { silentAuth } from './src/utils/auth';
 import { landing } from './src/constants/route';
+import Layout from './src/components/layout';
 
 class SessionCheck extends React.Component {
   constructor(props) {
@@ -35,8 +36,10 @@ class SessionCheck extends React.Component {
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <Location>
-      {({ location }) => <SessionCheck location={location}>{element}</SessionCheck>}
-    </Location>
+    <Layout>
+      <Location>
+        {({ location }) => <SessionCheck location={location}>{element}</SessionCheck>}
+      </Location>
+    </Layout>
   );
 };

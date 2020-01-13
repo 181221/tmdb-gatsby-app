@@ -6,6 +6,7 @@ const GlobalStyle = createGlobalStyle`
     color: ${props => (props.theme === 'purple' ? 'purple' : 'white')};
     margin: 0;
     background: linear-gradient(to right,#2C3E50, #243B55);
+    
 
   }
 `;

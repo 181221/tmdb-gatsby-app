@@ -1,0 +1,14 @@
+{
+  "name": "tmdb-source-plugin",
+  "version": "1.0.0",
+  "description": "tmdb api calls",
+  "main": "gatsby-node.js",
+  "author": "peder",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "gatsby-source-filesystem": "^2.1.46"
+
+  }
+}

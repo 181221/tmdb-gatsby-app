@@ -20,7 +20,7 @@ const CardContainer = styled.div`
 const Home = () => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
-      allTmdbMiscPopularMovies(sort: { fields: title }, limit: 30) {
+      allTmdbMoviePopular(sort: { fields: title }, limit: 60) {
         nodes {
           title
           vote_average
@@ -28,10 +28,10 @@ const Home = () => {
           original_title
           id
           overview
-          miscPopularMoviesId
           genre_ids
           release_date
-          poster_path {
+          tmdb_id
+          local_poster_path {
             url
             childImageSharp {
               fixed(height: 450, quality: 100) {
@@ -43,7 +43,8 @@ const Home = () => {
       }
     }
   `);
-  const { nodes } = gatsbyRepoData.allTmdbMiscPopularMovies;
+  let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
+  nodes = nodes.filter(el => el.local_poster_path !== null);
   return (
     <>
       <Heading>
@@ -56,14 +57,15 @@ const Home = () => {
         {nodes.map(el => (
           <Card
             key={el.id}
-            img={el.poster_path.childImageSharp.fixed}
+            img={el.local_poster_path.childImageSharp.fixed}
             title={el.title}
             overview={el.overview}
             genres={el.genre_ids}
             vote_average={el.vote_average}
-            id={el.miscPopularMoviesId}
+            id={el.tmdb_id}
             release_date={el.release_date}
-            posterUrl={el.poster_path.url}
+            posterUrl={el.poster_path}
+            similar={el.similar}
           />
         ))}
       </CardContainer>

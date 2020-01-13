@@ -6,7 +6,14 @@ import ButtonAppBar from '../components/navbar/nav';
 import Movie from './movie';
 import Layout from '../components/layout';
 import { handleRequest } from '../utils/handleRequest';
-import { radarr_url, account_movie, landing, prisma_endpoint } from '../constants/route';
+import {
+  radarr_url,
+  account_movie,
+  landing,
+  prisma_endpoint,
+  account_settings,
+} from '../constants/route';
+import Settings from './settings';
 
 const Account = () => {
   const [userData, setUserData] = useState('');
@@ -31,6 +38,7 @@ const Account = () => {
       <ButtonAppBar user={user} />
       <Router>
         <Home path={`${landing}`} user={user} />
+        <Settings path={`${account_settings}`} user={user} />
         <Movie path={`${account_movie}/:movieId`} user={userData} collection={collection} />
       </Router>
     </Layout>

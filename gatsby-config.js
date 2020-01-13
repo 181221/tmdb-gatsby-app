@@ -5,6 +5,13 @@ require('dotenv').config({
 module.exports = {
   plugins: [
     {
+      resolve: 'tmdb-source-plugin',
+      options: {
+        key: 'cfe422613b250f702980a3bbf9e90716',
+        pageNr: 4,
+      },
+    },
+    {
       resolve: 'gatsby-plugin-material-ui',
       options: {
         stylesProvider: {
@@ -18,30 +25,5 @@ module.exports = {
     'gatsby-plugin-styled-components',
     'babel-plugin-styled-components',
     'gatsby-plugin-less',
-    {
-      resolve: 'gatsby-source-tmdb',
-      options: {
-        // apiKey and sessionID are mandatory
-        apiKey: process.env.API_KEY,
-        sessionID: process.env.SESSION_ID,
-        language: 'en-US',
-        timezone: 'Europe/Berlin',
-        reqPerTenSeconds: 36,
-        poster: true,
-        backdrop: false,
-        modules: {
-          account: {
-            activate: false,
-          },
-          tv: {
-            activate: false,
-          },
-          misc: {
-            activate: true,
-            endpoints: [['miscPopularMovies', 3]],
-          },
-        },
-      },
-    },
   ],
 };

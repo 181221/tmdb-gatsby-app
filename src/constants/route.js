@@ -4,3 +4,4 @@ export const img_tmdb = 'http://image.tmdb.org/t/p/original';
 export const tmdb_endpoint = 'https://api.themoviedb.org/3';
 export const landing = '/account/discover/movie';
 export const account_movie = '/account/movie';
+export const account_settings = '/account/settings';
