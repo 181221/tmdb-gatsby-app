@@ -10207,6 +10207,11 @@ react-error-overlay@^3.0.0:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-3.0.0.tgz#c2bc8f4d91f1375b3dad6d75265d51cd5eeaf655"
   integrity sha512-XzgvowFrwDo6TWcpJ/WTiarb9UI6lhA4PMzS7n1joK3sHfBBBOQHUc0U4u57D6DWO9vHv6lVSWx2Q/Ymfyv4hw==
 
+react-horizontal-scrolling-menu@^0.7.5:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/react-horizontal-scrolling-menu/-/react-horizontal-scrolling-menu-0.7.5.tgz#b61d29f5bf644b86fafa500810d3592ff3c101c2"
+  integrity sha512-KKQXsCMj+fp3VCL6jw+YXx7lcEO5Ln3bMAU1js8vB7JSr9St8KgFMQdRfKM0BBuYlR1XCx/XuBAQ8+4RrX3vtg==
+
 react-hot-loader@^4.12.18:
   version "4.12.18"
   resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.18.tgz#a9029e34af2690d76208f9a35189d73c2dfea6a7"
