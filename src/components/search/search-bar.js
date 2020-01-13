@@ -16,7 +16,7 @@ const StyledSpan = styled.span`
 const StyledContainer = styled.div``;
 
 const handleRequest = query => {
-  const uri = `${tmdb_endpoint}/search/movie?query=${query}&api_key=${process.env.API_KEY}`;
+  const uri = `${tmdb_endpoint}/search/movie?query=${query}&api_key=${process.env.TMDB_API_KEY}`;
   const encodedsearch = encodeURI(uri);
   return fetch(encodedsearch)
     .then(res => res.json())

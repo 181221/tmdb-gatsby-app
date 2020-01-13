@@ -133,7 +133,7 @@ const Movie = ({ location, user, collection }) => {
     if (!state.id) {
       const regex = /account\/movie\/[0-9]*/gm;
       const location_id = location.pathname.match(regex)[0].match(/[0-9]+/)[0];
-      const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.API_KEY}`;
+      const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.TMDB_API_KEY}`;
       fetch(uri)
         .then(res => res.json())
         .then(async json => {
@@ -149,7 +149,7 @@ const Movie = ({ location, user, collection }) => {
           };
           setImgToFetch(img_tmdb + json.poster_path);
           state.id = json.id;
-          const uri1 = `${tmdb_endpoint}/movie/${location_id}/similar?api_key=${process.env.API_KEY}`;
+          const uri1 = `${tmdb_endpoint}/movie/${location_id}/similar?api_key=${process.env.TMDB_API_KEY}`;
           const response = await fetch(uri1);
           const jsonObj = await response.json();
           obj.similar = jsonObj.results;

@@ -7,7 +7,7 @@ module.exports = {
     {
       resolve: 'tmdb-source-plugin',
       options: {
-        key: 'cfe422613b250f702980a3bbf9e90716',
+        key: process.env.TMDB_API_KEY,
         pageNr: 1,
       },
     },

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
 import './App.css';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -59,30 +59,18 @@ const Arrow = ({ text, className }) => {
 const ArrowLeft = Arrow({ text: '<', className: 'arrow-prev' });
 const ArrowRight = Arrow({ text: '>', className: 'arrow-next' });
 
-const selected = 'item1';
-
-class ScrollBar extends Component {
-  constructor(props) {
-    super(props);
-    // call it again if items count change
-    this.menuItems = Menu(this.props.movies, selected);
-  }
-
-  render() {
-    // Create menu from items
-    const menu = this.menuItems;
-
-    return (
-      <div className="App">
-        <ScrollMenu
-          data={menu}
-          arrowLeft={ArrowLeft}
-          arrowRight={ArrowRight}
-          wheel={false}
-          dragging={false}
-        />
-      </div>
-    );
-  }
-}
+const ScrollBar = ({ movies }) => {
+  const [menuItems] = useState(Menu(movies));
+  return (
+    <div className="App">
+      <ScrollMenu
+        data={menuItems}
+        arrowLeft={ArrowLeft}
+        arrowRight={ArrowRight}
+        wheel={false}
+        dragging={false}
+      />
+    </div>
+  );
+};
 export default ScrollBar;
