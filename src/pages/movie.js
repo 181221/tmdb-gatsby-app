@@ -12,7 +12,14 @@ import Similar from '../components/similar';
 
 import { gen } from '../components/card';
 
-import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
+import {
+  radarr_url,
+  pushover_endpoint,
+  prisma_endpoint,
+  img_tmdb,
+  landing,
+  tmdb_endpoint,
+} from '../constants/route';
 
 import FlashMessage from '../components/flash';
 
@@ -102,6 +109,26 @@ const useStyles = makeStyles({
     },
   },
 });
+const handlePushoverRequest = async (message, title = 'New Movie Request') => {
+  console.log(process.env.PUSHOVER_TOKEN);
+  const obj = {
+    title,
+    message,
+    token: process.env.PUSHOVER_TOKEN,
+    user: process.env.PUSHOVER_USER_KEY,
+  };
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(obj),
+  };
+
+  const response = await fetch(pushover_endpoint, options);
+  const json = await response.json();
+  console.log(json);
+};
 
 const Movie = ({ location, user, collection }) => {
   const classes = useStyles();
@@ -223,7 +250,7 @@ const Movie = ({ location, user, collection }) => {
     const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
     setLoading(true);
     fetch(url_collection, options1)
-      .then(res => {
+      .then(async res => {
         if (res.ok) {
           setCreated(true);
           setInCollection(true);
@@ -231,6 +258,8 @@ const Movie = ({ location, user, collection }) => {
             .then(response => response.json())
             .then(json => console.log(json))
             .catch(err => console.error(err));
+          const msg = `${user.user.email} \nhas requested the movie:\n${title}`;
+          await handlePushoverRequest(msg);
           setTimeout(() => {
             setCreated(undefined);
           }, 5000);
