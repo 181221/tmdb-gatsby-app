@@ -7,8 +7,9 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
 import { Link } from 'gatsby';
+import Similar from '../components/similar';
+
 import { gen } from '../components/card';
 
 import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
@@ -30,7 +31,7 @@ const ImageFetch = styled.img`
   width: 300px;
   height: 450px;
 `;
-const Image = styled(Img)`
+export const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -113,6 +114,7 @@ const Movie = ({ location, user, collection }) => {
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [error, setError] = useState(undefined);
+
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
     collection &&
@@ -146,14 +148,21 @@ const Movie = ({ location, user, collection }) => {
             release_date: json.release_date,
           };
           setImgToFetch(img_tmdb + json.poster_path);
-          setMovie(obj);
+
+          state.id = json.id;
+          const uri1 = `${tmdb_endpoint}/movie/${location_id}/similar?api_key=${process.env.API_KEY}`;
+          fetch(uri1)
+            .then(res => res.json())
+            .then(j => {
+              obj.similar = j.results;
+              setMovie(obj);
+            });
         });
     }
     if (state.image_load) {
       setImgToFetch(img_tmdb + state.img);
     }
-  }, [collection, movie, movie.id]);
-
+  }, [collection, movie, movie.id, state.id]);
   const { title, img, id, overview, genres, vote_average, posterUrl, release_date } = movie;
   const handleMovieRequest = () => {
     const url = prisma_endpoint;
@@ -312,6 +321,7 @@ const Movie = ({ location, user, collection }) => {
             </Button>
           </Right>
         </MovieContainer>
+        <Similar key={movie.id} movies={movie.similar} />
       </Wrapper>
     </>
   );

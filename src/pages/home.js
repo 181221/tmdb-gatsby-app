@@ -31,6 +31,11 @@ const Home = () => {
           genre_ids
           release_date
           tmdb_id
+          similar {
+            poster_path
+            id
+            title
+          }
           local_poster_path {
             url
             childImageSharp {
@@ -45,6 +50,7 @@ const Home = () => {
   `);
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
+  console.log('nodes', nodes);
   return (
     <>
       <Heading>
