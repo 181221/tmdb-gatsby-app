@@ -4,6 +4,8 @@ import './App.css';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { img_tmdb, account_movie } from '../constants/route';
 
 const SkeletonImg = styled(Skeleton)`
@@ -59,7 +61,7 @@ export const Menu = movies => {
 };
 
 const Arrow = ({ text, className }) => {
-  return <div className={className}>{text}</div>;
+  return <div className={className}>{text === '<' ? <ArrowBackIcon /> : <ArrowForwardIcon />}</div>;
 };
 
 const ArrowLeft = Arrow({ text: '<', className: 'arrow-prev' });

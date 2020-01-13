@@ -15,7 +15,6 @@ const Similar = ({ movies }) => {
   if (movies && movies.length === 0) {
     return <></>;
   }
-  // const [movieList, setMovieList] = useState(movies.slice(0,5))
   return (
     <>
       <Container>

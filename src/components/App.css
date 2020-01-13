@@ -6,10 +6,23 @@
   border: none;
 }
 .menu-wrapper--inner {
-  margin-left: -110px;
+  margin-left: -150px;
+}
+.menu-wrapper {
+  order: 3;
 }
 
 .scroll-menu-arrow {
   padding: 20px;
   cursor: pointer;
+}
+.scroll-menu-arrow:first-child {
+  order: 1;
+}
+.scroll-menu-arrow:nth-child(3) {
+  order: 1;
+}
+.horizontal-menu {
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
