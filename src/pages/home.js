@@ -48,6 +48,7 @@ const Home = () => {
       }
     }
   `);
+
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
   return (

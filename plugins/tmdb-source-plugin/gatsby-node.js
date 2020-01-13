@@ -9,13 +9,11 @@ exports.sourceNodes = async (
   { actions: { createNode }, createContentDigest, store, cache, createNodeId },
   configOptions,
 ) => {
-  // Create nodes here, generally by downloading data
-  // from a remote API.
   if (!configOptions.key) {
     throw new Error('no tmdb api key found');
   }
   delete configOptions.plugins;
-  const processData = async data => {
+  const processData = data => {
     const nodeId = createNodeId(`tmdb-movie-${data.id}`);
     const nodeContent = JSON.stringify(data);
     const nodeData = {
@@ -30,22 +28,7 @@ exports.sourceNodes = async (
         contentDigest: createContentDigest(data),
       },
     };
-    try {
-      const fileNode = await createRemoteFileNode({
-        url: `http://image.tmdb.org/t/p/original${data.poster_path}`, // string that points to the URL of the image
-        parentNodeId: nodeId, // id of the parent node of the fileNode you are going to create
-        createNode, // helper function in gatsby-node to generate the node
-        createNodeId, // helper function in gatsby-node to generate the node id
-        cache, // Gatsby's cache
-        store, // Gatsby's redux store
-      });
-      if (fileNode) {
-        nodeData.local_poster_path___NODE = fileNode.id;
-        createNode(nodeData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    return nodeData;
   };
   const pageNr = configOptions.pageNr ? configOptions.pageNr : 2;
   const promises = [];
@@ -80,9 +63,27 @@ exports.sourceNodes = async (
   data.map(el => {
     datatmdb.push(...el.results);
   });
-  await Promise.all(datatmdb).then(async el => {
-    el.map(async e => {
-      await processData(e);
+
+  return new Promise(res => {
+    datatmdb.map(async el => {
+      const nodeData = processData(el);
+      try {
+        const fileNode = await createRemoteFileNode({
+          url: `http://image.tmdb.org/t/p/original${nodeData.poster_path}`, // string that points to the URL of the image
+          parentNodeId: nodeData.id, // id of the parent node of the fileNode you are going to create
+          createNode, // helper function in gatsby-node to generate the node
+          createNodeId, // helper function in gatsby-node to generate the node id
+          cache, // Gatsby's cache
+          store, // Gatsby's redux store
+        });
+        if (fileNode) {
+          nodeData.local_poster_path___NODE = fileNode.id;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      createNode(nodeData);
+      res(nodeData);
     });
   });
 };
