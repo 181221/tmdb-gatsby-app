@@ -49,6 +49,9 @@ const MovieContainer = styled.div`
   @media (max-width: 1100px) {
     width: 80%;
   }
+  @media (min-width: 1100px) {
+    width: 65%;
+  }
 `;
 const Left = styled.div`
   margin-right: 20px;
@@ -66,8 +69,7 @@ const Overview = styled.div`
   margin-bottom: 24px;
 `;
 const ReturnDiv = styled.div`
-  margin: auto;
-  width: 50%;
+  margin: 0 10%;
   margin-bottom: 24px;
   @media (max-width: 768px) {
     width: 80%;
@@ -82,7 +84,7 @@ const ChipContent = styled.div`
   flex-wrap: wrap;
   display: flex;
   margin-top: 12px;
-  max-width: 250px;
+  margin-bottom: 12px;
 `;
 const useStyles = makeStyles({
   root: {
@@ -223,7 +225,6 @@ const Movie = ({ location, user, collection }) => {
             </StyledLink>
           </Typography>
         </ReturnDiv>
-
         <MovieContainer>
           <Left>
             {img && !imgToFetch && <Image fixed={img} />}
@@ -268,6 +269,7 @@ const Movie = ({ location, user, collection }) => {
               disabled={click}
               color="primary"
               className={`${classes.root} ${click && classes.disabled}`}
+              style={{ maxWidth: '70%' }}
             >
               <Typography variant="body1" component="p">
                 Request Movie

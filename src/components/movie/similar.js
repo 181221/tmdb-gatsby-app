@@ -18,7 +18,7 @@ const Similar = ({ movies }) => {
   return (
     <>
       <Container>
-        <Typography variant="h4" component="h4">
+        <Typography variant="h4" component="h4" style={{ marginTop: '24px' }}>
           Similar movies
         </Typography>
         <MovieContainer>
