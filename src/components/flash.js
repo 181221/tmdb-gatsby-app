@@ -11,8 +11,7 @@ const useStyles = makeStyles({
 });
 
 const Container = styled.div`
-  width: 50%;
-  margin: auto;
+  margin: 0 10%;
   @media (max-width: 768px) {
     width: 80%;
   }

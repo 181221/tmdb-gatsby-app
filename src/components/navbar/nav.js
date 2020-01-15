@@ -18,7 +18,6 @@ const StyledDiv = styled.div``;
 
 export default function ButtonAppBar({ user }) {
   const classes = useStyles();
-
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
@@ -37,6 +36,7 @@ export default function ButtonAppBar({ user }) {
               e.preventDefault();
             }}
             color="inherit"
+            style={{ textDecoration: 'underline' }}
           >
             <Typography variant="body1" component="p">
               Logout

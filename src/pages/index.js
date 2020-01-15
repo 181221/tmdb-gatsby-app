@@ -1,32 +1,18 @@
 import React from 'react';
-import { Link } from 'gatsby';
-import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
 import { isAuthenticated, login, getProfile } from '../utils/auth';
-import { landing } from '../constants/route';
+import Home from './home';
 import ButtonAppBar from '../components/navbar/nav';
 
-const StyledLink = styled(Link)`
-  color: white;
-  margin: 10px;
-  text-align: center;
-`;
 export default () => {
   if (!isAuthenticated()) {
     login();
     return <p>Redirecting to login...</p>;
   }
   const user = getProfile();
-
   return (
     <>
       <ButtonAppBar user={user} />
-      <Typography variant="h4" component="h4" align="center">
-        Landing page
-      </Typography>
-      <StyledLink to={landing}>
-        <Typography variant="h6">Discover movies</Typography>
-      </StyledLink>
+      <Home />
     </>
   );
 };
