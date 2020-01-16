@@ -7,7 +7,12 @@ export const options_getToken = user => {
       user {
         email
         role
-        movies {id title }
+        movies {
+          title
+          downloaded
+          createdAt
+          id
+        }
       }
     }
   }`;

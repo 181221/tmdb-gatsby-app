@@ -3,39 +3,14 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { login, isAuthenticated } from '../../../utils/auth';
 import { prisma_endpoint } from '../../../constants/route';
-import { getOptions } from './requestHelper';
+import { getOptions, handleSimpleRequest } from './requestHelper';
+import formatDate from '../helper';
 
 const Container = styled.div`
   margin: 2% 10%;
   display: flex;
 `;
-const formatDate = date => {
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const dt = new Date(date).toLocaleDateString(navigator.language, options);
-  return dt;
-};
 
-const handleSimpleRequest = async (url, options, user, retry = false) => {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-  const json = await response.json();
-  if (retry) {
-    return json;
-  }
-  if (json.erros && json.errors.length > 0) {
-    if (json.errors[0].message === 'jwt malformed') {
-      const res = await fetch(url, getOptions('GET_TOKEN', user));
-      const data = await res.json();
-      const opt = options;
-      opt.headers.Authorization = `Bearer ${data.data.getToken.token}`;
-      return handleSimpleRequest(url, opt, user, true);
-    }
-    throw new Error(json.errors[0].message);
-  }
-  return json;
-};
 const Request = ({ prismaUser }) => {
   if (!isAuthenticated()) {
     login();

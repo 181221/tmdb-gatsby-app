@@ -29,6 +29,17 @@ const getQuery = (query, user, limit) => {
           }
         }`;
       break;
+    case 'MY_REQUESTED_MOVIES':
+      ql = `query{
+        user(email: "${user.email}"){
+          movies{
+            title 
+            downloaded
+            createdAt 
+          }
+        }
+      }`;
+      break;
     case 'GET_TOKEN':
       ql = `mutation {
             getToken(
@@ -61,4 +72,26 @@ export const getOptions = (user, ql, limit = 10) => {
     }),
   };
   return options;
+};
+
+export const handleSimpleRequest = async (url, options, user, retry = false) => {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  const json = await response.json();
+  if (retry) {
+    return json;
+  }
+  if (json.erros && json.errors.length > 0) {
+    if (json.errors[0].message === 'jwt malformed') {
+      const res = await fetch(url, getOptions('GET_TOKEN', user));
+      const data = await res.json();
+      const opt = options;
+      opt.headers.Authorization = `Bearer ${data.data.getToken.token}`;
+      return handleSimpleRequest(url, opt, user, true);
+    }
+    throw new Error(json.errors[0].message);
+  }
+  return json;
 };
