@@ -12,6 +12,8 @@ const getQuery = (query, user, limit) => {
               genres
               vote_average
               overview
+              downloaded
+              createdAt
             }
           }
         }`;
@@ -26,6 +28,7 @@ const getQuery = (query, user, limit) => {
             genres
             vote_average
             overview
+            downloaded
           }
         }`;
       break;
