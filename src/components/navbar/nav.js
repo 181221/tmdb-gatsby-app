@@ -18,7 +18,6 @@ const StyledDiv = styled.div``;
 
 export default function ButtonAppBar({ user, admin }) {
   const classes = useStyles();
-  console.log('admin');
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
