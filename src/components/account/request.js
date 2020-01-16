@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import Typography from '@material-ui/core/Typography';
+import styled from 'styled-components';
 import { login, isAuthenticated } from '../../utils/auth';
 import { options_getToken } from '../../utils/handleRequest';
 import { prisma_endpoint } from '../../constants/route';
+
+const Container = styled.div`
+  margin: 2% 10%;
+`;
 
 const handleSimpleRequest = async (url, options, user, retry = false) => {
   const response = await fetch(url, options);
@@ -63,22 +69,36 @@ const Request = ({ prismaUser }) => {
   }
   if (prismaUser && prismaUser.user.role === 'ADMIN') {
     return (
-      <div>
-        Hello admin {prismaUser.user.name}
+      <Container>
+        <Typography style={{ marginBottom: '8px' }} variant="h6" component="h6" align="left">
+          All requested movies
+        </Typography>
         <div>
           {userMovieData &&
             userMovieData.data.users.map(user => {
               return (
                 <div key={user.email}>
-                  <h4>{user.email}</h4>
+                  <Typography
+                    style={{ marginBottom: '8px' }}
+                    variant="h6"
+                    component="h6"
+                    align="left"
+                  >
+                    {user.email}
+                  </Typography>
                   {user.movies.map(el => {
-                    return <li key={el.tmdb_id}>{el.title}</li>;
+                    return (
+                      <Typography variant="body1" component="p" align="left">
+                        <li key={el.tmdb_id}>{el.title}</li>
+                      </Typography>
+                    );
                   })}
+                  <br />
                 </div>
               );
             })}
         </div>
-      </div>
+      </Container>
     );
   }
   return <div />;

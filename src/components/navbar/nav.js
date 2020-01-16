@@ -26,7 +26,7 @@ export default function ButtonAppBar({ user, admin }) {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          {admin.role === 'ADMIN' && (
+          {admin && admin.role === 'ADMIN' && (
             <StyledLink to={account_request}>
               <Typography variant="h6">Requested</Typography>
             </StyledLink>
