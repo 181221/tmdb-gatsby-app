@@ -60,11 +60,10 @@ const ArrowLeft = Arrow({ text: '<', className: 'arrow-prev' });
 const ArrowRight = Arrow({ text: '>', className: 'arrow-next' });
 
 const ScrollBar = ({ movies }) => {
-  const [menuItems] = useState(Menu(movies));
   return (
     <div className="App">
       <ScrollMenu
-        data={menuItems}
+        data={Menu(movies)}
         arrowLeft={ArrowLeft}
         arrowRight={ArrowRight}
         wheel={false}

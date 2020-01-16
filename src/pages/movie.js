@@ -104,6 +104,22 @@ const useStyles = makeStyles({
     },
   },
 });
+const getUrl = ({ pathname }, similarEndPoint = false) => {
+  const regex = /account\/movie\/[0-9]*/gm;
+  const location_id = pathname.match(regex)[0].match(/[0-9]+/)[0];
+  const similar = similarEndPoint ? '/similar' : '';
+  const url = `${tmdb_endpoint}/movie/${location_id}${similar}?api_key=${process.env.TMDB_API_KEY}`;
+  return url;
+};
+
+const handleRequest = async (url, options = { method: 'GET' }) => {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+  const json = await res.json();
+  return json;
+};
 
 const Movie = ({ location, user, collection }) => {
   const classes = useStyles();
@@ -116,6 +132,7 @@ const Movie = ({ location, user, collection }) => {
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [error, setError] = useState(undefined);
+  const [hasSimilar, setHasSimilar] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -132,31 +149,32 @@ const Movie = ({ location, user, collection }) => {
         }
         return true;
       });
+    if (!state.similar && !hasSimilar) {
+      handleRequest(getUrl(location, true)).then(data => {
+        setHasSimilar(true);
+        setMovie({ ...movie, similar: data.results });
+      });
+    }
+
     if (!state.id) {
-      const regex = /account\/movie\/[0-9]*/gm;
-      const location_id = location.pathname.match(regex)[0].match(/[0-9]+/)[0];
-      const uri = `${tmdb_endpoint}/movie/${location_id}?api_key=${process.env.TMDB_API_KEY}`;
-      fetch(uri)
-        .then(res => res.json())
-        .then(async json => {
-          const obj = {
-            title: json.title,
-            posterUrl: img_tmdb + json.poster_path,
-            img: img_tmdb + json.poster_path,
-            id: json.id,
-            overview: json.overview,
-            genres: json.genres.map(el => el.id),
-            vote_average: json.vote_average,
-            release_date: json.release_date,
-          };
-          setImgToFetch(img_tmdb + json.poster_path);
-          state.id = json.id;
-          const uri1 = `${tmdb_endpoint}/movie/${location_id}/similar?api_key=${process.env.TMDB_API_KEY}`;
-          const response = await fetch(uri1);
-          const jsonObj = await response.json();
-          obj.similar = jsonObj.results;
+      handleRequest(getUrl(location)).then(json => {
+        const obj = {
+          title: json.title,
+          posterUrl: img_tmdb + json.poster_path,
+          img: img_tmdb + json.poster_path,
+          id: json.id,
+          overview: json.overview,
+          genres: json.genres.map(el => el.id),
+          vote_average: json.vote_average,
+          release_date: json.release_date,
+        };
+        setImgToFetch(img_tmdb + json.poster_path);
+        state.id = json.id;
+        handleRequest(getUrl(location, true)).then(data => {
+          obj.similar = data.results;
           setMovie(obj);
         });
+      });
     }
     if (state.image_load) {
       setImgToFetch(img_tmdb + state.img);
@@ -169,33 +187,20 @@ const Movie = ({ location, user, collection }) => {
   }, [collection, movie, movie.id, state.id]);
   const { title, img, overview, genres, vote_average } = movie;
   const handleMovieRequest = () => {
-    const url = prisma_endpoint;
-
     const rightImg = imgToFetch || img.src;
     const { options, options1 } = createOptions(movie, rightImg, user);
-
     const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
     setLoading(true);
-    fetch(url_collection, options1)
-      .then(async res => {
-        if (res.ok) {
-          setCreated(true);
-          setInCollection(true);
-          fetch(url, options)
-            .then(response => response.json())
-            .then(json => console.log(json))
-            .catch(err => console.error(err));
-          const msg = `${user.user.email} \nhas requested the movie:\n${title}`;
-          await handlePushoverRequest(msg);
-          setTimeout(() => {
-            setCreated(undefined);
-          }, 5000);
-        }
-        return res.json();
-      })
-      .then(json => {
-        setLoading(false);
-        return json;
+    handleRequest(url_collection, options1)
+      .then(() => {
+        setCreated(true);
+        setInCollection(true);
+        handleRequest(prisma_endpoint, options);
+        const msg = `${user.user.email} \nhas requested the movie:\n${title}`;
+        handlePushoverRequest(msg);
+        setTimeout(() => {
+          setCreated(undefined);
+        }, 5000);
       })
       .catch(err => {
         console.error(err);
