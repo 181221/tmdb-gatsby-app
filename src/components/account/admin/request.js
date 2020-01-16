@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { login, isAuthenticated } from '../../utils/auth';
-import { prisma_endpoint } from '../../constants/route';
+import { login, isAuthenticated } from '../../../utils/auth';
+import { prisma_endpoint } from '../../../constants/route';
 import { getOptions } from './requestHelper';
 
 const Container = styled.div`

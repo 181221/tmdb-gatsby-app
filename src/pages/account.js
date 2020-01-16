@@ -5,8 +5,9 @@ import Home from './home';
 import ButtonAppBar from '../components/navbar/nav';
 import Movie from './movie';
 import Layout from '../components/layout';
-import Request from '../components/account/request';
+import Request from '../components/account/admin/request';
 import { handleRequest } from '../utils/handleRequest';
+import MyRequestedMovies from '../components/account/user/myRequestedMovies';
 import {
   radarr_url,
   account_movie,
@@ -14,6 +15,7 @@ import {
   prisma_endpoint,
   account_settings,
   account_request,
+  account_admin_request,
 } from '../constants/route';
 import Settings from './settings';
 
@@ -42,7 +44,8 @@ const Account = () => {
         <Home path={`${landing}`} user={user} />
         <Settings path={`${account_settings}`} user={user} />
         <Movie path={`${account_movie}/:movieId`} user={userData} collection={collection} />
-        <Request path={account_request} prismaUser={userData} />
+        <Request path={account_admin_request} prismaUser={userData} />
+        <MyRequestedMovies path={account_request} prismaUser={userData} />
       </Router>
     </Layout>
   );

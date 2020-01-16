@@ -7,7 +7,7 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { logout } from '../../utils/auth';
 import { useStyles } from './styles';
-import { landing, account_request } from '../../constants/route';
+import { landing, account_admin_request, account_request } from '../../constants/route';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -26,8 +26,13 @@ export default function ButtonAppBar({ user, admin }) {
             <Typography variant="h6">Home</Typography>
           </StyledLink>
           {admin && admin.role === 'ADMIN' && (
-            <StyledLink to={account_request}>
+            <StyledLink to={account_admin_request}>
               <Typography variant="h6">Requested</Typography>
+            </StyledLink>
+          )}
+          {admin && admin.role === 'CUSTOMER' && (
+            <StyledLink to={account_request}>
+              <Typography variant="h6">My Requests</Typography>
             </StyledLink>
           )}
           <div className={classes.title} />
