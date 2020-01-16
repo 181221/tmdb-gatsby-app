@@ -1,3 +1,28 @@
+export const options_getToken = user => {
+  const ql1 = `mutation {
+    getToken(
+      email: "${user.email}"
+    ) {
+      token
+      user {
+        email
+        role
+        movies {id title }
+      }
+    }
+  }`;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: ql1,
+    }),
+  };
+  return options;
+};
+
 export const handleRequest = (user, url, setUserData) => {
   const ql = `mutation {
         createToken(
@@ -9,19 +34,6 @@ export const handleRequest = (user, url, setUserData) => {
           }
         }
       }`;
-
-  const ql1 = `mutation {
-        getToken(
-          email: "${user.email}"
-        ) {
-          token
-          user {
-            email
-            role
-            movies {id title }
-          }
-        }
-      }`;
   const options = {
     method: 'POST',
     headers: {
@@ -29,15 +41,6 @@ export const handleRequest = (user, url, setUserData) => {
     },
     body: JSON.stringify({
       query: ql,
-    }),
-  };
-  const options_getToken = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: ql1,
     }),
   };
   fetch(url, options)
@@ -51,7 +54,7 @@ export const handleRequest = (user, url, setUserData) => {
       if (json.errors && json.errors.length > 0) {
         const error = json.errors[0];
         if (error.message === 'user already exists') {
-          fetch(url, options_getToken)
+          fetch(url, options_getToken(user))
             .then(res => res.json())
             .then(j => {
               setUserData(j.data.getToken);

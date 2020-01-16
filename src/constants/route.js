@@ -5,4 +5,5 @@ export const tmdb_endpoint = 'https://api.themoviedb.org/3';
 export const landing = '/account/discover/movie';
 export const account_movie = '/account/movie';
 export const account_settings = '/account/settings';
+export const account_request = '/account/request';
 export const pushover_endpoint = 'https://api.pushover.net/1/messages.json';
