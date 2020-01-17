@@ -182,6 +182,7 @@ const Movie = ({ location, user, collection }) => {
     return () => {
       setInCollection(undefined);
       setHasFile(undefined);
+      setLoading(undefined);
       setDownloaded(undefined);
     };
   }, [collection, movie, movie.id, state.id]);
@@ -210,6 +211,7 @@ const Movie = ({ location, user, collection }) => {
         }, 5000);
       });
   };
+  console.log(created);
   const click = error || loading || created || downloaded || inCollection || hasFile;
 
   return (
