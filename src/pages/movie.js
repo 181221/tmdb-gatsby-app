@@ -13,6 +13,7 @@ import { gen } from '../components/movie/card';
 import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
 import { createOptions, handlePushoverRequest } from '../utils/movieHelper';
 import FlashMessage from '../components/flash';
+import ImageLoader from '../components/img';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -257,7 +258,7 @@ const Movie = ({ location, user, collection }) => {
           <MovieContainer>
             <Left>
               {img && !imgToFetch && <Image fixed={img} />}
-              {imgToFetch && <ImageFetch src={imgToFetch} />}
+              {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
             </Left>
             <Right>
               <div style={{ paddingLeft: '10px' }}>

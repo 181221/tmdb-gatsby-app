@@ -1,38 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
 import './App.css';
-import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'gatsby';
-import styled from 'styled-components';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { img_tmdb, account_movie } from '../../constants/route';
+import ImageLoader from '../img';
 
-const SkeletonImg = styled(Skeleton)`
-  margin: 12px 12px;
-  display: ${props => (props.loading === 'true' ? '' : 'none')};
-`;
-const ImageFetch = styled.img`
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  width: 200px;
-  height: 280px;
-  margin: 12px 12px;
-  display: ${props => (props.loading === 'true' ? 'none' : '')};
-`;
-const ImageLoader = ({ src }) => {
-  const [loading, setLoading] = useState(true);
-  const onLoad = () => {
-    setLoading(false);
-  };
-  return (
-    <>
-      <ImageFetch src={src} onLoad={onLoad} loading={loading.toString()} />
-      <SkeletonImg variant="rect" width={210} height={280} loading={loading.toString()} />
-    </>
-  );
-};
 export const Menu = movies => {
   if (movies && movies.length > 0) {
     return movies.map(el => {
