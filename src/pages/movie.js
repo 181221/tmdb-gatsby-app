@@ -140,7 +140,7 @@ const FetchAllMovieData = (locationId, setMovie, setImgToFetch) => {
     .catch(err => console.error(err));
 };
 
-const Movie = ({ location, user, collection }) => {
+const Movie = ({ location, user }) => {
   const classes = useStyles();
   const [locationId, setLocationId] = useState(getLocationId(location));
   const [error, setError] = useState(undefined);
@@ -149,7 +149,6 @@ const Movie = ({ location, user, collection }) => {
   const { state = {} } = location;
   const [fetchMovie, setFetchMovie] = useState(false);
   const [created, setCreated] = useState(undefined);
-
   const [loading, setLoading] = useState(undefined);
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
@@ -168,6 +167,13 @@ const Movie = ({ location, user, collection }) => {
       } else {
         setFetchMovie(Object.keys(state).length === 1 && getLocationId(location));
       }
+
+      if (state.fetchSimilar) {
+        handleRequest(getUrl(locationId, true)).then(data => {
+          state.similar = data.results;
+          setMovie({ ...state });
+        });
+      }
     }
     if (fetchMovie) {
       FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch);
@@ -175,19 +181,26 @@ const Movie = ({ location, user, collection }) => {
     if (!error && !movie) {
       setMovie(state);
     }
-    if (!error && collection && movie) {
-      collection.map(el => {
-        if (movie.id === el.tmdbId) {
-          setInCollection(true);
-        }
-        if (el.hasFile) {
-          setHasFile(true);
-        }
-        if (el.downloaded) {
-          setDownloaded(true);
-        }
-        return true;
-      });
+    if (!error) {
+      const collectionCheck = movie || state;
+      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
+      fetch(url_collection)
+        .then(res => res.json())
+        .then(json => {
+          json.map(el => {
+            if (collectionCheck.id === el.tmdbId) {
+              setInCollection(true);
+            }
+            if (el.hasFile) {
+              setHasFile(true);
+            }
+            if (el.downloaded) {
+              setDownloaded(true);
+            }
+            return true;
+          });
+        })
+        .catch(err => console.error(err));
     }
     return () => {
       setInCollection(undefined);
@@ -202,6 +215,7 @@ const Movie = ({ location, user, collection }) => {
   if (error) {
     return <div>error</div>;
   }
+
   if (movie) {
     const { title, img, overview, genres, vote_average } = movie;
     const handleMovieRequest = () => {
@@ -218,7 +232,8 @@ const Movie = ({ location, user, collection }) => {
           handlePushoverRequest(msg);
           setTimeout(() => {
             setCreated(undefined);
-          }, 5000);
+            setInCollection(undefined);
+          }, 2000);
         })
         .catch(err => {
           console.error(err);
@@ -251,6 +266,9 @@ const Movie = ({ location, user, collection }) => {
             <Left>
               {img && img.src && <Image fixed={img} />}
               {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
+              {!imgToFetch && img && !img.src && (
+                <ImageLoader src={img} width="300px" height="450px" />
+              )}
             </Left>
             <Right>
               <div style={{ paddingLeft: '10px' }}>
