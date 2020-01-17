@@ -16,7 +16,7 @@ const StyledLink = styled(Link)`
 `;
 const StyledDiv = styled.div``;
 
-export default function ButtonAppBar({ user, admin }) {
+export default function ButtonAppBar({ user }) {
   const classes = useStyles();
   return (
     <StyledDiv className={classes.root}>
@@ -25,12 +25,12 @@ export default function ButtonAppBar({ user, admin }) {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          {admin && admin.role === 'ADMIN' && (
+          {user.role === 'ADMIN' && (
             <StyledLink to={account_admin_request}>
               <Typography variant="h6">Requested</Typography>
             </StyledLink>
           )}
-          {admin && admin.role === 'CUSTOMER' && (
+          {user.role === 'CUSTOMER' && (
             <StyledLink to={account_request}>
               <Typography variant="h6">My Requests</Typography>
             </StyledLink>

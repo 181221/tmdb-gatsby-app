@@ -1,5 +1,7 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
+import { handleRequest } from './handleRequest';
+import { prisma_endpoint } from '../constants/route';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -20,6 +22,12 @@ const tokens = {
 };
 
 let user = {};
+
+const setUserData = data => {
+  user.token = data.token;
+  user.role = data.user.role;
+  user.movies = data.user.movies;
+};
 
 export const isAuthenticated = () => {
   if (!isBrowser) {
@@ -49,6 +57,8 @@ const setSession = (cb = () => {}) => (err, authResult) => {
     tokens.idToken = authResult.idToken;
     tokens.expiresAt = expiresAt;
     user = authResult.idTokenPayload;
+    handleRequest(user, prisma_endpoint, setUserData);
+    console.log('user', user);
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('user', user);
     cb();

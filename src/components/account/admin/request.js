@@ -17,7 +17,7 @@ function createData(title, downloaded, createdAt, id) {
   return { title, downloaded, createdAt, id };
 }
 
-const Request = ({ prismaUser }) => {
+const Request = ({ user }) => {
   if (!isAuthenticated()) {
     login();
     return <p>Redirecting to login...</p>;
@@ -26,13 +26,13 @@ const Request = ({ prismaUser }) => {
   const [newlyRequested, setNewlyRequested] = useState(undefined);
   const [, setRowsUser] = useState(undefined);
   useEffect(() => {
-    if (prismaUser) {
-      const options = getOptions(prismaUser, 'ALL_MOVIES');
-      const newlyRequestOptions = getOptions(prismaUser, 'NEWLY_REQUESTED', 10);
-      handleSimpleRequest(prisma_endpoint, options, prismaUser.user).then(data => {
+    if (user) {
+      const options = getOptions(user, 'ALL_MOVIES');
+      const newlyRequestOptions = getOptions(user, 'NEWLY_REQUESTED', 10);
+      handleSimpleRequest(prisma_endpoint, options, user).then(data => {
         setRowsUser(
-          data.data.users.map(user => {
-            return user.movies.map(movie => {
+          data.data.users.map(prismaUser => {
+            return prismaUser.movies.map(movie => {
               return createData(
                 movie.title,
                 movie.downloaded.toString(),
@@ -44,7 +44,7 @@ const Request = ({ prismaUser }) => {
         );
         setUserMovieData(data);
       });
-      handleSimpleRequest(prisma_endpoint, newlyRequestOptions, prismaUser.user).then(data => {
+      handleSimpleRequest(prisma_endpoint, newlyRequestOptions, user).then(data => {
         setNewlyRequested(
           data.data.movies.map(movie => {
             return createData(
@@ -57,9 +57,9 @@ const Request = ({ prismaUser }) => {
         );
       });
     }
-  }, [prismaUser, prismaUser.user, setUserMovieData]);
+  }, [user, setUserMovieData]);
 
-  if (prismaUser && prismaUser.user.role === 'ADMIN') {
+  if (user && user.role === 'ADMIN') {
     return (
       <Container>
         <div>

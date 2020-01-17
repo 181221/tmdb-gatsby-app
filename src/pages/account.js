@@ -6,13 +6,11 @@ import ButtonAppBar from '../components/navbar/nav';
 import Movie from './movie';
 import Layout from '../components/layout';
 import Request from '../components/account/admin/request';
-import { handleRequest } from '../utils/handleRequest';
 import MyRequestedMovies from '../components/account/user/myRequestedMovies';
 import {
   radarr_url,
   account_movie,
   landing,
-  prisma_endpoint,
   account_settings,
   account_request,
   account_admin_request,
@@ -20,11 +18,9 @@ import {
 import Settings from './settings';
 
 const Account = () => {
-  const [userData, setUserData] = useState('');
   const [collection, setCollection] = useState(undefined);
   const user = getProfile();
   useEffect(() => {
-    handleRequest(user, prisma_endpoint, setUserData);
     const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
     fetch(url_collection)
       .then(res => res.json())
@@ -39,13 +35,13 @@ const Account = () => {
   }
   return (
     <Layout>
-      <ButtonAppBar user={user} admin={userData.user} />
+      <ButtonAppBar user={user} />
       <Router>
         <Home path={`${landing}`} user={user} />
         <Settings path={`${account_settings}`} user={user} />
-        <Movie path={`${account_movie}/:movieId`} user={userData} collection={collection} />
-        <Request path={account_admin_request} prismaUser={userData} />
-        <MyRequestedMovies path={account_request} prismaUser={userData} />
+        <Movie path={`${account_movie}/:movieId`} user={user} collection={collection} />
+        <Request path={account_admin_request} user={user} />
+        <MyRequestedMovies path={account_request} user={user} />
       </Router>
     </Layout>
   );

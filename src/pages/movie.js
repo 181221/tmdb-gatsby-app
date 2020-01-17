@@ -197,7 +197,7 @@ const Movie = ({ location, user, collection }) => {
         setCreated(true);
         setInCollection(true);
         handleRequest(prisma_endpoint, options);
-        const msg = `${user.user.email} \nhas requested the movie:\n${title}`;
+        const msg = `${user.email} \nhas requested the movie:\n${title}`;
         handlePushoverRequest(msg);
         setTimeout(() => {
           setCreated(undefined);

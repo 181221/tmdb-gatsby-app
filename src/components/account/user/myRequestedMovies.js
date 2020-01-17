@@ -13,13 +13,12 @@ function createData(title, downloaded, createdAt, id) {
   return { title, downloaded, createdAt, id };
 }
 
-const MyRequestedMovies = ({ prismaUser }) => {
+const MyRequestedMovies = ({ user }) => {
   const [rows, setRows] = useState(undefined);
-  console.log(prismaUser);
   useEffect(() => {
-    if (prismaUser) {
+    if (user) {
       setRows(
-        prismaUser.user.movies.map(movie => {
+        user.movies.map(movie => {
           return createData(
             movie.title,
             movie.downloaded.toString(),
@@ -29,7 +28,7 @@ const MyRequestedMovies = ({ prismaUser }) => {
         }),
       );
     }
-  }, [prismaUser]);
+  }, [user]);
 
   return (
     <Container>
