@@ -9,9 +9,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
 import Similar from '../components/movie/similar';
-
 import { gen } from '../components/movie/card';
-
 import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
 import { createOptions, handlePushoverRequest } from '../utils/movieHelper';
 import FlashMessage from '../components/flash';
@@ -104,11 +102,18 @@ const useStyles = makeStyles({
     },
   },
 });
-const getUrl = ({ pathname }, similarEndPoint = false) => {
-  const regex = /account\/movie\/[0-9]*/gm;
-  const location_id = pathname.match(regex)[0].match(/[0-9]+/)[0];
+
+const getLocationId = ({ pathname }) => {
+  const regex = /account\/movie\/[0-9]+/gm;
+  const location_id = pathname.match(regex);
+  if (location_id) {
+    return location_id[0].match(/[0-9]+/)[0];
+  }
+  return false;
+};
+const getUrl = (locationId, similarEndPoint = false) => {
   const similar = similarEndPoint ? '/similar' : '';
-  const url = `${tmdb_endpoint}/movie/${location_id}${similar}?api_key=${process.env.TMDB_API_KEY}`;
+  const url = `${tmdb_endpoint}/movie/${locationId}${similar}?api_key=${process.env.TMDB_API_KEY}`;
   return url;
 };
 
@@ -120,23 +125,65 @@ const handleRequest = async (url, options = { method: 'GET' }) => {
   const json = await res.json();
   return json;
 };
+const FetchAllMovieData = (locationId, setMovie, setImgToFetch) => {
+  handleRequest(getUrl(locationId))
+    .then(json => {
+      const obj = {
+        title: json.title,
+        posterUrl: img_tmdb + json.poster_path,
+        img: img_tmdb + json.poster_path,
+        id: json.id,
+        overview: json.overview,
+        genres: json.genres.map(el => el.id),
+        vote_average: json.vote_average,
+        release_date: json.release_date,
+      };
+      setImgToFetch(img_tmdb + json.poster_path);
+      handleRequest(getUrl(locationId, true)).then(data => {
+        obj.similar = data.results;
+        console.log('setting movie', obj);
+        setMovie(obj);
+      });
+    })
+    .catch(err => console.error(err));
+};
 
 const Movie = ({ location, user, collection }) => {
   const classes = useStyles();
-  const { state = {} } = location;
-  const [movie, setMovie] = useState(state);
+  const [locationId, setLocationId] = useState(getLocationId(location));
+  const [error, setError] = useState(undefined);
   const [imgToFetch, setImgToFetch] = useState(false);
-  const [loading, setLoading] = useState(undefined);
+  const [movie, setMovie] = useState(undefined);
+  const { state = {} } = location;
+  const [fetchMovie, setFetchMovie] = useState(false);
   const [created, setCreated] = useState(undefined);
+
+  const [loading, setLoading] = useState(undefined);
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
-  const [error, setError] = useState(undefined);
-  const [hasSimilar, setHasSimilar] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    collection &&
+    if (!locationId) {
+      setError(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state) {
+      if (state.fetchAll) {
+        setFetchMovie(true);
+      } else {
+        setFetchMovie(Object.keys(state).length === 1 && getLocationId(location));
+      }
+    }
+    if (fetchMovie) {
+      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch);
+    }
+    if (!error && !movie) {
+      setMovie(state);
+    }
+    if (!error && collection && movie) {
       collection.map(el => {
         if (movie.id === el.tmdbId) {
           setInCollection(true);
@@ -149,145 +196,122 @@ const Movie = ({ location, user, collection }) => {
         }
         return true;
       });
-    if (!state.similar && !hasSimilar) {
-      handleRequest(getUrl(location, true)).then(data => {
-        setHasSimilar(true);
-        setMovie({ ...movie, similar: data.results });
-      });
-    }
-
-    if (!state.id) {
-      handleRequest(getUrl(location)).then(json => {
-        const obj = {
-          title: json.title,
-          posterUrl: img_tmdb + json.poster_path,
-          img: img_tmdb + json.poster_path,
-          id: json.id,
-          overview: json.overview,
-          genres: json.genres.map(el => el.id),
-          vote_average: json.vote_average,
-          release_date: json.release_date,
-        };
-        setImgToFetch(img_tmdb + json.poster_path);
-        state.id = json.id;
-        handleRequest(getUrl(location, true)).then(data => {
-          obj.similar = data.results;
-          setMovie(obj);
-        });
-      });
-    }
-    if (state.image_load) {
-      setImgToFetch(img_tmdb + state.img);
     }
     return () => {
       setInCollection(undefined);
       setHasFile(undefined);
       setLoading(undefined);
       setDownloaded(undefined);
+      setLocationId(undefined);
     };
-  }, [collection, movie, movie.id, state.id]);
-  const { title, img, overview, genres, vote_average } = movie;
-  const handleMovieRequest = () => {
-    const rightImg = imgToFetch || img.src;
-    const { options, options1 } = createOptions(movie, rightImg, user);
-    const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
-    setLoading(true);
-    handleRequest(url_collection, options1)
-      .then(() => {
-        setCreated(true);
-        setInCollection(true);
-        handleRequest(prisma_endpoint, options);
-        const msg = `${user.email} \nhas requested the movie:\n${title}`;
-        handlePushoverRequest(msg);
-        setTimeout(() => {
-          setCreated(undefined);
-        }, 5000);
-      })
-      .catch(err => {
-        console.error(err);
-        setError(true);
-        setTimeout(() => {
-          setError(undefined);
-        }, 5000);
-      });
-  };
-  console.log(created);
-  const click = error || loading || created || downloaded || inCollection || hasFile;
+  }, [fetchMovie, state, error]);
 
-  return (
-    <>
-      <Wrapper>
-        <FlashMessage
-          error={error}
-          success={created}
-          downloaded={downloaded}
-          hasFile={hasFile}
-          inCollection={inCollection}
-        />
-        <ReturnDiv>
-          <Typography variant="body1" component="p">
-            <StyledLink to={landing}>
-              <ArrowBackIcon />
-              Go back
-            </StyledLink>
-          </Typography>
-        </ReturnDiv>
-        <MovieContainer>
-          <Left>
-            {img && !imgToFetch && <Image fixed={img} />}
-            {imgToFetch && <ImageFetch src={imgToFetch} />}
-          </Left>
-          <Right>
-            <div style={{ paddingLeft: '10px' }}>
-              <Typography variant="h4" component="h4">
-                {title}
-              </Typography>
-            </div>
+  if (error) {
+    return <div>error</div>;
+  }
+  if (movie) {
+    const { title, img, overview, genres, vote_average } = movie;
+    const handleMovieRequest = () => {
+      const rightImg = imgToFetch || img.src;
+      const { options, options1 } = createOptions(movie, rightImg, user);
+      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
+      setLoading(true);
+      handleRequest(url_collection, options1)
+        .then(() => {
+          setCreated(true);
+          setInCollection(true);
+          handleRequest(prisma_endpoint, options);
+          const msg = `${user.email} \nhas requested the movie:\n${title}`;
+          handlePushoverRequest(msg);
+          setTimeout(() => {
+            setCreated(undefined);
+          }, 5000);
+        })
+        .catch(err => {
+          console.error(err);
+          setError(true);
+          setTimeout(() => {
+            setError(undefined);
+          }, 5000);
+        });
+    };
+    const click = error || loading || created || downloaded || inCollection || hasFile;
+    return (
+      <>
+        <Wrapper>
+          <FlashMessage
+            error={error}
+            success={created}
+            downloaded={downloaded}
+            hasFile={hasFile}
+            inCollection={inCollection}
+          />
+          <ReturnDiv>
+            <Typography variant="body1" component="p">
+              <StyledLink to={landing}>
+                <ArrowBackIcon />
+                Go back
+              </StyledLink>
+            </Typography>
+          </ReturnDiv>
+          <MovieContainer>
+            <Left>
+              {img && !imgToFetch && <Image fixed={img} />}
+              {imgToFetch && <ImageFetch src={imgToFetch} />}
+            </Left>
+            <Right>
+              <div style={{ paddingLeft: '10px' }}>
+                <Typography variant="h4" component="h4">
+                  {title}
+                </Typography>
+              </div>
 
-            <StarDiv>
-              <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
-              <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
-                {vote_average}
-              </Typography>
-            </StarDiv>
-            <ChipContent>
-              {genres &&
-                genres.map(el => (
-                  <div
-                    key={el}
-                    style={{
-                      margin: '5px',
-                    }}
-                  >
-                    <StyledChip key={el} label={gen[el]} variant="outlined" />
-                  </div>
-                ))}
-            </ChipContent>
-            <Overview>
-              <Typography variant="h4" component="h4">
-                Overview
-              </Typography>
-              <Typography variant="body1" component="p">
-                {overview}
-              </Typography>
-            </Overview>
-            <Button
-              onClick={handleMovieRequest}
-              disabled={click}
-              color="primary"
-              className={`${classes.root} ${click && classes.disabled}`}
-              style={{ maxWidth: '70%' }}
-            >
-              <Typography variant="body1" component="p">
-                Request Movie
-              </Typography>
-            </Button>
-          </Right>
-        </MovieContainer>
-        <Similar key={movie.id} movies={movie.similar} />
-      </Wrapper>
-    </>
-  );
+              <StarDiv>
+                <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
+                <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
+                  {vote_average}
+                </Typography>
+              </StarDiv>
+              <ChipContent>
+                {genres &&
+                  genres.map(el => (
+                    <div
+                      key={el}
+                      style={{
+                        margin: '5px',
+                      }}
+                    >
+                      <StyledChip key={el} label={gen[el]} variant="outlined" />
+                    </div>
+                  ))}
+              </ChipContent>
+              <Overview>
+                <Typography variant="h4" component="h4">
+                  Overview
+                </Typography>
+                <Typography variant="body1" component="p">
+                  {overview}
+                </Typography>
+              </Overview>
+              <Button
+                onClick={handleMovieRequest}
+                disabled={click}
+                color="primary"
+                className={`${classes.root} ${click && classes.disabled}`}
+                style={{ maxWidth: '70%' }}
+              >
+                <Typography variant="body1" component="p">
+                  Request Movie
+                </Typography>
+              </Button>
+            </Right>
+          </MovieContainer>
+          <Similar key={movie.id} movies={movie.similar} />
+        </Wrapper>
+      </>
+    );
+  }
+  return null;
 };
 const StyledChip = withStyles({
   root: {

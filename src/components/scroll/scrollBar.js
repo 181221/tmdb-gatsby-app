@@ -41,7 +41,6 @@ export const Menu = movies => {
           key={el.id}
           to={`${account_movie}/${el.id}`}
           state={{
-            id: '',
             fetchAll: true,
           }}
         >
