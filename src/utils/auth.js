@@ -58,7 +58,6 @@ const setSession = (cb = () => {}) => (err, authResult) => {
     tokens.expiresAt = expiresAt;
     user = authResult.idTokenPayload;
     handleRequest(user, prisma_endpoint, setUserData);
-    console.log('user', user);
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('user', user);
     cb();

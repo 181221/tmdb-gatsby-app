@@ -22,14 +22,6 @@ const StarDiv = styled.div`
   display: flex;
   margin-top: 12px;
 `;
-
-const ImageFetch = styled.img`
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  width: 300px;
-  height: 450px;
-`;
 export const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
@@ -142,7 +134,6 @@ const FetchAllMovieData = (locationId, setMovie, setImgToFetch) => {
       setImgToFetch(img_tmdb + json.poster_path);
       handleRequest(getUrl(locationId, true)).then(data => {
         obj.similar = data.results;
-        console.log('setting movie', obj);
         setMovie(obj);
       });
     })
@@ -204,6 +195,7 @@ const Movie = ({ location, user, collection }) => {
       setLoading(undefined);
       setDownloaded(undefined);
       setLocationId(undefined);
+      setImgToFetch(undefined);
     };
   }, [fetchMovie, state, error]);
 
@@ -257,7 +249,7 @@ const Movie = ({ location, user, collection }) => {
           </ReturnDiv>
           <MovieContainer>
             <Left>
-              {img && !imgToFetch && <Image fixed={img} />}
+              {img && img.src && <Image fixed={img} />}
               {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
             </Left>
             <Right>
