@@ -318,7 +318,7 @@ const Movie = ({ location }) => {
                 disabled={click}
                 color="primary"
                 className={`${classes.root} ${click && classes.disabled}`}
-                style={{ maxWidth: '70%' }}
+                style={{ maxWidth: '70%', color: 'white' }}
               >
                 <Typography variant="body1" component="p">
                   Request Movie
