@@ -92,6 +92,9 @@ const useStyles = makeStyles({
     color: 'white',
     boxShadow: '0 0px 1px 1px rgba(255, 105, 135, .3)',
   },
+  white: {
+    color: 'white',
+  },
   disabled: {
     '&$disabled': {
       cursor: 'not-allowed',
@@ -126,8 +129,6 @@ const handleRequest = async (url, options = { method: 'GET' }) => {
   return json;
 };
 const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => {
-  const res = await handleRequest(getUrl(locationId));
-  console.log('got result', res);
   handleRequest(getUrl(locationId))
     .then(json => {
       const obj = {
@@ -246,7 +247,6 @@ const Movie = ({ location }) => {
           handlePushoverRequest(msg);
           setTimeout(() => {
             setCreated(undefined);
-            setInCollection(undefined);
           }, 2000);
         })
         .catch(err => {
@@ -257,9 +257,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    console.log('incollection', inCollection);
-
-    const click = error || loading || created || downloaded || inCollection || hasFile;
+    const click = created || downloaded || inCollection || hasFile;
     return (
       <>
         <Wrapper>
@@ -327,11 +325,14 @@ const Movie = ({ location }) => {
                   <Button
                     onClick={handleMovieRequest}
                     disabled={click}
-                    color="primary"
                     className={`${classes.root} ${click && classes.disabled}`}
-                    style={{ maxWidth: '70%', color: 'white' }}
+                    style={{ maxWidth: '70%' }}
                   >
-                    <Typography variant="body1" component="p">
+                    <Typography
+                      className={`${!click && classes.white}`}
+                      variant="body1"
+                      component="p"
+                    >
                       Request Movie
                     </Typography>
                   </Button>
