@@ -125,7 +125,9 @@ const handleRequest = async (url, options = { method: 'GET' }) => {
   const json = await res.json();
   return json;
 };
-const FetchAllMovieData = (locationId, setMovie, setImgToFetch) => {
+const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => {
+  const res = await handleRequest(getUrl(locationId));
+  console.log('got result', res);
   handleRequest(getUrl(locationId))
     .then(json => {
       const obj = {
@@ -188,6 +190,18 @@ const Movie = ({ location }) => {
     if (!error && !movie) {
       setMovie(state);
     }
+    return () => {
+      setInCollection(undefined);
+      setHasFile(undefined);
+      setLoading(undefined);
+      setDownloaded(undefined);
+      setLocationId(undefined);
+      setImgToFetch(undefined);
+      setMovie(undefined);
+    };
+  }, [fetchMovie, state, error]);
+
+  useEffect(() => {
     if (!error) {
       const collectionCheck = movie || state;
       const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
@@ -195,7 +209,7 @@ const Movie = ({ location }) => {
         .then(res => res.json())
         .then(json => {
           json.map(el => {
-            if (collectionCheck.id === el.tmdbId) {
+            if (Number(getLocationId(location)) === el.tmdbId && collectionCheck.id === el.tmdbId) {
               setInCollection(true);
             }
             if (el.hasFile) {
@@ -209,15 +223,7 @@ const Movie = ({ location }) => {
         })
         .catch(err => console.error(err));
     }
-    return () => {
-      setInCollection(undefined);
-      setHasFile(undefined);
-      setLoading(undefined);
-      setDownloaded(undefined);
-      setLocationId(undefined);
-      setImgToFetch(undefined);
-    };
-  }, [fetchMovie, state, error]);
+  }, [error, movie]);
 
   if (error) {
     return <div>error</div>;
@@ -251,6 +257,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
+    console.log('incollection', inCollection);
 
     const click = error || loading || created || downloaded || inCollection || hasFile;
     return (
@@ -271,61 +278,68 @@ const Movie = ({ location }) => {
               </StyledLink>
             </Typography>
           </ReturnDiv>
-          <MovieContainer>
-            <Left>
-              {img && img.src && <Image fixed={img} />}
-              {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
-              {!imgToFetch && img && !img.src && (
-                <ImageLoader src={img} width="300px" height="450px" />
-              )}
-            </Left>
-            <Right>
-              <div style={{ paddingLeft: '10px' }}>
-                <Typography variant="h4" component="h4">
-                  {title}
-                </Typography>
-              </div>
+          {loading ? (
+            <div>loading</div>
+          ) : (
+            <>
+              <MovieContainer>
+                <Left>
+                  {img && img.src && <Image fixed={img} />}
+                  {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
+                  {!imgToFetch && img && !img.src && (
+                    <ImageLoader src={img} width="300px" height="450px" />
+                  )}
+                </Left>
+                <Right>
+                  <div style={{ paddingLeft: '10px' }}>
+                    <Typography variant="h4" component="h4">
+                      {title}
+                    </Typography>
+                  </div>
 
-              <StarDiv>
-                <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
-                <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
-                  {vote_average}
-                </Typography>
-              </StarDiv>
-              <ChipContent>
-                {genres &&
-                  genres.map(el => (
-                    <div
-                      key={el}
-                      style={{
-                        margin: '5px',
-                      }}
-                    >
-                      <StyledChip key={el} label={gen[el]} variant="outlined" />
-                    </div>
-                  ))}
-              </ChipContent>
-              <Overview>
-                <Typography variant="h4" component="h4">
-                  Overview
-                </Typography>
-                <Typography variant="body1" component="p">
-                  {overview}
-                </Typography>
-              </Overview>
-              <Button
-                onClick={handleMovieRequest}
-                disabled={click}
-                color="primary"
-                className={`${classes.root} ${click && classes.disabled}`}
-                style={{ maxWidth: '70%', color: 'white' }}
-              >
-                <Typography variant="body1" component="p">
-                  Request Movie
-                </Typography>
-              </Button>
-            </Right>
-          </MovieContainer>
+                  <StarDiv>
+                    <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
+                    <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
+                      {vote_average}
+                    </Typography>
+                  </StarDiv>
+                  <ChipContent>
+                    {genres &&
+                      genres.map(el => (
+                        <div
+                          key={el}
+                          style={{
+                            margin: '5px',
+                          }}
+                        >
+                          <StyledChip key={el} label={gen[el]} variant="outlined" />
+                        </div>
+                      ))}
+                  </ChipContent>
+                  <Overview>
+                    <Typography variant="h4" component="h4">
+                      Overview
+                    </Typography>
+                    <Typography variant="body1" component="p">
+                      {overview}
+                    </Typography>
+                  </Overview>
+                  <Button
+                    onClick={handleMovieRequest}
+                    disabled={click}
+                    color="primary"
+                    className={`${classes.root} ${click && classes.disabled}`}
+                    style={{ maxWidth: '70%', color: 'white' }}
+                  >
+                    <Typography variant="body1" component="p">
+                      Request Movie
+                    </Typography>
+                  </Button>
+                </Right>
+              </MovieContainer>
+            </>
+          )}
+
           <Similar key={movie.id} movies={movie.similar} />
         </Wrapper>
       </>
