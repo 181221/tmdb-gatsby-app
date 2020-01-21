@@ -1,39 +1,52 @@
-<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
-<p align="center">
-  <a href="https://www.gatsbyjs.org">
-    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby's Tmdb Movie app
-</h1>_
+# Gatsby-tmdb-radarr
 
-## 🚀 Quick start
+## Dependencies
 
-1. **Getting started.**
+This project requires a server to be running, it can be found here [Graphql-server-prisma](https://github.com/181221/graphql-server-prisma)
+Auth0 [single page app](<[https://auth0.com/docs/quickstart/spa/react](https://auth0.com/docs/quickstart/spa/react)>)
 
-   Navigate into your new site’s directory and start it up.
+## Install
 
-   ```shell
-   yarn
-   ```
+```sh
+$ yarn
+```
 
-   then setup environment variables
+Then you can start the development server with.
 
-1)  **Start developing.**
+```sh
+$ gatsby develop
+```
 
-    Navigate into your new site’s directory and start it up.
+This requires gatsby to be install globally, guide can be found here [Quick Start Gatsby](<[https://www.gatsbyjs.org/docs/quick-start/](https://www.gatsbyjs.org/docs/quick-start/)>)
 
-    ```shell
-    gatsby develop
-    ```
+## Environment variables
 
-1)  **Open the source code and start editing!**
+1. touch a .env.development and a .env.production in root dir
 
-    Your site is now running at `http://localhost:8000`!
+| Key                     |             Value              |
+| ----------------------- | :----------------------------: |
+| AUTH0_DOMAIN            |          your domain           |
+| AUTH0_CLIENTID          |         your clientId          |
+| AUTH0_CALLBACK          | http://localhost:8000/callback |
+| TMDB_API_KEY            |   The movie database api key   |
+| RADARR_API_KEY          |         Radarr Api key         |
+| RADARR_API_ENDPOINT     |        Radarr endpoint         |
+| RADARR_ROOT_FOLDER_PATH | Folder where movies are added  |
+| PUSHOVER_TOKEN          |        Pushover Api Key        |
+| PUSHOVER_USER_KEY       |       Pushover user key        |
 
-    _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
+## Build and deploy
 
-    Open the `my-hello-world-starter` directory in your code editor of choice and edit `src/pages/index.js`. Save your changes and the browser will update in real time!
+When ready for production stop the development server and run
 
-<!-- AUTO-GENERATED-CONTENT:END -->
+```shell
+gatsby build
+```
+
+View the production site locally. Run:
+
+```shell
+gatsby serve
+```
+
+More info in this can be found [here](<[https://www.gatsbyjs.org/tutorial/part-eight/](https://www.gatsbyjs.org/tutorial/part-eight/)>)
