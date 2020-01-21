@@ -7,7 +7,7 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { logout, getProfile, login, isAuthenticated } from '../../utils/auth';
 import { useStyles } from './styles';
-import { landing, account_admin_request, account_request } from '../../constants/route';
+import { landing } from '../../constants/route';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -19,6 +19,7 @@ const StyledDiv = styled.div``;
 export default function ButtonAppBar() {
   const user = getProfile();
   const classes = useStyles();
+  console.log(isAuthenticated);
 
   return (
     <StyledDiv className={classes.root}>
@@ -27,21 +28,11 @@ export default function ButtonAppBar() {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          {user && user.role === 'ADMIN' && (
-            <StyledLink to={account_admin_request}>
-              <Typography variant="h6">Requested</Typography>
-            </StyledLink>
-          )}
-          {user && user.role === 'CUSTOMER' && (
-            <StyledLink to={account_request}>
-              <Typography variant="h6">My Requests</Typography>
-            </StyledLink>
-          )}
           <div className={classes.title} />
           <Typography variant="h6" className={classes.user}>
             {user.nickname}
           </Typography>
-          {isAuthenticated ? (
+          {isAuthenticated() ? (
             <Button
               href="#logout"
               onClick={e => {
