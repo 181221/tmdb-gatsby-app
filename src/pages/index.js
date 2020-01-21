@@ -1,6 +1,5 @@
 import React from 'react';
 import { isAuthenticated, login, getProfile } from '../utils/auth';
-import Home from './home';
 import ButtonAppBar from '../components/navbar/nav';
 
 export default () => {
@@ -13,8 +12,7 @@ export default () => {
 
   return (
     <>
-      <ButtonAppBar user={user} />
-      <Home />
+      <h1>landing</h1>
     </>
   );
 };

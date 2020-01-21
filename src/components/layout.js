@@ -1,5 +1,6 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
+import ButtonAppBar from './navbar/nav';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -10,9 +11,12 @@ const GlobalStyle = createGlobalStyle`
 
   }
 `;
-export default ({ children }) => (
-  <>
-    <GlobalStyle theme="white" />
-    {children}
-  </>
-);
+export default ({ children }) => {
+  return (
+    <>
+      <GlobalStyle theme="white" />
+      <ButtonAppBar />
+      {children}
+    </>
+  );
+};

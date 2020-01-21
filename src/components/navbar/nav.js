@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { logout } from '../../utils/auth';
+import { logout, getProfile, login, isAuthenticated } from '../../utils/auth';
 import { useStyles } from './styles';
 import { landing, account_admin_request, account_request } from '../../constants/route';
 
@@ -16,8 +16,10 @@ const StyledLink = styled(Link)`
 `;
 const StyledDiv = styled.div``;
 
-export default function ButtonAppBar({ user }) {
+export default function ButtonAppBar() {
+  const user = getProfile();
   const classes = useStyles();
+
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
@@ -25,12 +27,12 @@ export default function ButtonAppBar({ user }) {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          {user.role === 'ADMIN' && (
+          {user && user.role === 'ADMIN' && (
             <StyledLink to={account_admin_request}>
               <Typography variant="h6">Requested</Typography>
             </StyledLink>
           )}
-          {user.role === 'CUSTOMER' && (
+          {user && user.role === 'CUSTOMER' && (
             <StyledLink to={account_request}>
               <Typography variant="h6">My Requests</Typography>
             </StyledLink>
@@ -39,19 +41,35 @@ export default function ButtonAppBar({ user }) {
           <Typography variant="h6" className={classes.user}>
             {user.nickname}
           </Typography>
-          <Button
-            href="#logout"
-            onClick={e => {
-              logout();
-              e.preventDefault();
-            }}
-            color="inherit"
-            style={{ textDecoration: 'underline' }}
-          >
-            <Typography variant="body1" component="p">
-              Logout
-            </Typography>
-          </Button>
+          {isAuthenticated ? (
+            <Button
+              href="#logout"
+              onClick={e => {
+                logout();
+                e.preventDefault();
+              }}
+              color="inherit"
+              style={{ textDecoration: 'underline' }}
+            >
+              <Typography variant="body1" component="p">
+                Logout
+              </Typography>
+            </Button>
+          ) : (
+            <Button
+              href="#login"
+              onClick={e => {
+                login();
+                e.preventDefault();
+              }}
+              color="inherit"
+              style={{ textDecoration: 'underline' }}
+            >
+              <Typography variant="body1" component="p">
+                login
+              </Typography>
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </StyledDiv>

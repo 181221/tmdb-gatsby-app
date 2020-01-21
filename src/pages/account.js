@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Router } from '@reach/router';
 import { login, isAuthenticated, getProfile } from '../utils/auth';
-import Home from './home';
+import Home from '../components/home';
 import ButtonAppBar from '../components/navbar/nav';
-import Movie from './movie';
+import Movie from '../components/movie/movie';
 import Layout from '../components/layout';
 import Request from '../components/account/admin/request';
+import PrivateRoute from '../components/privateRoute';
 import MyRequestedMovies from '../components/account/user/myRequestedMovies';
 import {
   radarr_url,
@@ -15,7 +16,6 @@ import {
   account_request,
   account_admin_request,
 } from '../constants/route';
-import Settings from './settings';
 
 const Account = () => {
   const [collection, setCollection] = useState(undefined);
@@ -34,16 +34,14 @@ const Account = () => {
     return <p>Redirecting to login...</p>;
   }
   return (
-    <Layout>
-      <ButtonAppBar user={user} />
+    <>
       <Router>
-        <Home path={`${landing}`} user={user} />
-        <Settings path={`${account_settings}`} user={user} />
-        <Movie path={`${account_movie}/:movieId`} user={user} collection={collection} />
+        <PrivateRoute path={`${landing}`} component={Home} />
+        <PrivateRoute path={`${account_movie}/:movieId`} component={Movie} />
         <Request path={account_admin_request} user={user} />
         <MyRequestedMovies path={account_request} user={user} />
       </Router>
-    </Layout>
+    </>
   );
 };
 export default Account;

@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
-import Card from '../components/movie/card';
-import SearchBar from '../components/search/search-bar';
-import Test from '../components/test';
+import Card from './movie/card';
+import SearchBar from './search/search-bar';
 
 const Heading = styled.div`
   margin: 24px;
@@ -59,7 +58,6 @@ const Home = () => {
           Discover
         </Typography>
       </Heading>
-      <Test />
       <SearchBar />
       <CardContainer>
         {nodes.map(el => (

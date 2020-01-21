@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Location } from '@reach/router';
 import { navigate } from 'gatsby';
 
@@ -15,7 +15,6 @@ import { silentAuth, getProfile } from './src/utils/auth';
 const authLink = setContext(async (_, { headers }) => {
   let token = localStorage.getItem('AUTH_TOKEN');
   const user = getProfile();
-  console.log(user.email);
   const ql = `mutation {
         getToken(
           email: "${user.email}"
@@ -51,47 +50,35 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache,
 });
-
-class SessionCheck extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-    };
-  }
-
-  componentDidMount() {
-    silentAuth(this.handleCheckSession);
-  }
-
-  handleCheckSession = () => {
-    this.setState({ loading: false });
-    if (
-      this.props.location.pathname === '/callback/' ||
-      this.props.location.pathname === '/callback'
-    ) {
+const SessionCheck = ({ children, location }) => {
+  const [loading, setLoading] = useState(true);
+  const handleCheckSession = user => {
+    setLoading(false);
+    if (location.pathname === '/callback/' || location.pathname === '/callback') {
       navigate(landing);
     }
-    navigate(this.props.location.pathname);
+    navigate(location.pathname);
   };
+  useEffect(() => {
+    silentAuth(handleCheckSession);
+  }, []);
 
-  render() {
-    return this.state.loading === false && <>{this.props.children}</>;
-  }
-}
+  if (!loading) return <>{children}</>;
+  return <></>;
+};
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <Layout>
-      <Location>
-        {({ location }) => (
-          <SessionCheck location={location}>
-            <ApolloProvider client={client}>
-              <ApolloHooksProvider client={client}>{element}</ApolloHooksProvider>
-            </ApolloProvider>
-          </SessionCheck>
-        )}
-      </Location>
-    </Layout>
+    <Location>
+      {({ location }) => (
+        <SessionCheck location={location}>
+          <ApolloProvider client={client}>
+            <ApolloHooksProvider client={client}>
+              <Layout>{element}</Layout>
+            </ApolloHooksProvider>
+          </ApolloProvider>
+        </SessionCheck>
+      )}
+    </Location>
   );
 };

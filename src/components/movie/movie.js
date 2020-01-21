@@ -8,12 +8,19 @@ import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import Similar from '../components/movie/similar';
-import { gen } from '../components/movie/card';
-import { radarr_url, prisma_endpoint, img_tmdb, landing, tmdb_endpoint } from '../constants/route';
-import { createOptions, handlePushoverRequest } from '../utils/movieHelper';
-import FlashMessage from '../components/flash';
-import ImageLoader from '../components/img';
+import Similar from './similar';
+import { gen } from './card';
+import { getProfile } from '../../utils/auth';
+import {
+  radarr_url,
+  prisma_endpoint,
+  img_tmdb,
+  landing,
+  tmdb_endpoint,
+} from '../../constants/route';
+import { createOptions, handlePushoverRequest } from '../../utils/movieHelper';
+import FlashMessage from '../flash';
+import ImageLoader from '../img';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -140,7 +147,7 @@ const FetchAllMovieData = (locationId, setMovie, setImgToFetch) => {
     .catch(err => console.error(err));
 };
 
-const Movie = ({ location, user }) => {
+const Movie = ({ location }) => {
   const classes = useStyles();
   const [locationId, setLocationId] = useState(getLocationId(location));
   const [error, setError] = useState(undefined);
@@ -153,7 +160,7 @@ const Movie = ({ location, user }) => {
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
-
+  const user = getProfile();
   useEffect(() => {
     if (!locationId) {
       setError(true);
@@ -228,6 +235,7 @@ const Movie = ({ location, user }) => {
           setCreated(true);
           setInCollection(true);
           handleRequest(prisma_endpoint, options);
+          setLoading(false);
           const msg = `${user.email} \nhas requested the movie:\n${title}`;
           handlePushoverRequest(msg);
           setTimeout(() => {
@@ -243,6 +251,7 @@ const Movie = ({ location, user }) => {
           }, 5000);
         });
     };
+
     const click = error || loading || created || downloaded || inCollection || hasFile;
     return (
       <>
