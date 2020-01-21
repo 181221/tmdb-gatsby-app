@@ -90,7 +90,13 @@ const Card = ({
             <Image fixed={img} />
           </Link>
           <Div>
-            <Typography variant="h4" component="h4" align="center" className={classes.root}>
+            <Typography
+              style={{ maxHeight: '48px' }}
+              variant="h4"
+              component="h4"
+              align="center"
+              className={classes.root}
+            >
               {title}
             </Typography>
             <div style={{ minHeight: '24px', maxHeight: '24px' }}>

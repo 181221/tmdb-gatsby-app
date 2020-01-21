@@ -7,6 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'gatsby';
 import Similar from './similar';
 import { gen } from './card';
@@ -159,7 +160,7 @@ const Movie = ({ location }) => {
   const { state = {} } = location;
   const [fetchMovie, setFetchMovie] = useState(false);
   const [created, setCreated] = useState(undefined);
-  const [loading, setLoading] = useState(undefined);
+  const [loading, setLoading] = useState(false);
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
@@ -227,7 +228,19 @@ const Movie = ({ location }) => {
   }, [error, movie]);
 
   if (error) {
-    return <div>error</div>;
+    return (
+      <Wrapper>
+        <FlashMessage error={error} />
+        <ReturnDiv>
+          <Typography variant="body1" component="p">
+            <StyledLink to={landing}>
+              <ArrowBackIcon />
+              Go back
+            </StyledLink>
+          </Typography>
+        </ReturnDiv>
+      </Wrapper>
+    );
   }
 
   if (movie) {
@@ -277,7 +290,9 @@ const Movie = ({ location }) => {
             </Typography>
           </ReturnDiv>
           {loading ? (
-            <div>loading</div>
+            <div style={{ padding: '100px 0', display: 'flex', justifyContent: 'center' }}>
+              <CircularProgress color="secondary" />
+            </div>
           ) : (
             <>
               <MovieContainer>
