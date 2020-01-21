@@ -18,7 +18,7 @@ $ gatsby develop
 ```
 
 This requires gatsby to be install globally, guide can be found here
-[Quick Start Gatsby](<[https://www.gatsbyjs.org/docs/quick-start/](https://www.gatsbyjs.org/docs/quick-start/)>)
+[Quick Start Gatsby](<(https://www.gatsbyjs.org/docs/quick-start/)>)
 
 ## Environment variables
 
