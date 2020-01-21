@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
-import Card from './movie/card';
-import SearchBar from './search/search-bar';
+import Card from './card';
+import SearchBar from '../search/search-bar';
 
 const Heading = styled.div`
   margin: 24px;
@@ -17,7 +17,7 @@ const CardContainer = styled.div`
   justify-content: center;
 `;
 
-const Home = () => {
+const Discover = () => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMoviePopular(sort: { fields: title }, limit: 60) {
@@ -78,4 +78,4 @@ const Home = () => {
     </>
   );
 };
-export default Home;
+export default Discover;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Router } from '@reach/router';
 import { login, isAuthenticated, getProfile } from '../utils/auth';
-import Home from '../components/home';
+import Discover from '../components/movie/discover';
 import Movie from '../components/movie/movie';
 import PrivateRoute from '../components/privateRoute';
 import {
@@ -31,7 +31,7 @@ const Account = () => {
   return (
     <>
       <Router>
-        <PrivateRoute path={`${landing}`} component={Home} />
+        <PrivateRoute path={`${landing}`} component={Discover} />
         <PrivateRoute path={`${account_movie}/:movieId`} component={Movie} />
       </Router>
     </>
