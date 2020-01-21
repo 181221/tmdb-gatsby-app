@@ -4,6 +4,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
 import Card from '../components/movie/card';
 import SearchBar from '../components/search/search-bar';
+import Test from '../components/test';
 
 const Heading = styled.div`
   margin: 24px;
@@ -58,6 +59,7 @@ const Home = () => {
           Discover
         </Typography>
       </Heading>
+      <Test />
       <SearchBar />
       <CardContainer>
         {nodes.map(el => (
