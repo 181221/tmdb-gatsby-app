@@ -9,7 +9,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'gatsby';
-import Similar from './similar';
+import Similar from './similar/similar';
 import { gen } from './card';
 import { getProfile } from '../../utils/auth';
 import {

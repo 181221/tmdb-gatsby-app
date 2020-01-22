@@ -4,8 +4,8 @@ import './App.css';
 import { Link } from 'gatsby';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { img_tmdb, account_movie } from '../../constants/route';
-import ImageLoader from '../img';
+import { img_tmdb, account_movie } from '../../../../constants/route';
+import ImageLoader from '../../../img';
 
 export const Menu = movies => {
   if (movies && movies.length > 0) {
