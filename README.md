@@ -3,7 +3,8 @@
 ## Dependencies
 
 This project requires a server to be running, it can be found here [Graphql-server-prisma](https://github.com/181221/graphql-server-prisma)
-Auth0 [single page app](<[https://auth0.com/docs/quickstart/spa/react](https://auth0.com/docs/quickstart/spa/react)>)
+
+Auth0 [single page app](https://auth0.com/docs/quickstart/spa/react)
 
 ## Install
 
