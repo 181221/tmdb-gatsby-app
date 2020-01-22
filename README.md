@@ -51,3 +51,14 @@ gatsby serve
 ```
 
 More info in this can be found [here](<[https://www.gatsbyjs.org/tutorial/part-eight/](https://www.gatsbyjs.org/tutorial/part-eight/)>)
+
+## Folder
+
+constants you can find all static contants e.g. routes. Here you can change your prisma and radarr endpoint.
+
+## Work do be done
+
+1. Landing Page for users that is not logged in. It would be nice to create something static here, with images of movies.
+2. Navbar is just a simple nav. More complex navbar with dropdown etc.
+3. Create a account page where user can see the requested movies. I have a branch for this.
+4. In account page users should be able to turn of and on pushnotifications. This is already implemented on the server.

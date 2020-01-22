@@ -1,7 +1,7 @@
 {
   "name": "gatsby-tmdb-movie-app",
   "private": true,
-  "description": "A simplified bare-bones starter for Gatsby",
+  "description": "Gatsby app with the moviedatabase, radarr and prisma server",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
@@ -77,9 +77,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-hello-world"
+    "url": "https://github.com/181221/tmdb-gatsby-app"
   },
   "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/181221/tmdb-gatsby-app/issues"
   }
 }
