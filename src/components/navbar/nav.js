@@ -19,7 +19,6 @@ const StyledDiv = styled.div``;
 export default function ButtonAppBar() {
   const user = getProfile();
   const classes = useStyles();
-  console.log(isAuthenticated);
 
   return (
     <StyledDiv className={classes.root}>
