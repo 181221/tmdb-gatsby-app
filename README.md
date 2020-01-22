@@ -50,7 +50,7 @@ gatsby build
 View the production site locally. Run:
 
 ```shell
-gatsby serve
+gatsby serve --prefix-paths
 ```
 
 More info in this can be found [here](<[https://www.gatsbyjs.org/tutorial/part-eight/](https://www.gatsbyjs.org/tutorial/part-eight/)>)
