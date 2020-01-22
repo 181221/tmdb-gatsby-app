@@ -42,6 +42,8 @@ This requires gatsby to be install globally, guide can be found here
 When ready for production stop the development server and run
 
 ```shell
+gatsby build --prefix-paths # for setting prefix in gatsby-config.js
+or
 gatsby build
 ```
 

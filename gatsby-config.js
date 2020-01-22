@@ -3,6 +3,7 @@ require('dotenv').config({
 });
 
 module.exports = {
+  pathPrefix: `/hodden`,
   plugins: [
     {
       resolve: 'tmdb-source-plugin',
