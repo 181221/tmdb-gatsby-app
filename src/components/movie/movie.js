@@ -337,20 +337,22 @@ const Movie = ({ location }) => {
                       {overview}
                     </Typography>
                   </Overview>
-                  <Button
-                    onClick={handleMovieRequest}
-                    disabled={click}
-                    className={`${classes.root} ${click && classes.disabled}`}
-                    style={{ maxWidth: '70%' }}
-                  >
-                    <Typography
-                      className={`${!click && classes.white}`}
-                      variant="body1"
-                      component="p"
+                  <div className={`${click && classes.disabled}`}>
+                    <Button
+                      onClick={handleMovieRequest}
+                      disabled={click}
+                      className={`${classes.root} ${click && classes.disabled}`}
+                      style={{ minWidth: '70%' }}
                     >
-                      Request Movie
-                    </Typography>
-                  </Button>
+                      <Typography
+                        className={`${!click && classes.white}`}
+                        variant="body1"
+                        component="p"
+                      >
+                        Request Movie
+                      </Typography>
+                    </Button>
+                  </div>
                 </Right>
               </MovieContainer>
             </>
