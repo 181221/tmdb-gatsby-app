@@ -1,9 +1,11 @@
-require('dotenv').config({
-  path: '.env.development',
+const dot = require('dotenv').config({
+  path: `${process.env.NODE_ENV === 'development' ? '.env.development' : '.env.production'}`,
 });
 
+console.log(dot);
+
 module.exports = {
-  pathPrefix: `/hodden`,
+  pathPrefix: `${process.env.PATH_PREFIX}` || '',
   plugins: [
     {
       resolve: 'tmdb-source-plugin',

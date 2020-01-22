@@ -36,6 +36,7 @@ This requires gatsby to be install globally, guide can be found here
 | RADARR_ROOT_FOLDER_PATH | Folder where movies are added  |
 | PUSHOVER_TOKEN          |        Pushover Api Key        |
 | PUSHOVER_USER_KEY       |       Pushover user key        |
+| PATH_PREFIX             |         for production         |
 
 ## Build and deploy
 
