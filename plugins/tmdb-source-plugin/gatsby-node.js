@@ -104,8 +104,7 @@ exports.sourceNodes = async (
           console.log(error);
         }
       }
-      createNode(nodeData);
-      res(nodeData);
+      res(createNode(nodeData));
     });
   });
 };
