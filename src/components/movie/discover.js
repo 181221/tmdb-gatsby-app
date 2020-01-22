@@ -20,7 +20,7 @@ const CardContainer = styled.div`
 const Discover = () => {
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
-      allTmdbMoviePopular(sort: { fields: title }, limit: 60) {
+      allTmdbMoviePopular(sort: { fields: title }, limit: 50) {
         nodes {
           title
           vote_average
