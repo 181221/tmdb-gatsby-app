@@ -8,10 +8,15 @@ module.exports = {
   pathPrefix: `${process.env.PATH_PREFIX}` || '',
   plugins: [
     {
-      resolve: 'tmdb-source-plugin',
+      resolve: `gatsby-plugin-manifest`,
       options: {
-        key: process.env.TMDB_API_KEY,
-        pageNr: 5,
+        name: 'Radarr-request',
+        short_name: 'request',
+        start_url: '/',
+        background_color: '#2C3E50',
+        theme_color: '#fff',
+        display: 'standalone',
+        icon: 'src/images/logo.png',
       },
     },
     {
@@ -23,11 +28,23 @@ module.exports = {
       },
     },
     'gatsby-plugin-typescript',
-    'gatsby-plugin-offline',
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
+    {
+      resolve: 'tmdb-source-plugin',
+      options: {
+        key: process.env.TMDB_API_KEY,
+        pageNr: 1,
+      },
+    },
     'gatsby-plugin-styled-components',
     'babel-plugin-styled-components',
     'gatsby-plugin-less',
+    {
+      resolve: 'gatsby-plugin-offline',
+      options: {
+        appendScript: require.resolve(`./src/custom-sw-code.js`),
+      },
+    },
   ],
 };
