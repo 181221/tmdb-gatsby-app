@@ -4,7 +4,7 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { theme } from './styles';
-import { tmdb_endpoint, account_movie, img_tmdb } from '../../constants/route';
+import { tmdb_endpoint, account_movie, img_tmdb_medium } from '../../constants/route';
 
 const StyledLink = styled(Link)`
   color: black;
@@ -36,7 +36,7 @@ const getSuggestions = req => {
       overview: el.overview,
       genres: el.genre_ids,
       vote_average: el.vote_average,
-      img: img_tmdb + el.poster_path,
+      img: img_tmdb_medium + el.poster_path,
       posterUrl: el.poster_path ? el.poster_path.url : '',
       release_date: el.release_date,
       fetchSimilar: true,

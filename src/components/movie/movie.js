@@ -15,7 +15,7 @@ import { getProfile } from '../../utils/auth';
 import {
   radarr_url,
   prisma_endpoint,
-  img_tmdb,
+  img_tmdb_medium,
   landing,
   tmdb_endpoint,
 } from '../../constants/route';
@@ -134,15 +134,15 @@ const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => {
     .then(json => {
       const obj = {
         title: json.title,
-        posterUrl: img_tmdb + json.poster_path,
-        img: img_tmdb + json.poster_path,
+        posterUrl: img_tmdb_medium + json.poster_path,
+        img: img_tmdb_medium + json.poster_path,
         id: json.id,
         overview: json.overview,
         genres: json.genres.map(el => el.id),
         vote_average: json.vote_average,
         release_date: json.release_date,
       };
-      setImgToFetch(img_tmdb + json.poster_path);
+      setImgToFetch(img_tmdb_medium + json.poster_path);
       handleRequest(getUrl(locationId, true)).then(data => {
         obj.similar = data.results;
         setMovie(obj);

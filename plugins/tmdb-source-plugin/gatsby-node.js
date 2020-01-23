@@ -88,7 +88,7 @@ exports.sourceNodes = async (
       if (!imageNodeId) {
         try {
           const fileNode = await createRemoteFileNode({
-            url: `http://image.tmdb.org/t/p/original${nodeData.poster_path}`, // string that points to the URL of the image
+            url: `https://image.tmdb.org/t/p/w500${nodeData.poster_path}`, // string that points to the URL of the image
             parentNodeId: nodeData.id, // id of the parent node of the fileNode you are going to create
             createNode, // helper function in gatsby-node to generate the node
             createNodeId, // helper function in gatsby-node to generate the node id
