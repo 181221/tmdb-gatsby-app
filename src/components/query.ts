@@ -10,3 +10,12 @@ export const QUERY_LAUNCH_LIST = gql`
     }
   }
 `;
+
+export const QUERY_USER = gql`
+  query User($email: String!) {
+    user(email: $email) {
+      role
+      subscription
+    }
+  }
+`;

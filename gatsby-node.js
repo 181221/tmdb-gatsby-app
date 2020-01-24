@@ -36,7 +36,6 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
 const fs = require('fs');
 
 exports.onPreBootstrap = gatsbyNodeHelpers => {
-  console.log(gatsbyNodeHelpers);
   const { actions, reporter } = gatsbyNodeHelpers;
   const prod = '.env.production';
   const dev = '.env.development';

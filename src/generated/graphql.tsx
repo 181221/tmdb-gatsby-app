@@ -46,6 +46,7 @@ export type Mutation = {
    __typename?: 'Mutation',
   createToken?: Maybe<AuthPayload>,
   getToken?: Maybe<AuthPayload>,
+  updateUser?: Maybe<User>,
   createMovie?: Maybe<Movie>,
   updateMovie?: Maybe<Movie>,
   deleteMovie?: Maybe<Movie>,
@@ -59,6 +60,12 @@ export type MutationCreateTokenArgs = {
 
 export type MutationGetTokenArgs = {
   email: Scalars['String']
+};
+
+
+export type MutationUpdateUserArgs = {
+  email: Scalars['String'],
+  subscription: Scalars['String']
 };
 
 
@@ -124,6 +131,7 @@ export type User = {
   email: Scalars['String'],
   movies: Array<Movie>,
   notification?: Maybe<Scalars['Boolean']>,
+  subscription?: Maybe<Scalars['String']>,
   role?: Maybe<Role>,
 };
 
@@ -140,6 +148,19 @@ export type MovieListQuery = (
       & Pick<User, 'name'>
     ) }
   )>> }
+);
+
+export type UserQueryVariables = {
+  email: Scalars['String']
+};
+
+
+export type UserQuery = (
+  { __typename?: 'Query' }
+  & { user: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'role' | 'subscription'>
+  )> }
 );
 
 
@@ -195,3 +216,54 @@ export function useMovieListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type MovieListQueryHookResult = ReturnType<typeof useMovieListQuery>;
 export type MovieListLazyQueryHookResult = ReturnType<typeof useMovieListLazyQuery>;
 export type MovieListQueryResult = ApolloReactCommon.QueryResult<MovieListQuery, MovieListQueryVariables>;
+export const UserDocument = gql`
+    query User($email: String!) {
+  user(email: $email) {
+    role
+    subscription
+  }
+}
+    `;
+export type UserComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<UserQuery, UserQueryVariables>, 'query'> & ({ variables: UserQueryVariables; skip?: boolean; } | { skip: boolean; });
+
+    export const UserComponent = (props: UserComponentProps) => (
+      <ApolloReactComponents.Query<UserQuery, UserQueryVariables> query={UserDocument} {...props} />
+    );
+    
+export type UserProps<TChildProps = {}> = ApolloReactHoc.DataProps<UserQuery, UserQueryVariables> & TChildProps;
+export function withUser<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  UserQuery,
+  UserQueryVariables,
+  UserProps<TChildProps>>) {
+    return ApolloReactHoc.withQuery<TProps, UserQuery, UserQueryVariables, UserProps<TChildProps>>(UserDocument, {
+      alias: 'user',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        return ApolloReactHooks.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+      }
+export function useUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = ApolloReactCommon.QueryResult<UserQuery, UserQueryVariables>;
