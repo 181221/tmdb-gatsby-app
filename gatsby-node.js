@@ -32,3 +32,30 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
     });
   }
 };
+
+const fs = require('fs');
+
+exports.onPreBootstrap = gatsbyNodeHelpers => {
+  console.log(gatsbyNodeHelpers);
+  const { actions, reporter } = gatsbyNodeHelpers;
+  const prod = '.env.production';
+  const dev = '.env.development';
+
+  reporter.info(`Checking environment file`);
+  try {
+    if (fs.existsSync(prod) && fs.existsSync(dev)) {
+      reporter.info(`Environment exists`);
+      // Should check keys and also do a patch request for dependencies.
+    } else {
+      reporter.error(
+        `Pls create an .env.production and .env.development in root dir`,
+        new Error('err'),
+      );
+    }
+  } catch (err) {
+    reporter.error(
+      `Pls create an .env.production and .env.development in root dir`,
+      new Error(err),
+    );
+  }
+};
