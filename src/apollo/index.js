@@ -30,14 +30,17 @@ export const client = new ApolloClient({
 });
 
 export const addUserToCache = user => {
-  user.__typename = 'User';
-  user.movies.forEach(movie => {
-    movie.__typename = 'Movie';
-  });
-  client.writeQuery({
-    query,
-    data: {
-      user,
-    },
-  });
+  if (user) {
+    user.__typename = 'User';
+    user.movies.forEach(movie => {
+      movie.__typename = 'Movie';
+    });
+    client.writeQuery({
+      query,
+      data: {
+        user,
+      },
+    });
+  }
+  return false;
 };
