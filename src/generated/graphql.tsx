@@ -159,7 +159,11 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { user: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'role' | 'subscription'>
+    & Pick<User, 'role' | 'subscription' | 'id' | 'name' | 'email' | 'notification'>
+    & { movies: Array<(
+      { __typename?: 'Movie' }
+      & Pick<Movie, 'id' | 'title' | 'img' | 'tmdb_id' | 'genres' | 'release_date' | 'createdAt' | 'vote_average' | 'overview' | 'downloaded'>
+    )> }
   )> }
 );
 
@@ -221,6 +225,22 @@ export const UserDocument = gql`
   user(email: $email) {
     role
     subscription
+    id
+    name
+    email
+    notification
+    movies {
+      id
+      title
+      img
+      tmdb_id
+      genres
+      release_date
+      createdAt
+      vote_average
+      overview
+      downloaded
+    }
   }
 }
     `;

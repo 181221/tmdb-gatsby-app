@@ -5,13 +5,23 @@ export const options_getToken = user => {
     ) {
       token
       user {
-        email
         role
+        subscription
+        id
+        name
+        email
+        notification
         movies {
-          title
-          downloaded
-          createdAt
           id
+          title
+          img
+          tmdb_id
+          genres
+          release_date
+          createdAt
+          vote_average
+          overview
+          downloaded
         }
       }
     }
@@ -48,7 +58,8 @@ export const handleRequest = (user, url, setUserData) => {
       query: ql,
     }),
   };
-  fetch(url, options)
+
+  return fetch(url, options)
     .then(res => {
       if (res.ok) {
         return res.json();
@@ -59,7 +70,7 @@ export const handleRequest = (user, url, setUserData) => {
       if (json.errors && json.errors.length > 0) {
         const error = json.errors[0];
         if (error.message === 'user already exists') {
-          fetch(url, options_getToken(user))
+          return fetch(url, options_getToken(user))
             .then(res => res.json())
             .then(j => {
               setUserData(j.data.getToken);

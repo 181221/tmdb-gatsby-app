@@ -1,5 +1,5 @@
 import React from 'react';
-import { isAuthenticated, login } from '../utils/auth';
+import { isAuthenticated, login } from '../utils/auth/auth';
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
   if (!isAuthenticated()) {

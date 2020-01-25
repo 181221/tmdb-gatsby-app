@@ -16,6 +16,48 @@ export const QUERY_USER = gql`
     user(email: $email) {
       role
       subscription
+      id
+      name
+      email
+      notification
+      movies {
+        id
+        title
+        img
+        tmdb_id
+        genres
+        release_date
+        createdAt
+        vote_average
+        overview
+        downloaded
+      }
+    }
+  }
+`;
+
+export const query = gql`
+  query User {
+    user {
+      role
+      subscription
+      id
+      name
+      email
+      notification
+      token
+      movies {
+        id
+        title
+        img
+        tmdb_id
+        genres
+        release_date
+        createdAt
+        vote_average
+        overview
+        downloaded
+      }
     }
   }
 `;

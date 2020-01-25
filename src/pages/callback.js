@@ -1,5 +1,5 @@
 import React from 'react';
-import { handleAuthentication } from '../utils/auth';
+import { handleAuthentication } from '../utils/auth/auth';
 
 const Callback = () => {
   handleAuthentication();

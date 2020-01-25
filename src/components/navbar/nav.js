@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { logout, getProfile, login, isAuthenticated } from '../../utils/auth';
+import { logout, getProfile, login, isAuthenticated } from '../../utils/auth/auth';
 import { useStyles } from './styles';
 import { landing } from '../../constants/route';
 

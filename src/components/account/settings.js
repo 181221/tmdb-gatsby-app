@@ -2,7 +2,7 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { getProfile } from '../../utils/auth';
+import { getProfile } from '../../utils/auth/auth';
 // eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line import/extensions
 import { useUserQuery } from '../../generated/graphql';

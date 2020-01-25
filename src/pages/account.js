@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from '@reach/router';
-import { login, isAuthenticated } from '../utils/auth';
+import { login, isAuthenticated } from '../utils/auth/auth';
 import Discover from '../components/movie/discover';
 import Movie from '../components/movie/movie';
 import PrivateRoute from '../components/privateRoute';
