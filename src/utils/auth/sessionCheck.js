@@ -7,7 +7,11 @@ import { silentAuth } from './auth';
 const SessionCheck = ({ children, location }) => {
   const [loading, setLoading] = useState(true);
   const handleCheckSession = user => {
-    addUserToCache(user);
+    if (!user) {
+      localStorage.setItem('isLoggedIn', false);
+    } else {
+      addUserToCache(user);
+    }
     setLoading(false);
     if (location.pathname === '/callback/' || location.pathname === '/callback') {
       navigate(landing);

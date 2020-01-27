@@ -41,20 +41,16 @@ const SettingsAdmin = ({ user }) => {
   const pushOver = useFormInput('');
   const nickname = useFormInput('');
 
-  const feilmeldinger = {
-    radarrUrl: '',
-    pushOver: '',
-    nickname: '',
-  };
   const [
     { isValid, radarrUrlFeilmelding, pushOverFeilmelding, nicknameFeilmelding },
     dispatch,
-  ] = useReducer(reducer, feilmeldinger);
+  ] = useReducer(reducer, '');
 
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
     elements.forEach(el => {
+      console.log('el', el);
       dispatch({
         type: el.name,
         el,
@@ -62,8 +58,10 @@ const SettingsAdmin = ({ user }) => {
     });
   };
   useEffect(() => {
+    console.log('useEffect', isValid);
     if (isValid) {
       console.log('form is valid');
+      // submit form;
     }
   }, [isValid]);
 
@@ -133,7 +131,7 @@ const SettingsAdmin = ({ user }) => {
             </Typography>
           )}
         </label>
-        <Input type="submit" value="Submit" />
+        <Input type="submit" value="Submit" name="submit" />
       </Form>
     </Container>
   );

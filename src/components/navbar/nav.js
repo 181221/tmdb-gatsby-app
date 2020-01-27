@@ -21,10 +21,15 @@ const StyledDiv = styled.div``;
 
 export default function ButtonAppBar() {
   const classes = useStyles();
-
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  let user;
+  const loggedIN = localStorage.getItem('isLoggedIn') === 'true';
+  if (loggedIN) {
+    console.log('getting shit');
+    const client = useApolloClient();
+    const data = client.readQuery({ query });
+    user = data.user;
+    console.log('user', user);
+  }
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
@@ -37,7 +42,7 @@ export default function ButtonAppBar() {
           </StyledLink>
           <div className={classes.title} />
           <Typography variant="h6" className={classes.user}>
-            {user.name}
+            {user && user.name}
           </Typography>
           {isAuthenticated() ? (
             <Button

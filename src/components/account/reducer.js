@@ -34,14 +34,15 @@ export const reducer = (state, { el, type }) => {
       // validate everything and submit the form
 
       console.log('state', state);
-      if (state.pushOverIsValid && state.radarrIsValid && state.nicknameIsValid) {
+      const isValid = state.pushOverIsValid && state.radarrIsValid && state.nicknameIsValid;
+      if (isValid) {
         console.log('form is valid');
         // form is valid and we can submit
-        return { ...state, isValid: true };
+        return { ...state, isValid };
       }
       // form is not valid
       console.log('form is not valid');
-      return { ...state, isValid: false };
+      return { ...state, isValid };
     }
     default: {
       return state;
