@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useApolloClient } from 'react-apollo-hooks';
+import { query } from '../query';
 import { Link } from 'gatsby';
 import Similar from './similar/similar';
 import { gen } from './card';
@@ -164,7 +166,9 @@ const Movie = ({ location }) => {
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
-  const user = getProfile();
+  const client = useApolloClient();
+  const data = client.readQuery({ query });
+  const { user } = data;
   useEffect(() => {
     if (!locationId) {
       setError(true);

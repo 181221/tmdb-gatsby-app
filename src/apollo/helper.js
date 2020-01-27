@@ -1,33 +1,15 @@
 import { setContext } from 'apollo-link-context';
-import { getProfile } from '../utils/auth/auth';
-import { prisma_endpoint } from '../constants/route';
+import { useApolloClient } from 'react-apollo-hooks';
+import { query } from '../components/query';
 // method for handeling refresh token
 export const authLink = setContext(async (_, { headers }) => {
-  let token = localStorage.getItem('AUTH_TOKEN');
-  const user = getProfile();
-  const ql = `mutation {
-            getToken(
-              email: "${user.email}"
-            ) {
-              token
-            }
-          }`;
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: ql,
-    }),
-  };
-  const response = await fetch(prisma_endpoint, options);
-  const json = await response.json();
-  token = json.data.getToken.token;
+  const client = useApolloClient();
+  const data = client.readQuery({ query });
+  const { user } = data;
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: user.tokn,
     },
   };
 });

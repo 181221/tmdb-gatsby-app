@@ -2,10 +2,8 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { getProfile } from '../../utils/auth/auth';
-// eslint-disable-next-line import/no-unresolved
-// eslint-disable-next-line import/extensions
-import { useUserQuery } from '../../generated/graphql';
+import { useApolloClient } from 'react-apollo-hooks';
+import { query } from '../query';
 
 const Container = styled.div`
   width: 50%;
@@ -73,7 +71,6 @@ const useFormInput = initialValue => {
 };
 
 const SettingsAdmin = ({ user }) => {
-  console.log('userDataFrom admin', user);
   const radarrUrl = useFormInput('');
   const pushOver = useFormInput('');
   const feilmeldinger = {
@@ -95,10 +92,6 @@ const SettingsAdmin = ({ user }) => {
     });
     dispatch({ type: 'SUBMIT' });
   };
-  useEffect(() => {
-    // fetch user information and add them to the form.
-    console.log('mounting ');
-  }, []); // renders when component mounts
   useEffect(() => {
     if (isValid) {
       console.log('form is valid');
@@ -124,36 +117,17 @@ const SettingsAdmin = ({ user }) => {
   );
 };
 const SettingsUser = ({ user }) => {
-  console.log('user Customer ', user);
   return <div>Settings for customer</div>;
 };
 
 const Settings = () => {
-  const user = getProfile();
-  const [userData, setUserData] = useState(undefined);
-  const { data, loading, error } = useUserQuery({
-    variables: { email: String(user.email) },
-  }); // get the settings from user change query in query.ts
-  console.log(data);
-  useEffect(
-    () => {
-      setUserData(data);
-    },
-    data,
-    userData,
-    setUserData,
-  );
-  if (loading) {
-    return <div>loading</div>;
-  }
-  if (error) {
-    return <div>error</div>;
-  }
+  const client = useApolloClient();
+  const data = client.readQuery({ query });
   if (data) {
     if (data.user.role === 'ADMIN') {
-      return <SettingsAdmin user={userData} />;
+      return <SettingsAdmin user={data.user} />;
     }
-    return <SettingsUser user={userData} />;
+    return <SettingsUser user={data.use} />;
   }
   return <></>;
 };

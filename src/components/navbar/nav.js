@@ -5,9 +5,12 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { logout, getProfile, login, isAuthenticated } from '../../utils/auth/auth';
+import { useApolloClient } from 'react-apollo-hooks';
+import { logout, login, isAuthenticated } from '../../utils/auth/auth';
 import { useStyles } from './styles';
-import { landing } from '../../constants/route';
+import { landing, account_settings } from '../../constants/route';
+
+import { query } from '../query';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -17,9 +20,11 @@ const StyledLink = styled(Link)`
 const StyledDiv = styled.div``;
 
 export default function ButtonAppBar() {
-  const user = getProfile();
   const classes = useStyles();
 
+  const client = useApolloClient();
+  const data = client.readQuery({ query });
+  const { user } = data;
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
@@ -27,9 +32,12 @@ export default function ButtonAppBar() {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
+          <StyledLink to={account_settings}>
+            <Typography variant="h6">Settings</Typography>
+          </StyledLink>
           <div className={classes.title} />
           <Typography variant="h6" className={classes.user}>
-            {user.nickname}
+            {user.name}
           </Typography>
           {isAuthenticated() ? (
             <Button
