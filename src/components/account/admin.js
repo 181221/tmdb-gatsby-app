@@ -81,10 +81,14 @@ const SettingsAdmin = () => {
         .then(res => res.json())
         .then(json => {
           setLoading(false);
+          console.log('json', json);
           if (json.errors && json.errors.length > 0) {
             setError(true);
           } else {
             setSuccess(true);
+            setTimeout(() => {
+              setSuccess(false);
+            }, 5000);
           }
           data.user.name = state.name;
           client.writeQuery({
@@ -95,7 +99,7 @@ const SettingsAdmin = () => {
           });
         });
     }
-  }, [isValid, success, setSuccess]);
+  }, [isValid]);
 
   return (
     <>
