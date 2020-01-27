@@ -10,6 +10,7 @@ import { prisma_endpoint } from '../../constants/route';
 import { reducer } from './reducer';
 import { apolloFetch } from '../../utils/handleRequest';
 import { updateUserQuery } from '../gql';
+import { getOptions } from './helper';
 
 const Container = styled.div`
   width: 50%;
@@ -43,6 +44,12 @@ const useFormInput = initialValue => {
   };
 };
 
+const handleRequest = async options => {
+  const res = await fetch(prisma_endpoint, options);
+  const json = await res.json();
+  console.log('json', json);
+};
+
 const SettingsAdmin = ({ user }) => {
   const radarrUrl = useFormInput('');
   const pushOver = useFormInput('');
@@ -65,16 +72,14 @@ const SettingsAdmin = ({ user }) => {
         el,
       });
     });
-
-    const variables = {
-      email: user.email,
-      name: state.nickname,
-      notification: state.notification,
-    };
-    const fetcher = apolloFetch(user, prisma_endpoint);
-    fetcher({ updateUserQuery, variables })
-      .then(res => console.log(res))
-      .catch(err => console.error(err));
+    console.log('getting ops');
+    const options = getOptions(user, state);
+    console.log('options ops', options);
+    fetch(prisma_endpoint, options)
+      .then(res => res.json())
+      .then(json => console.log('json', json));
+    console.log(options);
+    //handleRequest(options);
   };
   useEffect(() => {
     console.log('useEffect', isValid);

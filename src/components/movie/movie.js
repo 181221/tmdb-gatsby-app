@@ -9,11 +9,10 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useApolloClient } from 'react-apollo-hooks';
-import { query } from '../gql';
 import { Link } from 'gatsby';
+import { query } from '../gql';
 import Similar from './similar/similar';
 import { gen } from './card';
-import { getProfile } from '../../utils/auth/auth';
 import {
   radarr_url,
   prisma_endpoint,
