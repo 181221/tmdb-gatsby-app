@@ -25,3 +25,24 @@ export const query = gql`
     }
   }
 `;
+
+export const updateUserQuery = `mutation updateUser(
+  $email: String!
+  $notification: Boolean
+  $subscription: String
+  $name: String
+) {
+  updateUser(
+    email: $email
+    notification: $notification
+    subscription: $subscription
+    name: $name
+  ) {
+    role
+    subscription
+    id
+    name
+    email
+    notification
+  }
+}`;

@@ -9,7 +9,7 @@ export const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: user.tokn,
+      authorization: user.token,
     },
   };
 });

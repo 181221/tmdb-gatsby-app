@@ -1,3 +1,23 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-shadow */
+const { createApolloFetch } = require('apollo-fetch');
+
+export const apolloFetch = (user, url) => {
+  const apollo = createApolloFetch({
+    uri: url,
+  });
+  apollo.use(async ({ request, options }, next) => {
+    if (!options.headers) {
+      options.headers = {}; // Create the headers object if needed.
+    }
+    if (!options.headers.authorization) {
+      options.headers.authorization = `Bearer ${user.token}`;
+    }
+    next();
+  });
+  return apollo;
+};
+
 export const options_getToken = user => {
   const ql1 = `mutation {
     getToken(

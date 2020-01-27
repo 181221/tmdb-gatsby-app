@@ -6,8 +6,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import { prisma_endpoint } from '../../constants/route';
 import { reducer } from './reducer';
+import { apolloFetch } from '../../utils/handleRequest';
+import { updateUserQuery } from '../gql';
 
 const Container = styled.div`
   width: 50%;
@@ -47,10 +49,8 @@ const SettingsAdmin = ({ user }) => {
   const nickname = useFormInput('');
   const [checked, setChecked] = useState(false);
 
-  const [
-    { isValid, radarrUrlFeilmelding, pushOverFeilmelding, nicknameFeilmelding },
-    dispatch,
-  ] = useReducer(reducer, '');
+  const [state, dispatch] = useReducer(reducer, '');
+  const { isValid, radarrUrlFeilmelding, pushOverFeilmelding, nicknameFeilmelding } = state;
 
   const handleChange = e => {
     setChecked(e.target.checked);
@@ -60,12 +60,21 @@ const SettingsAdmin = ({ user }) => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
     elements.forEach(el => {
-      console.log('el', el);
       dispatch({
         type: el.name,
         el,
       });
     });
+
+    const variables = {
+      email: user.email,
+      name: state.nickname,
+      notification: state.notification,
+    };
+    const fetcher = apolloFetch(user, prisma_endpoint);
+    fetcher({ updateUserQuery, variables })
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
   };
   useEffect(() => {
     console.log('useEffect', isValid);
