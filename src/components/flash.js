@@ -10,19 +10,27 @@ const useStyles = makeStyles({
   root: { marginBottom: '24px' },
 });
 
-const Container = styled.div`
+export const FlashContainer = styled.div`
   margin: 0 10%;
   @media (max-width: 768px) {
     width: 80%;
   }
 `;
-const FlashMessage = ({ error, success, hasFile, downloaded, inCollection }) => {
+const sucessMessage = 'This movie was successfully requested!';
+const FlashMessage = ({
+  error,
+  success,
+  hasFile,
+  downloaded,
+  inCollection,
+  message = sucessMessage,
+}) => {
   const [open, setOpen] = React.useState(true);
 
   const classes = useStyles();
 
   return (
-    <Container>
+    <>
       {error && (
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
@@ -32,7 +40,7 @@ const FlashMessage = ({ error, success, hasFile, downloaded, inCollection }) => 
       {success && (
         <Alert severity="success" className={classes.root}>
           <AlertTitle>Success</AlertTitle>
-          This movie was successfully requested!
+          {message}
         </Alert>
       )}
       {hasFile && (
@@ -69,7 +77,7 @@ const FlashMessage = ({ error, success, hasFile, downloaded, inCollection }) => 
           </Alert>
         </Collapse>
       )}
-    </Container>
+    </>
   );
 };
 

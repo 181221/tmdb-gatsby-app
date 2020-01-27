@@ -20,24 +20,24 @@ export const reducer = (state, { el, type }) => {
       }
       return { ...state, pushOver: el.value, pushOverFeilmelding: '', pushOverIsValid: true };
     }
-    case 'nickname': {
+    case 'name': {
       if (!el.value) {
         return {
           ...state,
-          nicknameFeilmelding: 'nickname cannot be null',
-          nicknameIsValid: false,
+          nameFeilmelding: 'nickname cannot be null',
+          nameIsValid: false,
         };
       }
-      return { ...state, nickname: el.value, nicknameFeilmelding: '', nicknameIsValid: true };
+      return { ...state, name: el.value, nameFeilmelding: '', nameIsValid: true };
     }
     case 'checkbox': {
       return { ...state, notification: el.value === 'true' };
     }
     case 'submit': {
       // validate everything and submit the form
-
+      console.log('submit');
       console.log('state', state);
-      const isValid = state.pushOverIsValid && state.radarrIsValid && state.nicknameIsValid;
+      const isValid = state.pushOverIsValid && state.radarrIsValid && state.nameIsValid;
       if (isValid) {
         console.log('form is valid');
         // form is valid and we can submit

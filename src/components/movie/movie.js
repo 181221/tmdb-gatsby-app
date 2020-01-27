@@ -21,7 +21,7 @@ import {
   tmdb_endpoint,
 } from '../../constants/route';
 import { createOptions, handlePushoverRequest } from '../../utils/movieHelper';
-import FlashMessage from '../flash';
+import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 
 const Wrapper = styled.div`
@@ -277,13 +277,16 @@ const Movie = ({ location }) => {
     return (
       <>
         <Wrapper>
-          <FlashMessage
-            error={error}
-            success={created}
-            downloaded={downloaded}
-            hasFile={hasFile}
-            inCollection={inCollection}
-          />
+          <FlashContainer>
+            <FlashMessage
+              error={error}
+              success={created}
+              downloaded={downloaded}
+              hasFile={hasFile}
+              inCollection={inCollection}
+            />
+          </FlashContainer>
+
           <ReturnDiv>
             <Typography variant="body1" component="p">
               <StyledLink to={landing}>

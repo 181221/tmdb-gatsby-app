@@ -3,7 +3,7 @@ export const getOptions = (user, state) => {
     updateUser(
         email: "${user.email}"
         notification: ${state.notification}
-        name: "${state.nickname}"
+        name: "${state.name}"
       ) {
         role
         subscription

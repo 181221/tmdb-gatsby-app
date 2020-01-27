@@ -24,11 +24,9 @@ export default function ButtonAppBar() {
   let user;
   const loggedIN = localStorage.getItem('isLoggedIn') === 'true';
   if (loggedIN) {
-    console.log('getting shit');
     const client = useApolloClient();
     const data = client.readQuery({ query });
     user = data.user;
-    console.log('user', user);
   }
   return (
     <StyledDiv className={classes.root}>
