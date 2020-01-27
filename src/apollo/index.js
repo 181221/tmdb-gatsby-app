@@ -5,7 +5,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 // eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line import/extensions
-import { query } from '../components/query';
+import { query } from '../components/gql';
 import { authLink } from './helper';
 
 const httpLink = createHttpLink({

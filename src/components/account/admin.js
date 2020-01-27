@@ -2,6 +2,11 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 import { reducer } from './reducer';
 
 const Container = styled.div`
@@ -40,11 +45,16 @@ const SettingsAdmin = ({ user }) => {
   const radarrUrl = useFormInput('');
   const pushOver = useFormInput('');
   const nickname = useFormInput('');
+  const [checked, setChecked] = useState(false);
 
   const [
     { isValid, radarrUrlFeilmelding, pushOverFeilmelding, nicknameFeilmelding },
     dispatch,
   ] = useReducer(reducer, '');
+
+  const handleChange = e => {
+    setChecked(e.target.checked);
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -131,6 +141,19 @@ const SettingsAdmin = ({ user }) => {
             </Typography>
           )}
         </label>
+        <FormControlLabel
+          style={{ marginLeft: '10px' }}
+          control={
+            <Checkbox
+              icon={<NotificationsOffIcon />}
+              checkedIcon={<NotificationsActiveIcon />}
+              value={checked}
+              onChange={handleChange}
+              name="checkbox"
+            />
+          }
+          label="Notifications"
+        />
         <Input type="submit" value="Submit" name="submit" />
       </Form>
     </Container>

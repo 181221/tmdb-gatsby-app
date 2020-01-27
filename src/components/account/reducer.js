@@ -8,7 +8,7 @@ export const reducer = (state, { el, type }) => {
           radarrIsValid: false,
         };
       }
-      return { ...state, radarrUrlFeilmelding: '', radarrIsValid: true };
+      return { ...state, radarrUrl: el.value, radarrUrlFeilmelding: '', radarrIsValid: true };
     }
     case 'pushOver': {
       if (!el.value) {
@@ -18,7 +18,7 @@ export const reducer = (state, { el, type }) => {
           pushOverIsValid: false,
         };
       }
-      return { ...state, pushOverFeilmelding: '', pushOverIsValid: true };
+      return { ...state, pushOver: el.value, pushOverFeilmelding: '', pushOverIsValid: true };
     }
     case 'nickname': {
       if (!el.value) {
@@ -28,7 +28,10 @@ export const reducer = (state, { el, type }) => {
           nicknameIsValid: false,
         };
       }
-      return { ...state, nicknameFeilmelding: '', nicknameIsValid: true };
+      return { ...state, nickname: el.value, nicknameFeilmelding: '', nicknameIsValid: true };
+    }
+    case 'checkbox': {
+      return { ...state, notification: el.value === 'true' };
     }
     case 'submit': {
       // validate everything and submit the form

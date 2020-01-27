@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useApolloClient } from 'react-apollo-hooks';
-import { query } from '../query';
+import { query } from '../gql';
 import SettingsAdmin from './admin';
 import SettingsUser from './user';
 
