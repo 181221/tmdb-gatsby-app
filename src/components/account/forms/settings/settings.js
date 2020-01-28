@@ -14,7 +14,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useApolloClient } from 'react-apollo-hooks';
 import { query } from '../../../gql';
 import { prisma_endpoint } from '../../../../constants/route';
-import { getOptions } from '../../helper';
+import { getOptions } from './helper';
 
 const reducer = (state, { el, type }) => {
   switch (type) {
