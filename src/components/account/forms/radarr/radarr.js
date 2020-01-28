@@ -58,7 +58,7 @@ export default function RadarrDialog({ dialog }) {
         });
     }
   }, [state]);
-  const handleConnection = e => {
+  const handleConnection = () => {
     setTest(true);
   };
   return (

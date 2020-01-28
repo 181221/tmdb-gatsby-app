@@ -35,13 +35,12 @@ export default function ButtonAppBar() {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          <StyledLink to={account_settings}>
-            <Typography variant="h6">Settings</Typography>
-          </StyledLink>
           <div className={classes.title} />
-          <Typography variant="h6" className={classes.user}>
-            {user && user.name}
-          </Typography>
+          {user && user.name && (
+            <StyledLink to={account_settings}>
+              <Typography variant="h6">Settings</Typography>
+            </StyledLink>
+          )}
           {isAuthenticated() ? (
             <Button
               href="#logout"
