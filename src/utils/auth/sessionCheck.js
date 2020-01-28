@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import { graphql, useStaticQuery, navigate } from 'gatsby';
 import { addUserToCache } from '../../apollo/index';
@@ -15,12 +16,14 @@ const SessionCheck = ({ children, location }) => {
       }
     }
   `);
+  const settings = hasSettings.radarrSettings.internal.content;
+
   const handleCheckSession = user => {
     if (!user) {
       localStorage.setItem('isLoggedIn', false);
     } else {
-      if (user.role === 'ADMIN' && !hasSettings) {
-        user.hasSettings = false;
+      if (user.role === 'ADMIN') {
+        user.hasSettings = settings === 'true';
       }
       addUserToCache(user);
     }

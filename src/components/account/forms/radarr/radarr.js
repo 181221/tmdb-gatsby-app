@@ -102,7 +102,10 @@ export default function RadarrDialog({ dialog }) {
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          <DialogContentText>Enable your radarr endpoint for requesting movies</DialogContentText>
+          <DialogContentText>
+            Enable your radarr endpoint for requesting movies
+            <DialogContentText>For changes to take effect restart, the app</DialogContentText>
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -113,6 +116,7 @@ export default function RadarrDialog({ dialog }) {
             type="radarrUrl"
             helperText={urlFeilmelding}
             fullWidth
+            value={process.env.RADARR_API_ENDPOINT}
           />
           <TextField
             autoFocus
@@ -124,6 +128,7 @@ export default function RadarrDialog({ dialog }) {
             helperText={apiFeilmelding}
             type="radarrAPI"
             fullWidth
+            value={process.env.RADARR_API_KEY}
           />
           <TextField
             autoFocus
@@ -135,6 +140,7 @@ export default function RadarrDialog({ dialog }) {
             label="Radarr root folder"
             type="radarrFolder"
             fullWidth
+            value={process.env.RADARR_ROOT_FOLDER_PATH}
           />
         </DialogContent>
         <DialogActions>

@@ -92,6 +92,7 @@ const checkFile = (path, reporter) => {
   if (!result.RADARR_API_KEY || !result.RADARR_API_ENDPOINT || !result.RADARR_ROOT_FOLDER_PATH) {
     return false;
   }
+  return true;
 };
 
 exports.onPreBootstrap = async gatsbyNodeHelpers => {
@@ -143,6 +144,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
       };
       node.internal.contentDigest = createContentDigest(node);
       actions.createNode(node);
+
       return;
     }
     const fileContent = fs

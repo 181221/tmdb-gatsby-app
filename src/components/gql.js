@@ -10,6 +10,7 @@ export const query = gql`
       email
       notification
       token
+      hasSettings
       movies {
         id
         title
