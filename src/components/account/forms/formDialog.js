@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
@@ -17,7 +18,7 @@ const Div = styled.div`
   text-align: center;
 `;
 
-export default function FormDialog({ title, children, dialog }) {
+export default function FormDialog({ title, children, dialog, icon }) {
   const { onClick, onClose, open } = dialog;
   return (
     <div>
@@ -28,7 +29,11 @@ export default function FormDialog({ title, children, dialog }) {
               <Typography variant="h5" component="h2">
                 {title}
               </Typography>
-              <AddCircleOutlineIcon style={{ fontSize: '100px' }} />
+              {icon === 'account' ? (
+                <SettingsIcon style={{ fontSize: '100px' }} />
+              ) : (
+                <AddCircleOutlineIcon style={{ fontSize: '100px' }} />
+              )}
             </Div>
           </CardContent>
         </Card>

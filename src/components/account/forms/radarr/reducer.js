@@ -1,7 +1,7 @@
 export const reducer = (state, { el, type }) => {
   switch (type) {
     case 'url': {
-      let regex = /^(http|https):\/\/[0-9a-zA-Z.-:/]*/gm;
+      const regex = /^(http|https):\/\/[0-9a-zA-Z.-:/]*/gm;
       if (el.value.match(regex) === null) {
         return {
           ...state,
