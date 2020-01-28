@@ -36,7 +36,7 @@ export default function ButtonAppBar() {
             <Typography variant="h6">Home</Typography>
           </StyledLink>
           <div className={classes.title} />
-          {user && user.name && (
+          {user && (
             <StyledLink to={account_settings}>
               <Typography variant="h6">Settings</Typography>
             </StyledLink>
