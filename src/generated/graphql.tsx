@@ -65,7 +65,10 @@ export type MutationGetTokenArgs = {
 
 export type MutationUpdateUserArgs = {
   email: Scalars['String'],
-  subscription: Scalars['String']
+  subscription?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+  notification?: Maybe<Scalars['Boolean']>,
+  role?: Maybe<Role>
 };
 
 
@@ -164,6 +167,22 @@ export type UserQuery = (
       { __typename?: 'Movie' }
       & Pick<Movie, 'id' | 'title' | 'img' | 'tmdb_id' | 'genres' | 'release_date' | 'createdAt' | 'vote_average' | 'overview' | 'downloaded'>
     )> }
+  )> }
+);
+
+export type UpdateUserMutationVariables = {
+  email: Scalars['String'],
+  notification?: Maybe<Scalars['Boolean']>,
+  subscription?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>
+};
+
+
+export type UpdateUserMutation = (
+  { __typename?: 'Mutation' }
+  & { updateUser: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'role' | 'subscription' | 'id' | 'name' | 'email' | 'notification'>
   )> }
 );
 
@@ -287,3 +306,60 @@ export function useUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOpt
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = ApolloReactCommon.QueryResult<UserQuery, UserQueryVariables>;
+export const UpdateUserDocument = gql`
+    mutation updateUser($email: String!, $notification: Boolean, $subscription: String, $name: String) {
+  updateUser(email: $email, notification: $notification, subscription: $subscription, name: $name) {
+    role
+    subscription
+    id
+    name
+    email
+    notification
+  }
+}
+    `;
+export type UpdateUserMutationFn = ApolloReactCommon.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+export type UpdateUserComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateUserMutation, UpdateUserMutationVariables>, 'mutation'>;
+
+    export const UpdateUserComponent = (props: UpdateUserComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateUserMutation, UpdateUserMutationVariables> mutation={UpdateUserDocument} {...props} />
+    );
+    
+export type UpdateUserProps<TChildProps = {}> = ApolloReactHoc.MutateProps<UpdateUserMutation, UpdateUserMutationVariables> & TChildProps;
+export function withUpdateUser<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  UpdateUserMutation,
+  UpdateUserMutationVariables,
+  UpdateUserProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, UpdateUserMutation, UpdateUserMutationVariables, UpdateUserProps<TChildProps>>(UpdateUserDocument, {
+      alias: 'updateUser',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      notification: // value for 'notification'
+ *      subscription: // value for 'subscription'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, baseOptions);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = ApolloReactCommon.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;

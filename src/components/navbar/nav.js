@@ -10,7 +10,7 @@ import { logout, login, isAuthenticated } from '../../utils/auth/auth';
 import { useStyles } from './styles';
 import { landing, account_settings } from '../../constants/route';
 
-import { query } from '../query';
+import { query } from '../gql';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -21,10 +21,13 @@ const StyledDiv = styled.div``;
 
 export default function ButtonAppBar() {
   const classes = useStyles();
-
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  let user;
+  const loggedIN = localStorage.getItem('isLoggedIn') === 'true';
+  if (loggedIN) {
+    const client = useApolloClient();
+    const data = client.readQuery({ query });
+    user = data.user;
+  }
   return (
     <StyledDiv className={classes.root}>
       <AppBar position="static" className={classes.test}>
@@ -32,13 +35,12 @@ export default function ButtonAppBar() {
           <StyledLink to={landing}>
             <Typography variant="h6">Home</Typography>
           </StyledLink>
-          <StyledLink to={account_settings}>
-            <Typography variant="h6">Settings</Typography>
-          </StyledLink>
           <div className={classes.title} />
-          <Typography variant="h6" className={classes.user}>
-            {user.name}
-          </Typography>
+          {user && (
+            <StyledLink to={account_settings}>
+              <Typography variant="h6">Settings</Typography>
+            </StyledLink>
+          )}
           {isAuthenticated() ? (
             <Button
               href="#logout"

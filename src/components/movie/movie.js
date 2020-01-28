@@ -9,11 +9,10 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useApolloClient } from 'react-apollo-hooks';
-import { query } from '../query';
 import { Link } from 'gatsby';
+import { query } from '../gql';
 import Similar from './similar/similar';
 import { gen } from './card';
-import { getProfile } from '../../utils/auth/auth';
 import {
   radarr_url,
   prisma_endpoint,
@@ -22,7 +21,7 @@ import {
   tmdb_endpoint,
 } from '../../constants/route';
 import { createOptions, handlePushoverRequest } from '../../utils/movieHelper';
-import FlashMessage from '../flash';
+import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 
 const Wrapper = styled.div`
@@ -278,13 +277,16 @@ const Movie = ({ location }) => {
     return (
       <>
         <Wrapper>
-          <FlashMessage
-            error={error}
-            success={created}
-            downloaded={downloaded}
-            hasFile={hasFile}
-            inCollection={inCollection}
-          />
+          <FlashContainer>
+            <FlashMessage
+              error={error}
+              success={created}
+              downloaded={downloaded}
+              hasFile={hasFile}
+              inCollection={inCollection}
+            />
+          </FlashContainer>
+
           <ReturnDiv>
             <Typography variant="body1" component="p">
               <StyledLink to={landing}>

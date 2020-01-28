@@ -5,7 +5,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 // eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line import/extensions
-import { query } from '../components/query';
+import { query } from '../components/gql';
 import { authLink } from './helper';
 
 const httpLink = createHttpLink({
@@ -30,17 +30,16 @@ export const client = new ApolloClient({
 });
 
 export const addUserToCache = user => {
-  if (user) {
-    user.__typename = 'User';
-    user.movies.forEach(movie => {
-      movie.__typename = 'Movie';
-    });
-    client.writeQuery({
-      query,
-      data: {
-        user,
-      },
-    });
-  }
+  user.__typename = 'User';
+  user.movies.forEach(movie => {
+    movie.__typename = 'Movie';
+  });
+  client.writeQuery({
+    query,
+    data: {
+      user,
+    },
+  });
+
   return false;
 };

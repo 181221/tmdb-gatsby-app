@@ -35,29 +35,25 @@ export const QUERY_USER = gql`
     }
   }
 `;
-
-export const query = gql`
-  query User {
-    user {
+export const UPDATE_USER = gql`
+  mutation updateUser(
+    $email: String!
+    $notification: Boolean
+    $subscription: String
+    $name: String
+  ) {
+    updateUser(
+      email: $email
+      notification: $notification
+      subscription: $subscription
+      name: $name
+    ) {
       role
       subscription
       id
       name
       email
       notification
-      token
-      movies {
-        id
-        title
-        img
-        tmdb_id
-        genres
-        release_date
-        createdAt
-        vote_average
-        overview
-        downloaded
-      }
     }
   }
 `;

@@ -1,6 +1,6 @@
 import { setContext } from 'apollo-link-context';
 import { useApolloClient } from 'react-apollo-hooks';
-import { query } from '../components/query';
+import { query } from '../components/gql';
 // method for handeling refresh token
 export const authLink = setContext(async (_, { headers }) => {
   const client = useApolloClient();
@@ -9,7 +9,7 @@ export const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: user.tokn,
+      authorization: user.token,
     },
   };
 });

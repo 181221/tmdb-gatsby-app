@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, useStaticQuery, Link } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
+import { useApolloClient } from 'react-apollo-hooks';
+import Alert from '@material-ui/lab/Alert';
 import Card from './card';
 import SearchBar from '../search/search-bar';
+import { query } from '../gql';
+import { account_settings } from '../../constants/route';
 
 const Heading = styled.div`
   margin: 24px;
@@ -18,6 +22,9 @@ const CardContainer = styled.div`
 `;
 
 const Discover = () => {
+  const client = useApolloClient();
+  const data = client.readQuery({ query });
+  const { user } = data;
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMoviePopular(sort: { fields: title }, limit: 50) {
@@ -51,8 +58,16 @@ const Discover = () => {
 
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
+
   return (
     <>
+      <div style={{ margin: '24px 10%' }}>
+        {!user.hasSettings && (
+          <Link to={`${account_settings}`}>
+            <Alert severity="info">You need to settup radarr settings click here to setup</Alert>
+          </Link>
+        )}
+      </div>
       <Heading>
         <Typography variant="h4" component="h4" align="center">
           Discover
