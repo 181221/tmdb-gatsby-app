@@ -10,15 +10,15 @@ export const reducer = (state, { el, type }) => {
       }
       return { ...state, radarrUrl: el.value, radarrUrlFeilmelding: '', radarrIsValid: true };
     }
-    case 'pushOver': {
+    case 'pushoverUrl': {
       if (!el.value) {
         return {
           ...state,
-          pushOverFeilmelding: 'key cannot be undefined',
-          pushOverIsValid: false,
+          pushoverFeilmelding: 'Not a valid url',
+          pushoverIsValid: false,
         };
       }
-      return { ...state, pushOver: el.value, pushOverFeilmelding: '', pushOverIsValid: true };
+      return { ...state, pushOver: el.value, pushoverFeilmelding: '', pushoverIsValid: true };
     }
     case 'name': {
       if (!el.value) {
@@ -37,7 +37,7 @@ export const reducer = (state, { el, type }) => {
       // validate everything and submit the form
       console.log('submit');
       console.log('state', state);
-      const isValid = state.pushOverIsValid && state.radarrIsValid && state.nameIsValid;
+      const isValid = state.pushoverIsValid && state.radarrIsValid && state.nameIsValid;
       if (isValid) {
         console.log('form is valid');
         // form is valid and we can submit

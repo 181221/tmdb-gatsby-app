@@ -12,6 +12,8 @@ import { prisma_endpoint } from '../../constants/route';
 import { reducer } from './reducer';
 import { getOptions } from './helper';
 import FlashMessage from '../flash';
+import FormDialog from './forms/formDialog';
+import RadarrDialog from './forms/radarr/radarr';
 
 const Container = styled.div`
   margin: 0 10%;
@@ -45,20 +47,40 @@ const useFormInput = initialValue => {
   };
 };
 
+const useDialog = init => {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState(init);
+
+  const onClick = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+  return {
+    open,
+    onClick,
+    onClose,
+    title,
+    setTitle,
+  };
+};
+
 const SettingsAdmin = () => {
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
   const radarrUrl = useFormInput('');
-  const pushOver = useFormInput('');
+  const pushover = useFormInput('');
   const name = useFormInput(user.name);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
   const [error, setError] = useState(false);
   const [state, dispatch] = useReducer(reducer, '');
-  const { isValid, radarrUrlFeilmelding, pushOverFeilmelding, nameFeilmelding } = state;
-
+  const { isValid, radarrUrlFeilmelding, pushoverFeilmelding, nameFeilmelding } = state;
+  const radarrDialog = useDialog('Radarr');
   const handleChange = e => {
     setChecked(e.target.checked);
   };
@@ -104,6 +126,9 @@ const SettingsAdmin = () => {
   return (
     <>
       <Container>
+        <FormDialog dialog={radarrDialog}>
+          <RadarrDialog dialog={radarrDialog} />
+        </FormDialog>
         {error && <FlashMessage error={error} />}
         {success && <FlashMessage success={success} message="update complete" />}
         <Typography variant="h4" component="h4">
@@ -121,7 +146,7 @@ const SettingsAdmin = () => {
             <Input
               id="radarrUrl"
               name="radarrUrl"
-              placeholder="Your radarr endpoint: http://localhost:7878/api"
+              placeholder="http://localhost:7878/api"
               type="text"
               {...radarrUrl}
             />
@@ -141,22 +166,22 @@ const SettingsAdmin = () => {
               component="p"
               style={{ fontWeight: 'bold', marginLeft: '10px' }}
             >
-              pushOver
+              Pushover
             </Typography>
             <Input
-              id="pushOver"
-              name="pushOver"
-              placeholder="Your pushover endpoint: https://api.pushover.net/1/messages.json"
+              id="pushover"
+              name="pushover"
+              placeholder="https://api.pushover.net/1/messages.json"
               type="text"
-              {...pushOver}
+              {...pushover}
             />
-            {pushOverFeilmelding && (
+            {pushoverFeilmelding && (
               <Typography
                 variant="body1"
                 component="p"
                 style={{ color: 'red', marginLeft: '10px' }}
               >
-                {pushOverFeilmelding}
+                {pushoverFeilmelding}
               </Typography>
             )}
           </label>
