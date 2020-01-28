@@ -126,7 +126,10 @@ const SettingsAdmin = () => {
   return (
     <>
       <Container>
-        <FormDialog dialog={radarrDialog}>
+        <Typography variant="h4" component="h4">
+          Connetions
+        </Typography>
+        <FormDialog dialog={radarrDialog} title="Radarr">
           <RadarrDialog dialog={radarrDialog} />
         </FormDialog>
         {error && <FlashMessage error={error} />}

@@ -1,10 +1,11 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Alert from '@material-ui/lab/Alert';
 
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
@@ -13,6 +14,10 @@ import { reducer } from './reducer';
 export default function RadarrDialog({ dialog }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
+  const [test, setTest] = useState(false);
+  const [connection, setConnection] = useState(undefined);
+  const [error, setError] = useState(undefined);
+
   const {
     isValid,
     urlFeilmelding,
@@ -22,7 +27,6 @@ export default function RadarrDialog({ dialog }) {
     folderFeilmelding,
     folderIsValid,
   } = state;
-
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
@@ -32,10 +36,46 @@ export default function RadarrDialog({ dialog }) {
         el,
       });
     });
+    if (test) {
+      const payload = {
+        url: state.url,
+        key: state.api,
+      };
+      dispatch({
+        type: 'test',
+        el: payload,
+      });
+    }
   };
-  console.log('isvalid', urlIsValid);
+  useEffect(() => {
+    if (test && state.uri) {
+      setTest(false);
+      fetch(state.uri.href, { method: 'HEAD' })
+        .then(res => {
+          console.log(res);
+          if (res.status === 200) {
+            setConnection(true);
+            setError(false);
+            setTimeout(() => {
+              setConnection(false);
+            }, 5000);
+          } else {
+            setConnection(false);
+          }
+        })
+        .catch(err => {
+          console.log('error', err.toString());
+          setError('Failed to connect to service');
+        });
+    }
+  }, [state]);
+  const handleConnection = e => {
+    setTest(true);
+  };
   return (
     <>
+      {connection && <Alert severity="success">The connection was successfully established</Alert>}
+      {error && <Alert severity="error">{error}</Alert>}
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
@@ -43,7 +83,7 @@ export default function RadarrDialog({ dialog }) {
           <TextField
             autoFocus
             margin="dense"
-            error={typeof urlFeilmelding !== 'undefined'}
+            error={urlFeilmelding && urlFeilmelding.length > 0}
             id="radarrUrl"
             name="url"
             label="Radarr Url"
@@ -55,7 +95,7 @@ export default function RadarrDialog({ dialog }) {
             autoFocus
             margin="dense"
             id="radarrAPI"
-            error={typeof apiFeilmelding !== 'undefined'}
+            error={apiFeilmelding && apiFeilmelding.length > 0}
             name="api"
             label="Radarr Api key"
             helperText={apiFeilmelding}
@@ -66,7 +106,7 @@ export default function RadarrDialog({ dialog }) {
             autoFocus
             margin="dense"
             id="radarrFolder"
-            error={typeof folderFeilmelding !== 'undefined'}
+            error={folderFeilmelding && folderFeilmelding.length > 0}
             helperText={folderFeilmelding}
             name="folder"
             label="Radarr root folder"
@@ -78,7 +118,7 @@ export default function RadarrDialog({ dialog }) {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={onClose} color="primary">
+          <Button onClick={handleConnection} type="submit" color="primary">
             Test
           </Button>
           <Button type="submit" color="primary">

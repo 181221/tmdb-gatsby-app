@@ -17,7 +17,7 @@ const Div = styled.div`
   text-align: center;
 `;
 
-export default function FormDialog({ formTitle, children, dialog }) {
+export default function FormDialog({ title, children, dialog }) {
   const { onClick, onClose, open } = dialog;
   return (
     <div>
@@ -26,7 +26,7 @@ export default function FormDialog({ formTitle, children, dialog }) {
           <CardContent>
             <Div>
               <Typography variant="h5" component="h2">
-                {formTitle}
+                {title}
               </Typography>
               <AddCircleOutlineIcon style={{ fontSize: '100px' }} />
             </Div>

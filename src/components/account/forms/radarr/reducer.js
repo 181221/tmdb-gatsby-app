@@ -1,7 +1,8 @@
 export const reducer = (state, { el, type }) => {
   switch (type) {
     case 'url': {
-      if (!el.value) {
+      let regex = /^(http|https):\/\/[0-9a-zA-Z.-:/]*/gm;
+      if (el.value.match(regex) === null) {
         return {
           ...state,
           urlFeilmelding: 'Not a valid url',
@@ -14,7 +15,7 @@ export const reducer = (state, { el, type }) => {
       if (!el.value) {
         return {
           ...state,
-          apiFeilmelding: 'Not a valid api key',
+          apiFeilmelding: 'api key cannot be empty',
           apiIsValid: false,
         };
       }
@@ -24,11 +25,24 @@ export const reducer = (state, { el, type }) => {
       if (!el.value) {
         return {
           ...state,
-          folderFeilmelding: 'Not a folder path',
+          folderFeilmelding: 'path cannot be empty',
           folderIsValid: false,
         };
       }
       return { ...state, folder: el.value, folderFeilmelding: '', folderIsValid: true };
+    }
+    case 'test': {
+      const isValid = state.urlIsValid && state.apiIsValid;
+      if (isValid && el) {
+        let uri;
+        try {
+          uri = new URL(`${state.url}/system/status?apikey=${state.api}`);
+        } catch (error) {
+          return { ...state, error: true, errorMessage: error };
+        }
+        return { ...state, uri };
+      }
+      return state;
     }
     case 'submit': {
       // validate everything and submit the form
