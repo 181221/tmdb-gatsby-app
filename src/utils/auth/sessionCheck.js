@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { navigate } from 'gatsby';
+import { graphql, useStaticQuery, navigate } from 'gatsby';
 import { addUserToCache } from '../../apollo/index';
 import { landing } from '../../constants/route';
 import { silentAuth } from './auth';
 
 const SessionCheck = ({ children, location }) => {
   const [loading, setLoading] = useState(true);
+  const hasSettings = useStaticQuery(graphql`
+    query RadarrSettings {
+      radarrSettings {
+        internal {
+          content
+        }
+      }
+    }
+  `);
   const handleCheckSession = user => {
     if (!user) {
       localStorage.setItem('isLoggedIn', false);
     } else {
+      if (user.role === 'ADMIN' && !hasSettings) {
+        user.hasSettings = false;
+      }
       addUserToCache(user);
     }
     setLoading(false);
