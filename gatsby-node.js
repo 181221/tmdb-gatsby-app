@@ -69,6 +69,28 @@ RADARR_API_ENDPOINT="http://localhost:7878/api"
 RADARR_ROOT_FOLDER_PATH=""
 `;
 
+const checkFile = (path, reporter) => {
+  const fileContent = fs
+    .readFileSync(path, 'utf8')
+    .toString()
+    .split('\n');
+
+  const result = fileContent.reduce((map, obj) => {
+    const [left, right] = obj.split('=');
+    map[left] = right;
+    return map;
+  }, {});
+  if (!result.AUTH0_DOMAIN || !result.AUTH0_CLIENTID || !result.AUTH0_CALLBACK) {
+    reporter.error(`did not find AUTH0 in ${path}`);
+    reporter.error('Create an auth0 spa https://auth0.com/docs/quickstart/spa');
+    reporter.panic('Setup auth0 in environment file');
+  }
+  if (!result.PRISMA_ENDPOINT) {
+    reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
+    reporter.panic('Setup prisma in environment file');
+  }
+};
+
 exports.onPreBootstrap = async gatsbyNodeHelpers => {
   const { actions, reporter } = gatsbyNodeHelpers;
   const prod = '.env.production';
@@ -92,6 +114,9 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     reporter.info('Creating evironment files');
     return;
   }
+  checkFile(`${__dirname}/${dev}`, reporter);
+  checkFile(`${__dirname}/${prod}`, reporter);
+  reporter.info('environment file ok');
   const options = getOptions();
   const endpoint = process.env.PRISMA_ENDPOINT;
   const response = await fetch(endpoint, options);
@@ -102,6 +127,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     const config = json.data.configuration;
     if (!json.data.configuration) {
       reporter.info(`No config found at prisma server`);
+      reporter.info(`Prisma config can be created in usersettings`);
       return;
     }
     const fileContent = fs
