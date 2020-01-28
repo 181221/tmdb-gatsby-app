@@ -6,9 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-
-import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
 import { reducer } from './reducer';
 
 export default function RadarrDialog({ dialog }) {
@@ -18,15 +15,7 @@ export default function RadarrDialog({ dialog }) {
   const [connection, setConnection] = useState(undefined);
   const [error, setError] = useState(undefined);
 
-  const {
-    isValid,
-    urlFeilmelding,
-    urlIsValid,
-    apiFeilmelding,
-    apiIsValid,
-    folderFeilmelding,
-    folderIsValid,
-  } = state;
+  const { urlFeilmelding, apiFeilmelding, folderFeilmelding } = state;
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);

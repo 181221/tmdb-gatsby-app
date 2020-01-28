@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SettingsUser = ({ user }) => {
+const SettingsUser = () => {
   return <div>Settings for customer</div>;
 };
 export default SettingsUser;
