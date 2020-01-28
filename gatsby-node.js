@@ -89,10 +89,13 @@ const checkFile = (path, reporter) => {
     reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
     reporter.panic('Setup prisma in environment file');
   }
+  if (!result.RADARR_API_KEY || !result.RADARR_API_ENDPOINT || !result.RADARR_ROOT_FOLDER_PATH) {
+    return false;
+  }
 };
 
 exports.onPreBootstrap = async gatsbyNodeHelpers => {
-  const { actions, reporter } = gatsbyNodeHelpers;
+  const { actions, reporter, createNodeId, createContentDigest } = gatsbyNodeHelpers;
   const prod = '.env.production';
   const dev = '.env.development';
   try {
@@ -128,6 +131,18 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     if (!json.data.configuration) {
       reporter.info(`No config found at prisma server`);
       reporter.info(`Prisma config can be created in usersettings`);
+      const hasRadarrSetup = checkFile(`${__dirname}/${dev}`, reporter);
+      const node = {
+        id: createNodeId('hasRadarrSetup'),
+        parent: null,
+        children: [],
+        internal: {
+          type: 'RadarrSettings',
+          content: hasRadarrSetup.toString(),
+        },
+      };
+      node.internal.contentDigest = createContentDigest(node);
+      actions.createNode(node);
       return;
     }
     const fileContent = fs
