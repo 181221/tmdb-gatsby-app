@@ -1,3 +1,4 @@
+const fetch = require(`node-fetch`);
 exports.onCreatePage = async ({ page, actions }) => {
   const { createPage } = actions;
 
@@ -35,26 +36,97 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
 
 const fs = require('fs');
 
-exports.onPreBootstrap = gatsbyNodeHelpers => {
+const getOptions = () => {
+  const ql = `query {
+    configuration(id: "configurations") {
+      radarrApiKey
+      radarrEndpoint
+      radarrRootFolder
+      pushoverApiKey
+      pushoverUserKey
+    }
+  }
+  `;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: ql,
+    }),
+  };
+  return options;
+};
+const templateFile = `
+AUTH0_DOMAIN=""
+AUTH0_CLIENTID=""
+AUTH0_CALLBACK=""
+TMDB_API_KEY=""
+PRISMA_ENDPOINT="http://localhost:4000"
+RADARR_API_KEY=""
+RADARR_API_ENDPOINT="http://localhost:7878/api"
+RADARR_ROOT_FOLDER_PATH=""
+`;
+
+exports.onPreBootstrap = async gatsbyNodeHelpers => {
   const { actions, reporter } = gatsbyNodeHelpers;
   const prod = '.env.production';
   const dev = '.env.development';
-
-  reporter.info(`Checking environment file`);
   try {
     if (fs.existsSync(prod) && fs.existsSync(dev)) {
       reporter.info(`Environment exists`);
-      // Should check keys and also do a patch request for dependencies.
     } else {
+      reporter.info('Creating evironment files');
+      fs.writeFileSync(`${__dirname}/${dev}`, templateFile);
+      fs.writeFileSync(`${__dirname}/${prod}`, templateFile);
+      reporter.info('Created .env.development!');
+      reporter.info('Created .env.production!');
       reporter.error(
-        `Pls create an .env.production and .env.development in root dir`,
-        new Error('err'),
+        'No tmdb api-key found, set TMDB_API_KEY in environment file. Create api key here https://developers.themoviedb.org/3/getting-started/introduction',
       );
+      reporter.error('Create an auth0 spa https://auth0.com/docs/quickstart/spa');
+      reporter.panic('build failed');
     }
   } catch (err) {
-    reporter.error(
-      `Pls create an .env.production and .env.development in root dir`,
-      new Error(err),
-    );
+    reporter.info('Creating evironment files');
+    return;
+  }
+  const options = getOptions();
+  const endpoint = process.env.PRISMA_ENDPOINT;
+  const response = await fetch(endpoint, options);
+  if (!response.ok) {
+    reporter.error('Error when trying to fetch prisma endpoint, pls check connection');
+  } else {
+    const json = await response.json();
+    const config = json.data.configuration;
+    if (!json.data.configuration) {
+      reporter.info(`No config found at prisma server`);
+      return;
+    }
+    const fileContent = fs
+      .readFileSync(`${__dirname}/${dev}`, 'utf8')
+      .toString()
+      .split('\n');
+
+    const newContent = fileContent.map(el => {
+      const [left, right] = el.split('=');
+      if (!left) {
+        return;
+      }
+      let identifier = right;
+      if (left === 'RADARR_API_KEY') {
+        identifier = config.radarrApiKey;
+      }
+      if (left === 'RADARR_API_ENDPOINT') {
+        identifier = config.radarrEndpoint;
+      }
+      if (left === 'RADARR_ROOT_FOLDER_PATH') {
+        identifier = config.radarrRootFolder;
+      }
+      return `${left}= ${identifier}`;
+    });
+    fs.writeFileSync(`${__dirname}/${dev}`, newContent.join('\n'));
+    fs.writeFileSync(`${__dirname}/${prod}`, newContent.join('\n'));
   }
 };
