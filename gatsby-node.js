@@ -42,8 +42,6 @@ const getOptions = () => {
       radarrApiKey
       radarrEndpoint
       radarrRootFolder
-      pushoverApiKey
-      pushoverUserKey
     }
   }
   `;

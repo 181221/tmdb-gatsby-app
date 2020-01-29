@@ -104,7 +104,7 @@ export default function RadarrDialog({ dialog }) {
         <DialogContent>
           <DialogContentText>
             Enable your radarr endpoint for requesting movies
-            <DialogContentText>For changes to take effect restart, the app</DialogContentText>
+            <DialogContentText>For changes to take effect, restart the app.</DialogContentText>
           </DialogContentText>
           <TextField
             autoFocus

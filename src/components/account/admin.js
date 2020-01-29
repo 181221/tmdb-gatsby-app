@@ -5,10 +5,14 @@ import Typography from '@material-ui/core/Typography';
 import FormDialog from './forms/formDialog';
 import RadarrDialog from './forms/radarr/radarr';
 import SettingsDialog from './forms/settings/settings';
+import PushoverDialog from './forms/pushover/pushover';
 
 const Container = styled.div`
   margin: 0 10%;
   margin-top: 24px;
+`;
+const Div = styled.div`
+  display: flex;
 `;
 
 const useDialog = init => {
@@ -34,15 +38,22 @@ const useDialog = init => {
 const SettingsAdmin = () => {
   const radarrDialog = useDialog('Radarr');
   const settingsDialog = useDialog('Settings');
+  const pushoverDialog = useDialog('Pushover');
   return (
     <>
       <Container>
         <Typography variant="h4" component="h4">
           Connetions
         </Typography>
-        <FormDialog dialog={radarrDialog} title="Radarr">
-          <RadarrDialog dialog={radarrDialog} />
-        </FormDialog>
+        <Div>
+          <FormDialog dialog={radarrDialog} title="Radarr">
+            <RadarrDialog dialog={radarrDialog} />
+          </FormDialog>
+          <FormDialog dialog={pushoverDialog} title="Pushover">
+            <PushoverDialog dialog={pushoverDialog} />
+          </FormDialog>
+        </Div>
+
         <Typography variant="h4" component="h4">
           Account
         </Typography>
