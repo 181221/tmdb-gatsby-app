@@ -36,6 +36,27 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
 
 const fs = require('fs');
 
+const updateRadarrSettings = (fileContent, config) => {
+  const newContent = fileContent.map(el => {
+    const [left, right] = el.split('=');
+    if (!left) {
+      return;
+    }
+    let identifier = right;
+    if (left === 'RADARR_API_KEY') {
+      identifier = config.radarrApiKey;
+    }
+    if (left === 'RADARR_API_ENDPOINT') {
+      identifier = config.radarrEndpoint;
+    }
+    if (left === 'RADARR_ROOT_FOLDER_PATH') {
+      identifier = config.radarrRootFolder;
+    }
+    return `${left}= ${identifier}`;
+  });
+  return newContent;
+};
+
 const getOptions = () => {
   const ql = `query {
     configuration(id: "configurations") {
@@ -67,7 +88,7 @@ RADARR_API_ENDPOINT="http://localhost:7878/api"
 RADARR_ROOT_FOLDER_PATH=""
 `;
 
-const checkFile = (path, reporter) => {
+const getEnvironmentVariables = path => {
   const fileContent = fs
     .readFileSync(path, 'utf8')
     .toString()
@@ -78,16 +99,29 @@ const checkFile = (path, reporter) => {
     map[left] = right;
     return map;
   }, {});
+  return result;
+};
+const checkRadarr = result => {
+  if (!result.RADARR_API_KEY || !result.RADARR_API_ENDPOINT || !result.RADARR_ROOT_FOLDER_PATH) {
+    return false;
+  }
+  return true;
+};
+const checkPrisma = (result, reporter, path) => {
+  if (!result.PRISMA_ENDPOINT) {
+    reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
+    reporter.info(`Adding default prisma endpoint to environment`);
+    fs.appendFileSync(path, '\nPRISMA_ENDPOINT="http://localhost:4000"');
+    reporter.info(`Added PRISMA_ENDPOINT="http://localhost:4000" to ${path}`);
+    return true;
+  }
+  return false;
+};
+const checkAuth0 = (result, reporter, path) => {
   if (!result.AUTH0_DOMAIN || !result.AUTH0_CLIENTID || !result.AUTH0_CALLBACK) {
     reporter.error(`did not find AUTH0 in ${path}`);
     reporter.error('Create an auth0 spa https://auth0.com/docs/quickstart/spa');
     reporter.panic('Setup auth0 in environment file');
-  }
-  if (!result.PRISMA_ENDPOINT) {
-    reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
-    reporter.panic('Setup prisma in environment file');
-  }
-  if (!result.RADARR_API_KEY || !result.RADARR_API_ENDPOINT || !result.RADARR_ROOT_FOLDER_PATH) {
     return false;
   }
   return true;
@@ -95,10 +129,12 @@ const checkFile = (path, reporter) => {
 
 exports.onPreBootstrap = async gatsbyNodeHelpers => {
   const { actions, reporter, createNodeId, createContentDigest } = gatsbyNodeHelpers;
+  const env = process.env.NODE_ENV;
   const prod = '.env.production';
   const dev = '.env.development';
+  const path = env === 'development' ? `${__dirname}/${dev}` : `${__dirname}/${prod}`;
   try {
-    if (fs.existsSync(prod) && fs.existsSync(dev)) {
+    if (fs.existsSync(path)) {
       reporter.info(`Environment exists`);
     } else {
       reporter.info('Creating evironment files');
@@ -116,8 +152,10 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     reporter.info('Creating evironment files');
     return;
   }
-  checkFile(`${__dirname}/${dev}`, reporter);
-  checkFile(`${__dirname}/${prod}`, reporter);
+  const envVariables = getEnvironmentVariables(path);
+  checkAuth0(envVariables, reporter, path);
+  checkPrisma(envVariables, reporter, path);
+  const hasRadarrSetup = checkRadarr(envVariables);
   reporter.info('environment file ok');
   const options = getOptions();
   const endpoint = process.env.PRISMA_ENDPOINT;
@@ -130,7 +168,6 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     if (!json.data.configuration) {
       reporter.info(`No config found at prisma server`);
       reporter.info(`Prisma config can be created in usersettings`);
-      const hasRadarrSetup = checkFile(`${__dirname}/${dev}`, reporter);
       const node = {
         id: createNodeId('hasRadarrSetup'),
         parent: null,
@@ -146,28 +183,11 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
       return;
     }
     const fileContent = fs
-      .readFileSync(`${__dirname}/${dev}`, 'utf8')
+      .readFileSync(path, 'utf8')
       .toString()
       .split('\n');
+    const updatedContent = updateRadarrSettings(fileContent, config);
 
-    const newContent = fileContent.map(el => {
-      const [left, right] = el.split('=');
-      if (!left) {
-        return;
-      }
-      let identifier = right;
-      if (left === 'RADARR_API_KEY') {
-        identifier = config.radarrApiKey;
-      }
-      if (left === 'RADARR_API_ENDPOINT') {
-        identifier = config.radarrEndpoint;
-      }
-      if (left === 'RADARR_ROOT_FOLDER_PATH') {
-        identifier = config.radarrRootFolder;
-      }
-      return `${left}= ${identifier}`;
-    });
-    fs.writeFileSync(`${__dirname}/${dev}`, newContent.join('\n'));
-    fs.writeFileSync(`${__dirname}/${prod}`, newContent.join('\n'));
+    fs.writeFileSync(path, updatedContent.join('\n'));
   }
 };
