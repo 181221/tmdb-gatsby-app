@@ -20,7 +20,7 @@ const useForminput = init => {
   return { value, onChange, setValue };
 };
 
-export default function RadarrDialog({ dialog }) {
+export default function RadarrDialog({ dialog, flash }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
   const [test, setTest] = useState(false);
@@ -94,6 +94,7 @@ export default function RadarrDialog({ dialog }) {
           } else {
             setSuccess(true);
             onClose();
+            flash('Radarr settings saved, restart app for changes to take effect');
             setTimeout(() => {
               setSuccess(false);
             }, 5000);

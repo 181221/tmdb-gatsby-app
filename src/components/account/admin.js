@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
 import FormDialog from './forms/formDialog';
 import RadarrDialog from './forms/radarr/radarr';
 import SettingsDialog from './forms/settings/settings';
@@ -39,18 +40,23 @@ const SettingsAdmin = () => {
   const radarrDialog = useDialog('Radarr');
   const settingsDialog = useDialog('Settings');
   const pushoverDialog = useDialog('Pushover');
+  const [flashMessage, setFlashMessage] = useState(undefined);
+  const flash = message => {
+    setFlashMessage(message);
+  };
   return (
     <>
       <Container>
+        {flashMessage && <Alert severity="success">{flashMessage}</Alert>}
         <Typography variant="h4" component="h4">
           Connetions
         </Typography>
         <Div>
           <FormDialog dialog={radarrDialog} title="Radarr">
-            <RadarrDialog dialog={radarrDialog} />
+            <RadarrDialog flash={flash} dialog={radarrDialog} />
           </FormDialog>
           <FormDialog dialog={pushoverDialog} title="Pushover">
-            <PushoverDialog dialog={pushoverDialog} />
+            <PushoverDialog flash={flash} dialog={pushoverDialog} />
           </FormDialog>
         </Div>
 

@@ -75,7 +75,7 @@ const useForminput = init => {
   return { value, onChange, setValue };
 };
 
-export default function PushoverDialog({ dialog }) {
+export default function PushoverDialog({ dialog, flash }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
   const [loading, setLoading] = useState(undefined);
@@ -166,6 +166,8 @@ export default function PushoverDialog({ dialog }) {
             setTimeout(() => {
               setSuccess(false);
             }, 4000);
+            onClose();
+            flash('Pushover settings saved, restart app for changes to take effect');
           }
           res.json();
         })
