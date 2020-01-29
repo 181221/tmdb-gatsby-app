@@ -43,16 +43,16 @@ const updateRadarrSettings = (fileContent, config) => {
       return;
     }
     let identifier = right;
-    if (left === 'RADARR_API_KEY') {
+    if (left === 'RADARR_API_KEY' && identifier) {
       identifier = config.radarrApiKey;
     }
-    if (left === 'RADARR_API_ENDPOINT') {
+    if (left === 'RADARR_API_ENDPOINT' && identifier) {
       identifier = config.radarrEndpoint;
     }
-    if (left === 'RADARR_ROOT_FOLDER_PATH') {
+    if (left === 'RADARR_ROOT_FOLDER_PATH' && identifier) {
       identifier = config.radarrRootFolder;
     }
-    return `${left}= ${identifier}`;
+    return `${left}=${identifier}`;
   });
   return newContent;
 };
@@ -88,7 +88,7 @@ RADARR_API_ENDPOINT="http://localhost:7878/api"
 RADARR_ROOT_FOLDER_PATH=""
 `;
 
-const getEnvironmentVariables = path => {
+const getEnvironmentVariables = async path => {
   const fileContent = fs
     .readFileSync(path, 'utf8')
     .toString()
@@ -107,15 +107,15 @@ const checkRadarr = result => {
   }
   return true;
 };
-const checkPrisma = (result, reporter, path) => {
+const hasPrisma = async (result, reporter, path) => {
   if (!result.PRISMA_ENDPOINT) {
     reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
     reporter.info(`Adding default prisma endpoint to environment`);
     fs.appendFileSync(path, '\nPRISMA_ENDPOINT="http://localhost:4000"');
-    reporter.info(`Added PRISMA_ENDPOINT="http://localhost:4000" to ${path}`);
-    return true;
+    reporter.info(`Added PRISMA_ENDPOINT="http://localhost:4000"`);
+    return false;
   }
-  return false;
+  return true;
 };
 const checkAuth0 = (result, reporter, path) => {
   if (!result.AUTH0_DOMAIN || !result.AUTH0_CLIENTID || !result.AUTH0_CALLBACK) {
@@ -152,14 +152,21 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     reporter.info('Creating evironment files');
     return;
   }
-  const envVariables = getEnvironmentVariables(path);
+  const envVariables = await getEnvironmentVariables(path);
   checkAuth0(envVariables, reporter, path);
-  checkPrisma(envVariables, reporter, path);
+  const prismaUrl = hasPrisma(envVariables, reporter, path)
+    ? 'http://localhost:4000'
+    : process.env.PRISMA_ENDPOINT;
   const hasRadarrSetup = checkRadarr(envVariables);
+  reporter.info(hasRadarrSetup.toString());
+  if (!hasRadarrSetup) {
+    const radarEnv =
+      '\nRADARR_API_KEY=""\nRADARR_API_ENDPOINT="http://localhost:7878/api"\nRADARR_ROOT_FOLDER_PATH=""';
+    fs.appendFileSync(path, radarEnv);
+  }
   reporter.info('environment file ok');
   const options = getOptions();
-  const endpoint = process.env.PRISMA_ENDPOINT;
-  const response = await fetch(endpoint, options);
+  const response = await fetch(prismaUrl, options);
   if (!response.ok) {
     reporter.error('Error when trying to fetch prisma endpoint, pls check connection');
   } else {
@@ -168,26 +175,28 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     if (!json.data.configuration) {
       reporter.info(`No config found at prisma server`);
       reporter.info(`Prisma config can be created in usersettings`);
-      const node = {
-        id: createNodeId('hasRadarrSetup'),
-        parent: null,
-        children: [],
-        internal: {
-          type: 'RadarrSettings',
-          content: hasRadarrSetup.toString(),
-        },
-      };
-      node.internal.contentDigest = createContentDigest(node);
-      actions.createNode(node);
-
-      return;
     }
-    const fileContent = fs
-      .readFileSync(path, 'utf8')
-      .toString()
-      .split('\n');
-    const updatedContent = updateRadarrSettings(fileContent, config);
+    if (config) {
+      if (config.radarrApiKey && config.radarrEndpoint && config.radarrRootFolder) {
+        const fileContent = fs
+          .readFileSync(path, 'utf8')
+          .toString()
+          .split('\n');
+        const updatedContent = updateRadarrSettings(fileContent, config);
 
-    fs.writeFileSync(path, updatedContent.join('\n'));
+        fs.writeFileSync(path, updatedContent.join('\n'));
+      }
+    }
   }
+  const node = {
+    id: createNodeId('hasRadarrSetup'),
+    parent: null,
+    children: [],
+    internal: {
+      type: 'RadarrSettings',
+      content: hasRadarrSetup.toString(),
+    },
+  };
+  node.internal.contentDigest = createContentDigest(node);
+  return actions.createNode(node);
 };
