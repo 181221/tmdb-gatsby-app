@@ -1,5 +1,3 @@
-import { pushover_endpoint } from '../constants/route';
-
 export const createOptions = (movie, img, user) => {
   const { title, id, overview, genres, vote_average, posterUrl, release_date } = movie;
 
@@ -57,23 +55,4 @@ export const createOptions = (movie, img, user) => {
     options,
     options1,
   };
-};
-
-export const handlePushoverRequest = async (message, title = 'New Movie Request') => {
-  const obj = {
-    title,
-    message,
-    token: process.env.PUSHOVER_TOKEN,
-    user: process.env.PUSHOVER_USER_KEY,
-  };
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(obj),
-  };
-
-  const response = await fetch(pushover_endpoint, options);
-  await response.json();
 };

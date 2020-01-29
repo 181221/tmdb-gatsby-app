@@ -20,7 +20,7 @@ import {
   landing,
   tmdb_endpoint,
 } from '../../constants/route';
-import { createOptions, handlePushoverRequest } from '../../utils/movieHelper';
+import { createOptions } from '../../utils/movieHelper';
 import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 
@@ -259,8 +259,6 @@ const Movie = ({ location }) => {
           setInCollection(true);
           handleRequest(prisma_endpoint, options);
           setLoading(false);
-          const msg = `${user.email} \nhas requested the movie:\n${title}`;
-          handlePushoverRequest(msg);
           setTimeout(() => {
             setCreated(undefined);
           }, 2000);
