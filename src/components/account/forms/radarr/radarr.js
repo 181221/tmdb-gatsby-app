@@ -12,6 +12,14 @@ import { reducer } from './reducer';
 import { getOptions } from './helper';
 import { prisma_endpoint } from '../../../../constants/route';
 
+const useForminput = init => {
+  const [value, setValue] = useState(init);
+  const onChange = e => {
+    setValue(e.target.value);
+  };
+  return { value, onChange, setValue };
+};
+
 export default function RadarrDialog({ dialog }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
@@ -23,6 +31,9 @@ export default function RadarrDialog({ dialog }) {
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
+  const radarrUrl = useForminput(process.env.RADARR_API_ENDPOINT);
+  const radarrApi = useForminput(process.env.RADARR_API_KEY);
+  const radarrFolder = useForminput(process.env.RADARR_ROOT_FOLDER_PATH);
 
   const { urlFeilmelding, apiFeilmelding, folderFeilmelding } = state;
   const handleSubmit = e => {
@@ -47,6 +58,7 @@ export default function RadarrDialog({ dialog }) {
   };
   useEffect(() => {
     if (test && state.uri) {
+      setTest(false);
       fetch(state.uri.href, { method: 'HEAD' })
         .then(res => {
           console.log(res);
@@ -81,6 +93,7 @@ export default function RadarrDialog({ dialog }) {
             }, 5000);
           } else {
             setSuccess(true);
+            onClose();
             setTimeout(() => {
               setSuccess(false);
             }, 5000);
@@ -116,7 +129,7 @@ export default function RadarrDialog({ dialog }) {
             type="radarrUrl"
             helperText={urlFeilmelding}
             fullWidth
-            value={process.env.RADARR_API_ENDPOINT}
+            {...radarrUrl}
           />
           <TextField
             autoFocus
@@ -128,7 +141,7 @@ export default function RadarrDialog({ dialog }) {
             helperText={apiFeilmelding}
             type="radarrAPI"
             fullWidth
-            value={process.env.RADARR_API_KEY}
+            {...radarrApi}
           />
           <TextField
             autoFocus
@@ -140,7 +153,7 @@ export default function RadarrDialog({ dialog }) {
             label="Radarr root folder"
             type="radarrFolder"
             fullWidth
-            value={process.env.RADARR_ROOT_FOLDER_PATH}
+            {...radarrFolder}
           />
         </DialogContent>
         <DialogActions>
