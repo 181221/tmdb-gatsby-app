@@ -58,11 +58,10 @@ const Discover = () => {
 
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
-
   return (
     <>
       <div style={{ margin: '24px 10%' }}>
-        {!user.hasSettings && (
+        {user.role === 'ADMIN' && !user.hasSettings && (
           <Link to={`${account_settings}`}>
             <Alert severity="info">You need to settup radarr settings click here to setup</Alert>
           </Link>

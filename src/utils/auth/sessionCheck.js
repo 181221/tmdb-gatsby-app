@@ -24,6 +24,8 @@ const SessionCheck = ({ children, location }) => {
     } else {
       if (user.role === 'ADMIN') {
         user.hasSettings = settings === 'true';
+      } else {
+        user.hasSettings = false;
       }
       addUserToCache(user);
     }
