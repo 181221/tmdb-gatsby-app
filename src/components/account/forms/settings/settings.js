@@ -37,9 +37,8 @@ const reducer = (state, { el, type }) => {
     }
     case 'submit': {
       const isValid = state.nameIsValid && state.notificationIsValid;
-      console.log('shit is valid', state);
       if (isValid) {
-        return { ...state, isValid: true };
+        return { ...state, isValid: true, nameFeilmelding: '' };
       }
       return null;
     }
@@ -48,23 +47,26 @@ const reducer = (state, { el, type }) => {
     }
   }
 };
-
 export default function SettingsDialog({ dialog }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
   const [loading, setLoading] = useState(undefined);
   const [error, setError] = useState(undefined);
-  const [checked, setChecked] = useState(false);
   const [success, setSuccess] = useState(undefined);
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
-
+  const [value, setValue] = useState(user.name);
+  const [checked, setChecked] = useState(user.notification);
   const handleChange = e => {
     setChecked(e.target.checked);
   };
 
-  const { nameFeilmelding, notificationFeilmelding } = state;
+  const handleName = e => {
+    setValue(e.target.value);
+  };
+
+  const { nameFeilmelding, notificationFeilmelding, name } = state;
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
@@ -74,10 +76,8 @@ export default function SettingsDialog({ dialog }) {
         el,
       });
     });
-    console.log(elements);
   };
   useEffect(() => {
-    console.log('isvalido', state);
     if (state.isValid) {
       setLoading(true);
       const options = getOptions(user, state);
@@ -85,11 +85,12 @@ export default function SettingsDialog({ dialog }) {
         .then(res => res.json())
         .then(json => {
           setLoading(false);
-          console.log('json', json);
           if (json.errors && json.errors.length > 0) {
             setError(true);
           } else {
             setSuccess(true);
+            setChecked(json.data.updateUser.notification);
+            onClose();
             setTimeout(() => {
               setSuccess(false);
             }, 5000);
@@ -121,6 +122,8 @@ export default function SettingsDialog({ dialog }) {
             type="text"
             helperText={nameFeilmelding}
             fullWidth
+            value={value}
+            onChange={handleName}
           />
           <FormControlLabel
             style={{ marginLeft: '0', marginTop: '20px' }}
@@ -128,9 +131,10 @@ export default function SettingsDialog({ dialog }) {
               <Checkbox
                 icon={<NotificationsOffIcon />}
                 checkedIcon={<NotificationsActiveIcon />}
-                value={checked}
+                checked={checked}
                 onChange={handleChange}
                 name="checkbox"
+                value={checked}
               />
             }
             label="Notifications"
