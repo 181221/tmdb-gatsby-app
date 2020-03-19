@@ -2,6 +2,7 @@ const dot = require('dotenv').config({
   path: `${process.env.NODE_ENV === 'development' ? '.env.development' : '.env.production'}`,
 });
 
+const path = require(`path`);
 console.log(dot);
 
 module.exports = {
@@ -28,6 +29,13 @@ module.exports = {
       },
     },
     'gatsby-plugin-typescript',
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: path.join(__dirname, `src`, `images`),
+      },
+    },
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     {
