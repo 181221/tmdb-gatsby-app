@@ -1,3 +1,13 @@
+self.addEventListener('push', e => {
+  const data = e.data.json();
+  console.log('Push Recieved', data);
+  const { title } = data;
+  const options = {
+    body: `Movie has been downloaded`,
+    vibrate: [300, 100, 400],
+  };
+  self.registration.showNotification(title, options);
+});
 /**
  * This is a script appended to the service worker. You will have noe access 
  * to dom elements in this script.

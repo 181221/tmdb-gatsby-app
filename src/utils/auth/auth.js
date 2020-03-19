@@ -59,6 +59,7 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
     handleRequest(user, prisma_endpoint, setUserData).then(() => {
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('user', user);
+      localStorage.setItem('token', user.token);
       cb(user);
     });
   }

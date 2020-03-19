@@ -15,6 +15,7 @@ import { useApolloClient } from 'react-apollo-hooks';
 import { query } from '../../../gql';
 import { prisma_endpoint } from '../../../../constants/route';
 import { getOptions } from './helper';
+import { isPushSupported, getSubscription, unsubscribePush, subscribePush } from './notification';
 
 const reducer = (state, { el, type }) => {
   switch (type) {
@@ -58,8 +59,27 @@ export default function SettingsDialog({ dialog }) {
   const { user } = data;
   const [value, setValue] = useState(user.name);
   const [checked, setChecked] = useState(user.notification);
-  const handleChange = e => {
+
+  const handleChange = async e => {
     setChecked(e.target.checked);
+    if (isPushSupported()) {
+      console.log(typeof e.target.checked);
+
+      if (e.target.checked) {
+        console.log('getting sub');
+        const sub = await getSubscription();
+        console.log('getting subscription', sub);
+        if (sub) {
+          console.log('allready subbed');
+          return;
+        }
+        console.log('saving subscription');
+        await subscribePush(user);
+      } else {
+        console.log('deleting sub');
+        await unsubscribePush(user);
+      }
+    }
   };
 
   const handleName = e => {
