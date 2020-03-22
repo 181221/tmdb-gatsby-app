@@ -216,14 +216,14 @@ const Movie = ({ location }) => {
           json.map(el => {
             if (Number(getLocationId(location)) === el.tmdbId && collectionCheck.id === el.tmdbId) {
               setInCollection(true);
+              if (el.hasFile) {
+                setHasFile(true);
+              }
+              if (el.downloaded) {
+                setDownloaded(true);
+              }
+              return true;
             }
-            if (el.hasFile) {
-              setHasFile(true);
-            }
-            if (el.downloaded) {
-              setDownloaded(true);
-            }
-            return true;
           });
         })
         .catch(err => console.error(err));
