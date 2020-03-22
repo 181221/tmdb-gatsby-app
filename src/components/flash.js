@@ -93,7 +93,7 @@ const InfoBox = ({ movieStatus }) => {
   }
   return (
     <>
-      <AlertTitle>Movie is awaiting confirmation</AlertTitle>
+      <AlertTitle>Movie is requested</AlertTitle>
       `This movie is awaiting confirmation from an admin`
     </>
   );
