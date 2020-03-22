@@ -170,6 +170,7 @@ const Movie = ({ location }) => {
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
+  let click = false;
   useEffect(() => {
     if (!locationId) {
       setError(true);
@@ -294,7 +295,9 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    const click = created || downloaded || inCollection || hasFile || isFetching;
+    if (created || downloaded || inCollection || hasFile) {
+      click = true;
+    }
     return (
       <>
         <Wrapper>
