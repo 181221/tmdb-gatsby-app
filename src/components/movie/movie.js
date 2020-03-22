@@ -166,6 +166,7 @@ const Movie = ({ location }) => {
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movieStatus, setMovieStatus] = useState(undefined);
+  const [isFetching, setIsFetching] = useState(undefined);
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
@@ -211,6 +212,7 @@ const Movie = ({ location }) => {
     if (!error) {
       const collectionCheck = movie || state;
       const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
+      setIsFetching(true);
       fetch(url_collection)
         .then(res => res.json())
         .then(json => {
@@ -242,6 +244,7 @@ const Movie = ({ location }) => {
               return true;
             }
           });
+          setIsFetching(false);
         })
         .catch(err => console.error(err));
     }
@@ -303,7 +306,6 @@ const Movie = ({ location }) => {
               movieStatus={movieStatus}
             />
           </FlashContainer>
-
           <ReturnDiv>
             <Typography variant="body1" component="p">
               <StyledLink to={landing}>
@@ -360,27 +362,39 @@ const Movie = ({ location }) => {
                       {overview}
                     </Typography>
                   </Overview>
-                  <div className={`${click && classes.disabled}`}>
-                    <Button
-                      onClick={handleMovieRequest}
-                      disabled={click}
-                      className={`${classes.root} ${click && classes.disabled}`}
-                      style={{ minWidth: '70%' }}
-                    >
+                  {isFetching ? (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <CircularProgress color="secondary" />
                       <Typography
-                        className={`${!click && classes.white}`}
                         variant="body1"
                         component="p"
+                        style={{ margin: 'auto', marginLeft: '10px' }}
                       >
-                        Request Movie
+                        Getting information
                       </Typography>
-                    </Button>
-                  </div>
+                    </div>
+                  ) : (
+                    <div className={`${click && classes.disabled}`}>
+                      <Button
+                        onClick={handleMovieRequest}
+                        disabled={click}
+                        className={`${classes.root} ${click && classes.disabled}`}
+                        style={{ minWidth: '70%' }}
+                      >
+                        <Typography
+                          className={`${!click && classes.white}`}
+                          variant="body1"
+                          component="p"
+                        >
+                          Request Movie
+                        </Typography>
+                      </Button>
+                    </div>
+                  )}
                 </Right>
               </MovieContainer>
             </>
           )}
-
           <Similar key={movie.id} movies={movie.similar} />
         </Wrapper>
       </>

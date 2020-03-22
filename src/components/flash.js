@@ -30,13 +30,6 @@ const FlashMessage = ({
   const [open, setOpen] = React.useState(true);
 
   const classes = useStyles();
-  if (!error && !success && !hasFile && !downloaded && !inCollection && !movieStatus) {
-    return (
-      <div style={{ padding: '100px 0', display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress color="secondary" />
-      </div>
-    );
-  }
   return (
     <>
       {error && (
