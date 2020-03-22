@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
   root: { marginBottom: '24px' },
@@ -29,7 +30,13 @@ const FlashMessage = ({
   const [open, setOpen] = React.useState(true);
 
   const classes = useStyles();
-
+  if (!error && !success && !hasFile && !downloaded && !inCollection && !movieStatus) {
+    return (
+      <div style={{ padding: '100px 0', display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress color="secondary" />
+      </div>
+    );
+  }
   return (
     <>
       {error && (
@@ -87,14 +94,14 @@ const InfoBox = ({ movieStatus }) => {
     return (
       <>
         <AlertTitle>Movie is beeing downloaded</AlertTitle>
-        `Time left ${movieStatus.timeleft}`
+        Time left {movieStatus.timeleft}
       </>
     );
   }
   return (
     <>
       <AlertTitle>Movie is requested</AlertTitle>
-      `This movie is awaiting confirmation from an admin`
+      This movie is awaiting confirmation from an admin
     </>
   );
 };
