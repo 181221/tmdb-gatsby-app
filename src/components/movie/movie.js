@@ -165,6 +165,7 @@ const Movie = ({ location }) => {
   const [inCollection, setInCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
+  const [movieStatus, setMovieStatus] = useState(undefined);
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
@@ -218,6 +219,22 @@ const Movie = ({ location }) => {
               setInCollection(true);
               if (el.hasFile) {
                 setHasFile(true);
+              } else {
+                fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
+                  .then(res => res.json())
+                  .then(json => {
+                    console.log('queueJson', json);
+                    if (json && json.length > 0) {
+                      const queueElement = json.find(
+                        element => element.movie.tmdbId === Number(getLocationId(location)),
+                      );
+                      setMovieStatus({
+                        status: queueElement.movie.status,
+                        timeleft: queueElement.movie.timeleft,
+                      });
+                      console.log('queueElement', queueElement);
+                    }
+                  });
               }
               if (el.downloaded) {
                 setDownloaded(true);
@@ -229,6 +246,7 @@ const Movie = ({ location }) => {
         .catch(err => console.error(err));
     }
   }, [error, movie]);
+  console.log('status', movieStatus);
 
   if (error) {
     return (
