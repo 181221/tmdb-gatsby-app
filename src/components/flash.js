@@ -46,16 +46,16 @@ const FlashMessage = ({
       {hasFile && (
         <Alert severity="info" className={classes.root}>
           <AlertTitle>File on server</AlertTitle>
-          This movie is alreaddy on server
+          This movie is already on server
         </Alert>
       )}
-      {downloaded && (
+      {!hasFile && downloaded && (
         <Alert severity="info" className={classes.root}>
           <AlertTitle>Movie is downloaded</AlertTitle>
-          This movie is alreaddy on server
+          This movie is already on server
         </Alert>
       )}
-      {inCollection && (
+      {!hasFile && inCollection && (
         <Collapse in={open} className={classes.root}>
           <Alert
             severity="info"
