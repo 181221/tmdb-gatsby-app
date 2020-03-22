@@ -292,7 +292,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    const click = created || downloaded || inCollection || hasFile;
+    const click = created || downloaded || inCollection || hasFile || isFetching;
     return (
       <>
         <Wrapper>
