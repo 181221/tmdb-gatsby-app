@@ -1,5 +1,5 @@
-export const radarr_url = 'http://localhost:7878/api';
-export const prisma_endpoint = 'http://localhost:4000';
+export const radarr_url = process.env.RADARR_API_ENDPOINT;
+export const prisma_endpoint = process.env.PRISMA_ENDPOINT;
 export const img_tmdb_medium = 'https://image.tmdb.org/t/p/w500';
 export const img_tmdb_small = 'https://image.tmdb.org/t/p/w300';
 export const tmdb_endpoint = 'https://api.themoviedb.org/3';
