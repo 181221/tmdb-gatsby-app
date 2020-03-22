@@ -74,12 +74,27 @@ const FlashMessage = ({
               </IconButton>
             }
           >
-            <AlertTitle>Movie is requested</AlertTitle>
-            The movie is awaiting confirmation
-            {movieStatus && 'the movie is downloading'}
+            <InfoBox movieStatus={movieStatus} />
           </Alert>
         </Collapse>
       )}
+    </>
+  );
+};
+
+const InfoBox = ({ movieStatus }) => {
+  if (movieStatus) {
+    return (
+      <>
+        <AlertTitle>Movie is beeing downloaded</AlertTitle>
+        `Time left ${movieStatus.timeleft}`
+      </>
+    );
+  }
+  return (
+    <>
+      <AlertTitle>Movie is awaiting confirmation</AlertTitle>
+      `This movie is awaiting confirmation from an admin`
     </>
   );
 };
