@@ -170,7 +170,7 @@ const Movie = ({ location }) => {
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
-  let click = false;
+  let click = true;
   useEffect(() => {
     if (!locationId) {
       setError(true);
@@ -222,7 +222,6 @@ const Movie = ({ location }) => {
               setInCollection(true);
               if (el.hasFile) {
                 setHasFile(true);
-                console.log('setting has file to true');
               } else {
                 fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
                   .then(res => res.json())
@@ -247,7 +246,6 @@ const Movie = ({ location }) => {
             }
           });
           setIsFetching(false);
-          console.log('setting is fetching to false');
         })
         .catch(err => console.error(err));
     }
@@ -295,9 +293,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    if (created || downloaded || inCollection || hasFile) {
-      click = true;
-    }
+    click = created || downloaded || inCollection || hasFile;
     return (
       <>
         <Wrapper>
