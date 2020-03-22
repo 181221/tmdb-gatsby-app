@@ -9,6 +9,7 @@
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "lint": "yarn eslint \"src/**/*.js\"",
+    "prod": "yarn gatsby clean && yarn gatsby build && yarn gatsby serve -H 192.168.100.108",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
