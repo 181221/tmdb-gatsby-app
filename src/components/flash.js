@@ -24,6 +24,7 @@ const FlashMessage = ({
   downloaded,
   inCollection,
   message = sucessMessage,
+  movieStatus,
 }) => {
   const [open, setOpen] = React.useState(true);
 
@@ -55,6 +56,7 @@ const FlashMessage = ({
           This movie is already on server
         </Alert>
       )}
+
       {!hasFile && inCollection && (
         <Collapse in={open} className={classes.root}>
           <Alert
@@ -73,7 +75,8 @@ const FlashMessage = ({
             }
           >
             <AlertTitle>Movie is requested</AlertTitle>
-            The movie is awaiting confirmation{' '}
+            The movie is awaiting confirmation
+            {movieStatus && 'the movie is downloading'}
           </Alert>
         </Collapse>
       )}

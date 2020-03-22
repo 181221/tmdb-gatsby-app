@@ -229,8 +229,8 @@ const Movie = ({ location }) => {
                         element => element.movie.tmdbId === Number(getLocationId(location)),
                       );
                       setMovieStatus({
-                        status: queueElement.movie.status,
-                        timeleft: queueElement.movie.timeleft,
+                        status: queueElement.status,
+                        timeleft: queueElement.timeleft,
                       });
                       console.log('queueElement', queueElement);
                     }
@@ -300,6 +300,7 @@ const Movie = ({ location }) => {
               downloaded={downloaded}
               hasFile={hasFile}
               inCollection={inCollection}
+              movieStatus={movieStatus}
             />
           </FlashContainer>
 
