@@ -82,6 +82,11 @@ const ChipContent = styled.div`
   margin-top: 12px;
   margin-bottom: 12px;
 `;
+const getMovie = (el, el1) => {
+  if (el && Object.keys(el).length > 1) return el;
+  if (el1 && Object.keys(el1).length > 1) return el1;
+  return undefined;
+};
 
 const Movie = ({ location }) => {
   const [locationId, setLocationId] = useState(getLocationId(location));
@@ -93,40 +98,43 @@ const Movie = ({ location }) => {
   const [created, setCreated] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
+  const [radarrCollection, setRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movieStatus, setMovieStatus] = useState(undefined);
-  const [isFetching, setIsFetching] = useState(undefined);
   const client = useApolloClient();
   const data = client.readQuery({ query });
   const { user } = data;
   const [click, setClick] = useState(true);
+
   useEffect(() => {
     if (!locationId) {
       setError(true);
+    } else {
+      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
+      setLoading(true);
+      fetch(url_collection)
+        .then(res => res.json())
+        .then(json => {
+          setRadarrCollection(json);
+          setLoading(false);
+        })
+        .catch(err => console.error(err));
     }
   }, []);
 
   useEffect(() => {
-    if (state) {
-      if (state.fetchAll) {
-        setFetchMovie(true);
-      } else {
-        setFetchMovie(Object.keys(state).length === 1 && getLocationId(location));
-      }
-      if (state.fetchSimilar) {
-        handleRequest(getUrl(locationId, true)).then(data => {
-          state.similar = data.results;
-          setMovie({ ...state });
-        });
-      }
-    }
-    if (fetchMovie) {
+    setLoading(true);
+    if ((state && Object.keys(state).length < 2) || state.fetchAll) {
       FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch);
+    } else if (state && state.fetchSimilar) {
+      handleRequest(getUrl(locationId, true)).then(data => {
+        state.similar = data.results;
+        setMovie({ ...state });
+      });
     }
-    if (!error && !movie) {
-      setMovie(state);
-    }
+    setMovie(getMovie(movie, state));
+    setLoading(false);
     return () => {
       setInRadarrCollection(undefined);
       setHasFile(undefined);
@@ -137,49 +145,25 @@ const Movie = ({ location }) => {
       setMovie(undefined);
     };
   }, [fetchMovie, state, error]);
-
   useEffect(() => {
-    if (!error) {
-      const collectionCheck = movie || state;
-      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
-      setIsFetching(true);
-      fetch(url_collection)
-        .then(res => res.json())
-        .then(json => {
-          json.map(el => {
-            if (Number(getLocationId(location)) === el.tmdbId && collectionCheck.id === el.tmdbId) {
-              setInRadarrCollection(true);
-              setClick(true);
-              if (el.hasFile) {
-                setHasFile(true);
-              } else {
-                fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
-                  .then(res => res.json())
-                  .then(json => {
-                    if (json && json.length > 0) {
-                      const queueElement = json.find(
-                        element => element.movie.tmdbId === Number(getLocationId(location)),
-                      );
-                      setMovieStatus({
-                        status: queueElement.status,
-                        timeleft: queueElement.timeleft,
-                      });
-                    }
-                  });
-              }
-              if (el.downloaded) {
-                setDownloaded(true);
-              } else {
-                setClick(false);
-              }
-              return true;
+    if (movie && radarrCollection) {
+      const found = radarrCollection.find(el => el.tmdbId === movie.id);
+      if (found) {
+        setInRadarrCollection(true);
+        fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
+          .then(res => res.json())
+          .then(json => {
+            if (json && json.length > 0) {
+              const queueElement = json.find(element => element.movie.tmdbId === found.tmdbId);
+              setMovieStatus({
+                status: queueElement.status,
+                timeleft: queueElement.timeleft,
+              });
             }
           });
-          setIsFetching(false);
-        })
-        .catch(err => console.error(err));
+      } else setClick(false);
     }
-  }, [error, movie]);
+  }, [movie, radarrCollection]);
 
   if (movie) {
     const { title, img, overview, genres, vote_average } = movie;

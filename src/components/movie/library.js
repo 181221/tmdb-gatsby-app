@@ -28,7 +28,7 @@ const Library = ({ hasFile, inRadarrCollection, movieStatus }) => {
   if (message) {
     return (
       <LibContainer>
-        <DoneOutlineRoundedIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
+        <DoneOutlineRoundedIcon style={{ fontSize: '36px', color: '#ff6987e6' }} />
         <Typography variant="h6" component="h6" style={{ lineHeigh: 2, margin: 'auto' }}>
           {message}
         </Typography>
