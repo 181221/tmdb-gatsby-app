@@ -9,22 +9,20 @@ const LibContainer = styled.div`
 `;
 const Library = ({ hasFile, inRadarrCollection, movieStatus }) => {
   const [message, setMessage] = useState('');
-  useEffect(
-    () => {
-      if (hasFile) {
-        setMessage('In Library');
-      }
-      if (inRadarrCollection) {
-        setMessage('Awaiting confirmation');
-      }
-      if (movieStatus) {
-        setMessage('Downloading');
-      }
-    },
-    hasFile,
-    inRadarrCollection,
-    movieStatus,
-  );
+  useEffect(() => {
+    if (hasFile) {
+      setMessage('In Library');
+    }
+    if (inRadarrCollection) {
+      setMessage('Awaiting confirmation');
+    }
+    if (movieStatus) {
+      setMessage('Downloading');
+    }
+    return () => {
+      setMessage('');
+    };
+  }, [hasFile, inRadarrCollection, movieStatus]);
   if (message) {
     return (
       <LibContainer>

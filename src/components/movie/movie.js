@@ -125,16 +125,18 @@ const Movie = ({ location }) => {
 
   useEffect(() => {
     setLoading(true);
+    console.log('state', state);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
-      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch);
+      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading);
     } else if (state && state.fetchSimilar) {
-      handleRequest(getUrl(locationId, true)).then(data => {
+      console.log('fetching');
+      handleRequest(getUrl(state.id, true)).then(data => {
         state.similar = data.results;
         setMovie({ ...state });
+        setLoading(false);
       });
     }
     setMovie(getMovie(movie, state));
-    setLoading(false);
     return () => {
       setInRadarrCollection(undefined);
       setHasFile(undefined);
@@ -191,6 +193,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
+    console.log('movie', movie);
     return (
       <>
         <Wrapper>
@@ -221,9 +224,8 @@ const Movie = ({ location }) => {
               <MovieContainer>
                 <ImageSection>
                   {img && img.src && <Image fixed={img} />}
-                  {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
-                  {!imgToFetch && img && !img.src && (
-                    <ImageLoader src={img} width="300px" height="450px" />
+                  {movie && typeof movie.img === 'string' && (
+                    <ImageLoader src={movie.img} width="300px" height="450px" />
                   )}
                 </ImageSection>
                 <InformationSection>

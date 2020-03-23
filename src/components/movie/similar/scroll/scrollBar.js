@@ -15,7 +15,14 @@ export const Menu = movies => {
           key={el.id}
           to={`${account_movie}/${el.id}`}
           state={{
-            fetchAll: true,
+            id: el.id,
+            title: el.title,
+            vote_average: el.vote_average,
+            release_date: el.release_date,
+            genres: el.genre_ids,
+            img: `https://image.tmdb.org/t/p/w500/${el.poster_path}`,
+            overview: el.overview,
+            fetchSimilar: true,
           }}
         >
           <ImageLoader src={img_tmdb_small + el.poster_path} />

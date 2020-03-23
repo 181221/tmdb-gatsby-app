@@ -28,7 +28,7 @@ export const handleRequest = async (url, options = { method: 'GET' }) => {
   const json = await res.json();
   return json;
 };
-export const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => {
+export const FetchAllMovieData = async (locationId, setMovie, setImgToFetch, setLoading) => {
   handleRequest(getUrl(locationId))
     .then(json => {
       const obj = {
@@ -45,6 +45,7 @@ export const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => 
       handleRequest(getUrl(locationId, true)).then(data => {
         obj.similar = data.results;
         setMovie(obj);
+        setLoading(false);
       });
     })
     .catch(err => console.error(err));
