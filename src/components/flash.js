@@ -23,7 +23,7 @@ const FlashMessage = ({
   success,
   hasFile,
   downloaded,
-  inCollection,
+  inRadarrCollection,
   message = sucessMessage,
   movieStatus,
 }) => {
@@ -57,7 +57,7 @@ const FlashMessage = ({
         </Alert>
       )}
 
-      {!hasFile && inCollection && (
+      {!hasFile && inRadarrCollection && (
         <Collapse in={open} className={classes.root}>
           <Alert
             severity="info"

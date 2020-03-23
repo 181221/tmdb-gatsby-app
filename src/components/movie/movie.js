@@ -4,25 +4,21 @@ import Img from 'gatsby-image';
 import Typography from '@material-ui/core/Typography';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useApolloClient } from 'react-apollo-hooks';
 import { Link } from 'gatsby';
+import Library from './library';
 import { query } from '../gql';
 import Similar from './similar/similar';
+import RequestMovie from './requestMovie';
 import { gen } from './card';
-import {
-  radarr_url,
-  prisma_endpoint,
-  img_tmdb_medium,
-  landing,
-  tmdb_endpoint,
-} from '../../constants/route';
+import { radarr_url, prisma_endpoint, landing } from '../../constants/route';
 import { createOptions } from '../../utils/movieHelper';
 import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
+import { FetchAllMovieData, handleRequest, getUrl, getLocationId } from './helper';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -53,14 +49,14 @@ const MovieContainer = styled.div`
     width: 65%;
   }
 `;
-const Left = styled.div`
+const ImageSection = styled.div`
   margin-right: 20px;
   @media (max-width: 768px) {
     align-self: center;
     margin: 0;
   }
 `;
-const Right = styled.div`
+const InformationSection = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -86,74 +82,8 @@ const ChipContent = styled.div`
   margin-top: 12px;
   margin-bottom: 12px;
 `;
-const useStyles = makeStyles({
-  root: {
-    background: 'linear-gradient(45deg, #e4637f 30%, #FF8E53 90%)',
-    borderRadius: 3,
-    border: 0,
-    color: 'white',
-    boxShadow: '0 0px 1px 1px rgba(255, 105, 135, .3)',
-  },
-  white: {
-    color: 'white',
-  },
-  disabled: {
-    '&$disabled': {
-      cursor: 'not-allowed',
-      pointerEvents: 'all',
-    },
-    goBack: {
-      paddingTop: '10px',
-    },
-  },
-});
-
-const getLocationId = ({ pathname }) => {
-  const regex = /account\/movie\/[0-9]+/gm;
-  const location_id = pathname.match(regex);
-  if (location_id) {
-    return location_id[0].match(/[0-9]+/)[0];
-  }
-  return false;
-};
-const getUrl = (locationId, similarEndPoint = false) => {
-  const similar = similarEndPoint ? '/similar' : '';
-  const url = `${tmdb_endpoint}/movie/${locationId}${similar}?api_key=${process.env.TMDB_API_KEY}`;
-  return url;
-};
-
-const handleRequest = async (url, options = { method: 'GET' }) => {
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-  const json = await res.json();
-  return json;
-};
-const FetchAllMovieData = async (locationId, setMovie, setImgToFetch) => {
-  handleRequest(getUrl(locationId))
-    .then(json => {
-      const obj = {
-        title: json.title,
-        posterUrl: img_tmdb_medium + json.poster_path,
-        img: img_tmdb_medium + json.poster_path,
-        id: json.id,
-        overview: json.overview,
-        genres: json.genres.map(el => el.id),
-        vote_average: json.vote_average,
-        release_date: json.release_date,
-      };
-      setImgToFetch(img_tmdb_medium + json.poster_path);
-      handleRequest(getUrl(locationId, true)).then(data => {
-        obj.similar = data.results;
-        setMovie(obj);
-      });
-    })
-    .catch(err => console.error(err));
-};
 
 const Movie = ({ location }) => {
-  const classes = useStyles();
   const [locationId, setLocationId] = useState(getLocationId(location));
   const [error, setError] = useState(undefined);
   const [imgToFetch, setImgToFetch] = useState(false);
@@ -162,7 +92,7 @@ const Movie = ({ location }) => {
   const [fetchMovie, setFetchMovie] = useState(false);
   const [created, setCreated] = useState(undefined);
   const [loading, setLoading] = useState(false);
-  const [inCollection, setInCollection] = useState(undefined);
+  const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movieStatus, setMovieStatus] = useState(undefined);
@@ -184,7 +114,6 @@ const Movie = ({ location }) => {
       } else {
         setFetchMovie(Object.keys(state).length === 1 && getLocationId(location));
       }
-
       if (state.fetchSimilar) {
         handleRequest(getUrl(locationId, true)).then(data => {
           state.similar = data.results;
@@ -199,7 +128,7 @@ const Movie = ({ location }) => {
       setMovie(state);
     }
     return () => {
-      setInCollection(undefined);
+      setInRadarrCollection(undefined);
       setHasFile(undefined);
       setLoading(undefined);
       setDownloaded(undefined);
@@ -219,14 +148,14 @@ const Movie = ({ location }) => {
         .then(json => {
           json.map(el => {
             if (Number(getLocationId(location)) === el.tmdbId && collectionCheck.id === el.tmdbId) {
-              setInCollection(true);
+              setInRadarrCollection(true);
+              setClick(true);
               if (el.hasFile) {
                 setHasFile(true);
               } else {
                 fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
                   .then(res => res.json())
                   .then(json => {
-                    console.log('queueJson', json);
                     if (json && json.length > 0) {
                       const queueElement = json.find(
                         element => element.movie.tmdbId === Number(getLocationId(location)),
@@ -235,12 +164,13 @@ const Movie = ({ location }) => {
                         status: queueElement.status,
                         timeleft: queueElement.timeleft,
                       });
-                      console.log('queueElement', queueElement);
                     }
                   });
               }
               if (el.downloaded) {
                 setDownloaded(true);
+              } else {
+                setClick(false);
               }
               return true;
             }
@@ -250,23 +180,6 @@ const Movie = ({ location }) => {
         .catch(err => console.error(err));
     }
   }, [error, movie]);
-  console.log('status', movieStatus);
-
-  if (error) {
-    return (
-      <Wrapper>
-        <FlashMessage error={error} />
-        <ReturnDiv>
-          <Typography variant="body1" component="p">
-            <StyledLink to={landing}>
-              <ArrowBackIcon />
-              Go back
-            </StyledLink>
-          </Typography>
-        </ReturnDiv>
-      </Wrapper>
-    );
-  }
 
   if (movie) {
     const { title, img, overview, genres, vote_average } = movie;
@@ -278,7 +191,8 @@ const Movie = ({ location }) => {
       handleRequest(url_collection, options1)
         .then(() => {
           setCreated(true);
-          setInCollection(true);
+          setInRadarrCollection(true);
+          setClick(true);
           handleRequest(prisma_endpoint, options);
           setLoading(false);
           setTimeout(() => {
@@ -293,9 +207,6 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    if (created || downloaded || inCollection || hasFile) {
-      setClick(true);
-    }
     return (
       <>
         <Wrapper>
@@ -305,7 +216,7 @@ const Movie = ({ location }) => {
               success={created}
               downloaded={downloaded}
               hasFile={hasFile}
-              inCollection={inCollection}
+              inRadarrCollection={inRadarrCollection}
               movieStatus={movieStatus}
             />
           </FlashContainer>
@@ -324,25 +235,29 @@ const Movie = ({ location }) => {
           ) : (
             <>
               <MovieContainer>
-                <Left>
+                <ImageSection>
                   {img && img.src && <Image fixed={img} />}
                   {imgToFetch && <ImageLoader src={imgToFetch} width="300px" height="450px" />}
                   {!imgToFetch && img && !img.src && (
                     <ImageLoader src={img} width="300px" height="450px" />
                   )}
-                </Left>
-                <Right>
+                </ImageSection>
+                <InformationSection>
                   <div style={{ paddingLeft: '10px' }}>
                     <Typography variant="h4" component="h4">
                       {title}
                     </Typography>
                   </div>
-
                   <StarDiv>
                     <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
                     <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
                       {vote_average}
                     </Typography>
+                    <Library
+                      inRadarrCollection={inRadarrCollection}
+                      hasFile={hasFile}
+                      movieStatus={movieStatus}
+                    />
                   </StarDiv>
                   <ChipContent>
                     {genres &&
@@ -365,36 +280,8 @@ const Movie = ({ location }) => {
                       {overview}
                     </Typography>
                   </Overview>
-                  {isFetching ? (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <CircularProgress color="secondary" />
-                      <Typography
-                        variant="body1"
-                        component="p"
-                        style={{ margin: 'auto', marginLeft: '10px' }}
-                      >
-                        Getting information
-                      </Typography>
-                    </div>
-                  ) : (
-                    <div className={`${click && classes.disabled}`}>
-                      <Button
-                        onClick={handleMovieRequest}
-                        disabled={click}
-                        className={`${classes.root} ${click && classes.disabled}`}
-                        style={{ minWidth: '70%' }}
-                      >
-                        <Typography
-                          className={`${!click && classes.white}`}
-                          variant="body1"
-                          component="p"
-                        >
-                          Request Movie
-                        </Typography>
-                      </Button>
-                    </div>
-                  )}
-                </Right>
+                  <RequestMovie handleMovieRequest={handleMovieRequest} click={click} />
+                </InformationSection>
               </MovieContainer>
             </>
           )}
