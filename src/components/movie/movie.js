@@ -120,7 +120,10 @@ const Movie = ({ location }) => {
           setRadarrCollection(json);
           setLoading(false);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          setLoading(false);
+        });
     }
   }, []);
 
