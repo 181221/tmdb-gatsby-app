@@ -109,7 +109,9 @@ const checkRadarr = result => {
 };
 const hasPrisma = async (result, reporter, path) => {
   if (!result.PRISMA_ENDPOINT) {
-    reporter.error(`did not find PRISMA_ENDPOINT in ${path}`);
+    reporter.error(
+      `did not find PRISMA_ENDPOINT in ${path}\nBe sure that the graphql-server is setup correctly https://github.com/181221/graphql-server-prisma`,
+    );
     reporter.info(`Adding default prisma endpoint to environment`);
     fs.appendFileSync(path, '\nPRISMA_ENDPOINT="http://localhost:4000"');
     reporter.info(`Added PRISMA_ENDPOINT="http://localhost:4000"`);
@@ -168,13 +170,16 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
   const options = getOptions();
   const response = await fetch(prismaUrl, options);
   if (!response.ok) {
-    reporter.error('Error when trying to fetch prisma endpoint, pls check connection');
+    reporter.error(
+      'Error when trying to fetch prisma endpoint\nBe sure that graphql-server is setup correctly\nhttps://github.com/181221/graphql-server-prisma',
+    );
   } else {
     const json = await response.json();
     const config = json.data.configuration;
     if (!json.data.configuration) {
-      reporter.info(`No config found at prisma server`);
-      reporter.info(`Prisma config can be created in usersettings`);
+      reporter.info(
+        `No configuration found in the database, please create a config\nConfiguration can be created when you login at account/settings or you can setup the config in the .env file`,
+      );
     }
     if (config) {
       if (config.radarrApiKey && config.radarrEndpoint && config.radarrRootFolder) {
@@ -185,7 +190,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
           reporter.info(`Radarr Endpoint ok`);
         } else {
           reporter.error(
-            `Failed to request Radarr ${res.status} ${res.statusText} \nCheck Radarr configuration at prisma`,
+            `Failed to request Radarr ${res.status} ${res.statusText} \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
           );
         }
         const fileContent = fs
