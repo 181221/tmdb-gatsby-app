@@ -4,8 +4,6 @@ import Img from 'gatsby-image';
 import Typography from '@material-ui/core/Typography';
 import { graphql } from 'gatsby';
 
-const BackgroundContainer = styled.div``;
-
 const StyledImg = styled(Img)`
   background-size: cover;
   background-position: center;
@@ -13,7 +11,7 @@ const StyledImg = styled(Img)`
 `;
 export default ({ data }) => {
   return (
-    <BackgroundContainer>
+    <>
       <StyledImg title="astronaut" fluid={data.file.childImageSharp.fluid} />
       <Typography
         variant="h1"
@@ -22,7 +20,7 @@ export default ({ data }) => {
       >
         Requesterr
       </Typography>
-    </BackgroundContainer>
+    </>
   );
 };
 

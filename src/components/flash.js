@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
   root: { marginBottom: '24px' },

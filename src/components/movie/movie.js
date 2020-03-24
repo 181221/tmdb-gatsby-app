@@ -6,7 +6,6 @@ import StarRateIcon from '@material-ui/icons/StarRate';
 import Chip from '@material-ui/core/Chip';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { useApolloClient } from 'react-apollo-hooks';
 import { Link } from 'gatsby';
 import Library from './library';
