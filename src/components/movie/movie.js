@@ -12,6 +12,7 @@ import { Link } from 'gatsby';
 import Library from './library';
 import { query } from '../gql';
 import Similar from './similar/similar';
+import MovieSkeleton from './skeleton';
 import RequestMovie from './requestMovie';
 import { gen } from './card';
 import { radarr_url, prisma_endpoint, landing } from '../../constants/route';
@@ -32,7 +33,7 @@ export const Image = styled(Img)`
   box-sizing: border-box;
   border-radius: 10px;
 `;
-const MovieContainer = styled.div`
+export const MovieContainer = styled.div`
   display: flex;
   margin: auto;
   width: 50%;
@@ -49,14 +50,14 @@ const MovieContainer = styled.div`
     width: 65%;
   }
 `;
-const ImageSection = styled.div`
+export const ImageSection = styled.div`
   margin-right: 20px;
   @media (max-width: 768px) {
     align-self: center;
     margin: 0;
   }
 `;
-const InformationSection = styled.div`
+export const InformationSection = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -213,9 +214,7 @@ const Movie = ({ location }) => {
             </Typography>
           </ReturnDiv>
           {loading ? (
-            <div style={{ padding: '100px 0', display: 'flex', justifyContent: 'center' }}>
-              <CircularProgress color="secondary" />
-            </div>
+            <MovieSkeleton />
           ) : (
             <>
               <MovieContainer>
