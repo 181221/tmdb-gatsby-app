@@ -7,11 +7,7 @@ import ScrollBar from './scroll/scrollBar';
 
 const useStyles = makeStyles(theme => ({
   root: props => ({
-    backgroundColor: props.backgroundColor,
-    color: theme.color,
-    [theme.breakpoints.down('md')]: {
-      padding: '24px 10% 0 10%',
-    },
+    padding: '24px 10% 0 10%',
   }),
 }));
 
@@ -19,6 +15,9 @@ const Container = styled.div`
   width: 80%;
   margin: auto;
   @media (max-width: 768px) {
+    width: 100%;
+  }
+  @media (max-width: 1280px) {
     width: 100%;
   }
 `;
