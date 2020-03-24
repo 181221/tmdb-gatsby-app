@@ -17,12 +17,17 @@ const useForminput = init => {
   const onChange = e => {
     setValue(e.target.value);
   };
-  return { value, onChange, setValue };
+  return { value, onChange };
+};
+const initState = {
+  urlFeilmelding: ' ',
+  apiFeilmelding: ' ',
+  folderFeilmelding: ' ',
 };
 
 export default function RadarrDialog({ dialog, flash }) {
   const { onClose, title } = dialog;
-  const [state, dispatch] = useReducer(reducer, '');
+  const [state, dispatch] = useReducer(reducer, initState);
   const [test, setTest] = useState(false);
   const [connection, setConnection] = useState(undefined);
   const [error, setError] = useState(undefined);
@@ -121,7 +126,7 @@ export default function RadarrDialog({ dialog, flash }) {
           <TextField
             autoFocus
             margin="dense"
-            error={urlFeilmelding && urlFeilmelding.length > 0}
+            error={urlFeilmelding && urlFeilmelding.length > 1}
             id="radarrUrl"
             name="url"
             label="Radarr Url"
@@ -134,7 +139,7 @@ export default function RadarrDialog({ dialog, flash }) {
             autoFocus
             margin="dense"
             id="radarrAPI"
-            error={apiFeilmelding && apiFeilmelding.length > 0}
+            error={apiFeilmelding && apiFeilmelding.length > 1}
             name="api"
             label="Radarr Api key"
             helperText={apiFeilmelding}
@@ -146,7 +151,7 @@ export default function RadarrDialog({ dialog, flash }) {
             autoFocus
             margin="dense"
             id="radarrFolder"
-            error={folderFeilmelding && folderFeilmelding.length > 0}
+            error={folderFeilmelding && folderFeilmelding.length > 1}
             helperText={folderFeilmelding}
             name="folder"
             label="Radarr root folder"

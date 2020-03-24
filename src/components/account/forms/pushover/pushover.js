@@ -53,7 +53,7 @@ const reducer = (state, { el, type }) => {
         }
         return { ...state, uri };
       }
-      return state;
+      return { ...state, isValid };
     }
     case 'submit': {
       const isValid = state.urlIsValid && state.apiIsValid && state.apiIsValid;
@@ -61,7 +61,7 @@ const reducer = (state, { el, type }) => {
         console.log('shit is valid', state);
         return { ...state, isValid: true };
       }
-      return state;
+      return { ...state, isValid };
     }
     default: {
       return state;

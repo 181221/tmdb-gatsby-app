@@ -9,7 +9,7 @@ export const reducer = (state, { el, type }) => {
           urlIsValid: false,
         };
       }
-      return { ...state, url: el.value, urlFeilmelding: '', urlIsValid: true };
+      return { ...state, url: el.value, urlFeilmelding: ' ', urlIsValid: true };
     }
     case 'api': {
       if (!el.value) {
@@ -19,7 +19,7 @@ export const reducer = (state, { el, type }) => {
           apiIsValid: false,
         };
       }
-      return { ...state, api: el.value, apiFeilmelding: '', apiIsValid: true };
+      return { ...state, api: el.value, apiFeilmelding: ' ', apiIsValid: true };
     }
     case 'folder': {
       if (!el.value) {
@@ -29,7 +29,7 @@ export const reducer = (state, { el, type }) => {
           folderIsValid: false,
         };
       }
-      return { ...state, folder: el.value, folderFeilmelding: '', folderIsValid: true };
+      return { ...state, folder: el.value, folderFeilmelding: ' ', folderIsValid: true };
     }
     case 'test': {
       const isValid = state.urlIsValid && state.apiIsValid;
@@ -40,9 +40,9 @@ export const reducer = (state, { el, type }) => {
         } catch (error) {
           return { ...state, error: true, errorMessage: error };
         }
-        return { ...state, uri };
+        return { ...state, uri, isValid };
       }
-      return state;
+      return { ...state, isValid };
     }
     case 'submit': {
       // validate everything and submit the form
