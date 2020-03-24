@@ -193,7 +193,6 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    console.log('movie', movie);
     return (
       <>
         <Wrapper>

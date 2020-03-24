@@ -42,6 +42,8 @@ const Discover = () => {
             poster_path
             id
             title
+            overview
+            genre_ids
           }
           local_poster_path {
             url
@@ -58,6 +60,7 @@ const Discover = () => {
 
   let { nodes } = gatsbyRepoData.allTmdbMoviePopular;
   nodes = nodes.filter(el => el.local_poster_path !== null);
+  console.log(nodes);
   return (
     <>
       <div style={{ margin: '24px 10%' }}>
