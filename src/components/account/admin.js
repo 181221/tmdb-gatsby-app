@@ -14,6 +14,8 @@ const Container = styled.div`
 `;
 const Div = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const useDialog = init => {
@@ -63,9 +65,11 @@ const SettingsAdmin = () => {
         <Typography variant="h4" component="h4">
           Account
         </Typography>
-        <FormDialog dialog={settingsDialog} title="Settings" icon="account">
-          <SettingsDialog dialog={settingsDialog} />
-        </FormDialog>
+        <Div>
+          <FormDialog dialog={settingsDialog} title="Settings" icon="account">
+            <SettingsDialog dialog={settingsDialog} />
+          </FormDialog>
+        </Div>
       </Container>
     </>
   );
