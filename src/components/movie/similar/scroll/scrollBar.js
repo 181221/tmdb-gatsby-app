@@ -9,7 +9,6 @@ import ImageLoader from '../../../img';
 
 export const Menu = movies => {
   if (movies && movies.length > 0) {
-    console.log(movies[0]);
     return movies.map(el => {
       return (
         <Link

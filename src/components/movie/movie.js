@@ -125,11 +125,9 @@ const Movie = ({ location }) => {
 
   useEffect(() => {
     setLoading(true);
-    console.log('state', state);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
       FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading);
     } else if (state && state.fetchSimilar) {
-      console.log('fetching');
       handleRequest(getUrl(state.id, true)).then(data => {
         state.similar = data.results;
         setMovie({ ...state });
