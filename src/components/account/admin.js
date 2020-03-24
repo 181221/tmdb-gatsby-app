@@ -15,7 +15,10 @@ const Container = styled.div`
 const Div = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
+  @media screen and (max-width: 668px) {
+    justify-content: center;
+  }
 `;
 
 const useDialog = init => {

@@ -160,13 +160,13 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     ? 'http://localhost:4000'
     : process.env.PRISMA_ENDPOINT;
   const hasRadarrSetup = checkRadarr(envVariables);
-  reporter.info(`has radarr settings ${hasRadarrSetup.toString()}`);
+  reporter.info(`Radarr settings found - ${hasRadarrSetup.toString().toUpperCase()}`);
   if (!hasRadarrSetup) {
     const radarEnv =
       '\nRADARR_API_KEY=""\nRADARR_API_ENDPOINT="http://localhost:7878/api"\nRADARR_ROOT_FOLDER_PATH=""';
     fs.appendFileSync(path, radarEnv);
   }
-  reporter.info('environment file ok');
+  reporter.info('Environment file - OK');
   const options = getOptions();
   const response = await fetch(prismaUrl, options);
   if (!response.ok) {
@@ -187,7 +187,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
           method: 'HEAD',
         });
         if (res.ok) {
-          reporter.info(`Radarr Endpoint ok`);
+          reporter.info(`Radarr Endpoint - OK`);
         } else {
           reporter.error(
             `Failed to request Radarr ${res.status} ${res.statusText} \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
