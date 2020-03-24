@@ -31,7 +31,7 @@ const FlashMessage = ({
   return (
     <>
       {error && (
-        <Alert severity="error">
+        <Alert severity="error" className={classes.root}>
           <AlertTitle>Error</AlertTitle>
           {error.message ? error.message : 'There was an error'}
         </Alert>
