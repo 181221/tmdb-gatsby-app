@@ -6,6 +6,12 @@ import styled from 'styled-components';
 import { theme } from './styles';
 import { tmdb_endpoint, account_movie, img_tmdb_medium } from '../../constants/route';
 
+const SuggestContainer = styled.div`
+  margin: 0 20%;
+  @media screen and (max-width: 668px) {
+    margin: 0 12px 0 12px;
+  }
+`;
 const StyledLink = styled(Link)`
   color: black;
   min-width: 200px;
@@ -139,16 +145,18 @@ const SearchBar = () => {
     onChange,
   };
   return (
-    <Autosuggest
-      theme={theme}
-      suggestions={suggestions}
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-      onSuggestionsClearRequested={onSuggestionsClearRequested}
-      onSuggestionSelected={onSuggestionSelected}
-      getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
-      inputProps={inputProps}
-    />
+    <SuggestContainer>
+      <Autosuggest
+        theme={theme}
+        suggestions={suggestions}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
+        onSuggestionSelected={onSuggestionSelected}
+        getSuggestionValue={getSuggestionValue}
+        renderSuggestion={renderSuggestion}
+        inputProps={inputProps}
+      />
+    </SuggestContainer>
   );
 };
 

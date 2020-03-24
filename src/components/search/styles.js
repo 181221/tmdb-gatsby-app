@@ -1,11 +1,11 @@
 export const theme = {
   container: {
     position: 'relative',
-    width: '50%',
     margin: 'auto',
+    widht: '100%',
   },
   input: {
-    width: '100%',
+    width: '90%',
     height: 30,
     padding: '10px 20px',
     fontFamily: 'Helvetica, sans-serif',

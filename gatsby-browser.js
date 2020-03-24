@@ -6,6 +6,7 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import Layout from './src/components/layout';
 import { client } from './src/apollo/index';
 import SessionCheck from './src/utils/auth/sessionCheck';
+import './src/styles/global.css';
 
 export const wrapRootElement = ({ element }) => {
   return (
