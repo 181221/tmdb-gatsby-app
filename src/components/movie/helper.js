@@ -28,7 +28,13 @@ export const handleRequest = async (url, options = { method: 'GET' }) => {
   const json = await res.json();
   return json;
 };
-export const FetchAllMovieData = async (locationId, setMovie, setImgToFetch, setLoading) => {
+export const FetchAllMovieData = async (
+  locationId,
+  setMovie,
+  setImgToFetch,
+  setLoading,
+  setError,
+) => {
   handleRequest(getUrl(locationId))
     .then(json => {
       const obj = {
@@ -48,5 +54,8 @@ export const FetchAllMovieData = async (locationId, setMovie, setImgToFetch, set
         setLoading(false);
       });
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      setError({ isError: true, message: err.message.toString() });
+      console.error(err);
+    });
 };

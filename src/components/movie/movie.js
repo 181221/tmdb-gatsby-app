@@ -131,13 +131,19 @@ const Movie = ({ location }) => {
   useEffect(() => {
     setLoading(true);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
-      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading);
+      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading, setError);
     } else if (state && state.fetchSimilar) {
-      handleRequest(getUrl(state.id, true)).then(data => {
-        state.similar = data.results;
-        setMovie({ ...state });
-        setLoading(false);
-      });
+      handleRequest(getUrl(state.id, true))
+        .then(data => {
+          state.similar = data.results;
+          setMovie({ ...state });
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setError({ isError: true, message: 'Failed to fetch radarr' });
+          setLoading(false);
+        });
     }
     setMovie(getMovie(movie, state));
     return () => {
@@ -165,6 +171,11 @@ const Movie = ({ location }) => {
                 timeleft: queueElement.timeleft,
               });
             }
+          })
+          .catch(err => {
+            console.error(err);
+            setError({ isError: true, message: 'Failed to fetch radarr' });
+            setLoading(false);
           });
       } else setClick(false);
     }
