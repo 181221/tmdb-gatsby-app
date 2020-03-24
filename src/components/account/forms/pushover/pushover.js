@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
 import { useApolloClient } from 'react-apollo-hooks';
 import Alert from '@material-ui/lab/Alert';
 import { getOptions, getOptionsRead } from './helper';
@@ -22,7 +23,7 @@ const reducer = (state, { el, type }) => {
           urlIsValid: false,
         };
       }
-      return { ...state, url: el.value, urlFeilmelding: '', urlIsValid: true };
+      return { ...state, url: el.value, urlFeilmelding: ' ', urlIsValid: true };
     }
     case 'api': {
       if (!el.value) {
@@ -30,7 +31,7 @@ const reducer = (state, { el, type }) => {
       }
       return {
         ...state,
-        apiFeilmelding: '',
+        apiFeilmelding: ' ',
         api: el.value,
         apiIsValid: true,
       };
@@ -39,7 +40,7 @@ const reducer = (state, { el, type }) => {
       if (!el.value) {
         return { ...state, keyFeilmelding: 'key cannot be empty', keyIsValid: false };
       }
-      return { ...state, keyFeilmelding: '', key: el.value, keyIsValid: true };
+      return { ...state, keyFeilmelding: ' ', key: el.value, keyIsValid: true };
     }
     case 'test': {
       const isValid = state.urlIsValid && state.apiIsValid && state.apiIsValid;
@@ -74,10 +75,14 @@ const useForminput = init => {
   };
   return { value, onChange, setValue };
 };
-
+const initState = {
+  urlFeilmelding: ' ',
+  keyFeilmelding: ' ',
+  apiFeilmelding: ' ',
+};
 export default function PushoverDialog({ dialog, flash }) {
   const { onClose, title } = dialog;
-  const [state, dispatch] = useReducer(reducer, '');
+  const [state, dispatch] = useReducer(reducer, initState);
   const [loading, setLoading] = useState(undefined);
   const [error, setError] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
@@ -128,7 +133,6 @@ export default function PushoverDialog({ dialog, flash }) {
       });
   }, []);
   useEffect(() => {
-    console.log('statepushover', state);
     if (test && state.uri) {
       const endpoint = state.uri.href;
       const obj = {
@@ -189,48 +193,51 @@ export default function PushoverDialog({ dialog, flash }) {
       {success && <Alert severity="success">Configurations successfully saved</Alert>}
       {connection && <Alert severity="success">The connection was successfully established</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
-      <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <form onSubmit={handleSubmit}>
+        <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Enable your pushover to get notified when users request movies
-            <DialogContentText>For changes to take effect, restart the app.</DialogContentText>
           </DialogContentText>
+          <DialogContentText>For changes to take effect, restart the app.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            error={urlFeilmelding && urlFeilmelding.length > 0}
+            error={urlFeilmelding && urlFeilmelding.length > 1}
             id="pushoverUrl"
             name="url"
             label="Pushover Url"
             type="pushoverUrl"
             helperText={urlFeilmelding}
             fullWidth
-            {...pushoverEndpoint}
+            value={pushoverEndpoint.value}
+            onChange={pushoverEndpoint.onChange}
           />
           <TextField
             autoFocus
             margin="dense"
             id="pushoverAPI"
-            error={apiFeilmelding && apiFeilmelding.length > 0}
+            error={apiFeilmelding && apiFeilmelding.length > 1}
             name="api"
             label="Pushover Api key"
             helperText={apiFeilmelding}
             type="pushoverAPI"
             fullWidth
-            {...api}
+            value={api.value}
+            onChange={api.onChange}
           />
           <TextField
             autoFocus
             margin="dense"
             id="pushoverUserKey"
-            error={keyFeilmelding && keyFeilmelding.length > 0}
+            error={keyFeilmelding && keyFeilmelding.length > 1}
             name="key"
             label="Pushover user key"
             helperText={keyFeilmelding}
             type="pushoverUserKey"
             fullWidth
-            {...userKey}
+            value={userKey.value}
+            onChange={userKey.onChange}
           />
         </DialogContent>
         <DialogActions>

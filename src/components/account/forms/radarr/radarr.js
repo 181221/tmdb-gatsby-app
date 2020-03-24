@@ -116,10 +116,8 @@ export default function RadarrDialog({ dialog, flash }) {
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          <DialogContentText>
-            Enable your radarr endpoint for requesting movies
-            <DialogContentText>For changes to take effect, restart the app.</DialogContentText>
-          </DialogContentText>
+          <DialogContentText>Enable your radarr endpoint for requesting movies </DialogContentText>
+          <DialogContentText>For changes to take effect, restart the app.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
