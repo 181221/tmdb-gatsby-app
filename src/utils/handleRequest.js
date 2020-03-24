@@ -94,12 +94,17 @@ export const handleRequest = (user, url, setUserData) => {
             .then(res => res.json())
             .then(j => {
               setUserData(j.data.getToken);
+              return j;
             })
             .catch(err => console.error(err));
         }
       } else {
         setUserData(json.data.getToken);
       }
+      return json;
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      console.error(err);
+      return { isError: true, message: err.message.toString() };
+    });
 };

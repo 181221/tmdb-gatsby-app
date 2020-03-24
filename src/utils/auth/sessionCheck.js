@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import { graphql, useStaticQuery, navigate } from 'gatsby';
+import LoadingApp from '../../components/LoadingApp';
+import Error from '../../components/error';
 import { addUserToCache } from '../../apollo/index';
 import { landing } from '../../constants/route';
 import { silentAuth } from './auth';
 
 const SessionCheck = ({ children, location }) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const hasSettings = useStaticQuery(graphql`
     query RadarrSettings {
       radarrSettings {
@@ -29,6 +32,9 @@ const SessionCheck = ({ children, location }) => {
       }
       addUserToCache(user);
     }
+    if (user && !user.error !== undefined) {
+      setError(user.error);
+    }
     setLoading(false);
     if (location.pathname === '/callback/' || location.pathname === '/callback') {
       navigate(landing);
@@ -38,9 +44,10 @@ const SessionCheck = ({ children, location }) => {
   useEffect(() => {
     silentAuth(handleCheckSession);
   }, []);
-
+  if (error) return <Error />;
   if (!loading) return <>{children}</>;
-  return <></>;
+
+  return <LoadingApp />;
 };
 
 export default SessionCheck;

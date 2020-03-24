@@ -9,7 +9,7 @@ const auth = isBrowser
   ? new auth0.WebAuth({
       domain: process.env.AUTH0_DOMAIN,
       clientID: process.env.AUTH0_CLIENTID,
-      redirectUri: process.env.AUTH0_CALLBACK,
+      redirectUri: `${process.env.AUTH0_CALLBACK}/callback`,
       responseType: 'token id_token',
       scope: 'openid profile email',
     })
@@ -56,10 +56,12 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
     tokens.idToken = authResult.idToken;
     tokens.expiresAt = expiresAt;
     user = authResult.idTokenPayload;
-    handleRequest(user, prisma_endpoint, setUserData).then(() => {
+    handleRequest(user, prisma_endpoint, setUserData).then(json => {
       localStorage.setItem('isLoggedIn', true);
-      localStorage.setItem('user', user);
       localStorage.setItem('token', user.token);
+      user.error = json.isError;
+      console.log('user', user);
+      localStorage.setItem('user', user);
       cb(user);
     });
   }
@@ -82,5 +84,8 @@ export const silentAuth = callback => {
 
 export const logout = () => {
   localStorage.setItem('isLoggedIn', false);
-  auth.logout();
+
+  auth.logout({
+    returnTo: process.env.AUTH0_CALLBACK,
+  });
 };
