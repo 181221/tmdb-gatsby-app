@@ -122,6 +122,7 @@ const Movie = ({ location }) => {
         })
         .catch(err => {
           console.error(err);
+          setError({ isError: true, message: 'Failed to fetch radarr' });
           setLoading(false);
         });
     }
@@ -190,6 +191,7 @@ const Movie = ({ location }) => {
         .catch(err => {
           console.error(err);
           setError(true);
+          setLoading(false);
           setTimeout(() => {
             setError(undefined);
           }, 5000);

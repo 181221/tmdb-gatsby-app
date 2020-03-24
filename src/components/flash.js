@@ -28,14 +28,13 @@ const FlashMessage = ({
   movieStatus,
 }) => {
   const [open, setOpen] = React.useState(true);
-
   const classes = useStyles();
   return (
     <>
       {error && (
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
-          Something went wrong
+          {error.message ? error.message : 'There was an error'}
         </Alert>
       )}
       {success && (
