@@ -6,11 +6,12 @@ import Movie from '../components/movie/movie';
 import PrivateRoute from '../components/privateRoute';
 import { account_movie, landing, account_settings } from '../constants/route';
 import Settings from '../components/account/settings';
+import LoadingApp from '../components/LoadingApp';
 
 const Account = () => {
   if (!isAuthenticated()) {
     login();
-    return <p>Redirecting to login...</p>;
+    return <LoadingApp />;
   }
   return (
     <>
