@@ -159,7 +159,11 @@ const Movie = ({ location }) => {
     if (movie && radarrCollection) {
       const found = radarrCollection.find(el => el.tmdbId === movie.id);
       if (found) {
-        setInRadarrCollection(true);
+        if (found.hasFile) {
+          setHasFile(true);
+        } else {
+          setInRadarrCollection(true);
+        }
         fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
           .then(res => res.json())
           .then(json => {
