@@ -165,10 +165,12 @@ const Movie = ({ location }) => {
           .then(json => {
             if (json && json.length > 0) {
               const queueElement = json.find(element => element.movie.tmdbId === found.tmdbId);
-              setMovieStatus({
-                status: queueElement.status,
-                timeleft: queueElement.timeleft,
-              });
+              if (queueElement) {
+                setMovieStatus({
+                  status: queueElement.status,
+                  timeleft: queueElement.timeleft,
+                });
+              }
             }
           })
           .catch(err => {
