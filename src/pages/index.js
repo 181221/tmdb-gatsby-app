@@ -16,7 +16,7 @@ export default ({ data }) => {
       <Typography
         variant="h1"
         component="h1"
-        style={{ position: 'fixed', top: '50%', opacity: '0.8' }}
+        style={{ position: 'fixed', top: '40%', opacity: '0.8' }}
       >
         Requesterr
       </Typography>
@@ -28,7 +28,7 @@ export const query = graphql`
   query {
     file(relativePath: { eq: "background.jpg" }) {
       childImageSharp {
-        fluid {
+        fluid(maxWidth: 1920, quality: 100) {
           ...GatsbyImageSharpFluid
         }
       }

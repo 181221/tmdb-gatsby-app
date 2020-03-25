@@ -7,6 +7,9 @@ const BackgroundContainer = styled.div`
   background-position: center;
   height: 91vh;
   text-align: center;
+  background: -webkit-gradient(linear, left top, right top, from(#2c3e50), to(#243b55));
+  background: -o-linear-gradient(left, #2c3e50, #243b55);
+  background: linear-gradient(to right, #2c3e50, #243b55);
 `;
 const LoadingApp = () => {
   return (

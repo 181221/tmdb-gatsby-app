@@ -8,8 +8,10 @@ const Container = styled.div`
   background-position: center;
   height: 100vh;
   text-align: center;
-  background: linear-gradient(to right, #2c3e50, #243b55);
   color: white;
+  background: -webkit-gradient(linear, left top, right top, from(#2c3e50), to(#243b55));
+  background: -o-linear-gradient(left, #2c3e50, #243b55);
+  background: linear-gradient(to right, #2c3e50, #243b55);
 `;
 const Div = styled.div`
   padding-top: 48px;

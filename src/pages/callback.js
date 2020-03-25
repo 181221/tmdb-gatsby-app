@@ -5,7 +5,6 @@ import LoadingApp from '../components/LoadingApp';
 
 const Callback = () => {
   handleAuthentication();
-
   return <LoadingApp />;
 };
 

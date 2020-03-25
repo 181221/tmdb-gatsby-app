@@ -9,6 +9,5 @@
   "dependencies": {
     "node-fetch": "^2.6.0",
     "gatsby-source-filesystem": "^2.1.46"
-
   }
 }

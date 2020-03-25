@@ -15,7 +15,7 @@ module.exports = {
         short_name: 'request',
         start_url: '/',
         background_color: '#2C3E50',
-        theme_color: '#fff',
+        theme_color: '#2C3E50',
         display: 'standalone',
         icon: 'src/images/logo.png',
       },
