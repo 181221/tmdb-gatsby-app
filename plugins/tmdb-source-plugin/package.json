@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "node-fetch": "^2.6.0",
-    "gatsby-source-filesystem": "^2.1.46"
+    "gatsby-source-filesystem": "^2.2.2",
+    "node-fetch": "^2.6.0"
   }
 }
