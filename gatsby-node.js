@@ -168,7 +168,9 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
   }
   reporter.info('Environment file - OK');
   const options = getOptions();
-  const response = await fetch(prismaUrl, options);
+  const response = await fetch(prismaUrl, options).catch(error => {
+    return { ok: false, message: error.message };
+  });
   if (!response.ok) {
     reporter.error(
       'Error when trying to fetch prisma endpoint\nBe sure that graphql-server is setup correctly\nhttps://github.com/181221/graphql-server-prisma',

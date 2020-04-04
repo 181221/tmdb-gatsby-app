@@ -133,8 +133,8 @@ const Movie = ({ location }) => {
       FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading, setError);
     } else if (state && state.fetchSimilar) {
       handleRequest(getUrl(state.id, true))
-        .then(data => {
-          state.similar = data.results;
+        .then(json => {
+          state.similar = json.results;
           setMovie({ ...state });
           setLoading(false);
         })
@@ -143,6 +143,8 @@ const Movie = ({ location }) => {
           setError({ isError: true, message: 'Failed to fetch radarr' });
           setLoading(false);
         });
+    } else {
+      setLoading(false);
     }
     setMovie(getMovie(movie, state));
     return () => {
@@ -176,6 +178,7 @@ const Movie = ({ location }) => {
                 });
               }
             }
+            setLoading(false);
           })
           .catch(err => {
             console.error(err);
@@ -213,6 +216,9 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
+    console.log('loading', loading);
+
+    console.log('movie', movie);
     return (
       <>
         <Wrapper>
