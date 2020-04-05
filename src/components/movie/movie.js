@@ -109,25 +109,7 @@ const Movie = ({ location }) => {
   const [click, setClick] = useState(true);
 
   useEffect(() => {
-    if (!locationId) {
-      setError(true);
-    } else {
-      fetch(process.env.PRISMA_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: user.token },
-        body: JSON.stringify({ query: '{ radarrCollection { title tmdbId  hasFile downloaded} }' }),
-      })
-        .then(res => res.json())
-        .then(json => {
-          setRadarrCollection(json.data.radarrCollection);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error(err);
-          setError({ isError: true, message: 'Failed to fetch radarr' });
-          setLoading(false);
-        });
-    }
+    if (!locationId) setError(true);
   }, []);
 
   useEffect(() => {
@@ -161,36 +143,33 @@ const Movie = ({ location }) => {
     };
   }, [fetchMovie, state, error]);
   useEffect(() => {
-    if (movie && radarrCollection) {
-      const found = radarrCollection.find(el => el.tmdbId === movie.id);
-      if (found) {
-        if (found.hasFile) {
-          setHasFile(true);
-        } else {
-          setInRadarrCollection(true);
-        }
-        fetch(`${radarr_url}/queue?apikey=${process.env.RADARR_API_KEY}`)
-          .then(res => res.json())
-          .then(json => {
-            if (json && json.length > 0) {
-              const queueElement = json.find(element => element.movie.tmdbId === found.tmdbId);
-              if (queueElement) {
-                setMovieStatus({
-                  status: queueElement.status,
-                  timeleft: queueElement.timeleft,
-                });
-              }
-            }
-            setLoading(false);
-          })
-          .catch(err => {
-            console.error(err);
-            setError({ isError: true, message: 'Failed to fetch radarr' });
-            setLoading(false);
-          });
-      } else setClick(false);
-    }
-  }, [movie, radarrCollection]);
+    if (movie) {
+      fetch(process.env.PRISMA_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: user.token },
+        body: JSON.stringify({
+          query: `{ radarrCollection(tmdbId:${movie.id}) { title tmdbId hasFile downloaded} }`,
+        }),
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (json.data.radarrCollection.hasFile) {
+            setHasFile(true);
+          }
+          console.log('json', json);
+          /* setMovieStatus({
+            status: queueElement.status,
+            timeleft: queueElement.timeleft,
+          }); */
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setError({ isError: true, message: 'Failed to fetch radarr' });
+          setLoading(false);
+        });
+    } else setClick(false);
+  }, [movie]);
 
   if (movie) {
     const { title, img, overview, genres, vote_average } = movie;
