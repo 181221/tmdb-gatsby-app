@@ -9,7 +9,7 @@ import { query } from '../components/gql';
 import { authLink } from './helper';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000',
+  uri: process.env.PRISMA_ENDPOINT,
 });
 
 const cache = new InMemoryCache({

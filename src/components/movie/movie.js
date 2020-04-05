@@ -104,6 +104,7 @@ const Movie = ({ location }) => {
   const [movieStatus, setMovieStatus] = useState(undefined);
   const client = useApolloClient();
   const data = client.readQuery({ query });
+
   const { user } = data;
   const [click, setClick] = useState(true);
 
@@ -111,12 +112,14 @@ const Movie = ({ location }) => {
     if (!locationId) {
       setError(true);
     } else {
-      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
-      setLoading(true);
-      fetch(url_collection)
+      fetch(process.env.PRISMA_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: user.token },
+        body: JSON.stringify({ query: '{ radarrCollection { title tmdbId  hasFile downloaded} }' }),
+      })
         .then(res => res.json())
         .then(json => {
-          setRadarrCollection(json);
+          setRadarrCollection(json.data.radarrCollection);
           setLoading(false);
         })
         .catch(err => {
@@ -216,9 +219,6 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
-    console.log('loading', loading);
-
-    console.log('movie', movie);
     return (
       <>
         <Wrapper>
