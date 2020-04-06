@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { useApolloClient } from 'react-apollo-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 import { logout, login, isAuthenticated } from '../../utils/auth/auth';
 import { useStyles } from './styles';
 import { landing, account_settings } from '../../constants/route';

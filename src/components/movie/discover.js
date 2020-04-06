@@ -2,11 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { graphql, useStaticQuery, Link } from 'gatsby';
 import Typography from '@material-ui/core/Typography';
-import { useApolloClient } from 'react-apollo-hooks';
 import Alert from '@material-ui/lab/Alert';
 import Card from './card';
 import SearchBar from '../search/search-bar';
-import { query } from '../gql';
 import { account_settings } from '../../constants/route';
 import { getUserFromCache } from '../../apollo';
 
@@ -24,10 +22,6 @@ const CardContainer = styled.div`
 
 const Discover = () => {
   const user = getUserFromCache();
-
-  /* const { data, loading, error } = useQuery(GET_RADARRCOLLECTION, {
-    variables: 419704,
-  }); */
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMoviePopular(sort: { fields: title }, limit: 50) {

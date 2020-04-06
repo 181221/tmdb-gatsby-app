@@ -1,11 +1,9 @@
 export const theme = {
   container: {
     position: 'relative',
-    margin: 'auto',
-    widht: '100%',
   },
   input: {
-    width: '90%',
+    width: '240px',
     height: 30,
     padding: '10px 20px',
     fontFamily: 'Helvetica, sans-serif',
@@ -45,7 +43,6 @@ export const theme = {
     lineHeight: 1.6,
     letterSpacing: '0.0075em',
     borderBottomLeftRadius: 4,
-    paddingRight: '40px',
     borderBottomRightRadius: 4,
     zIndex: 2,
     transition: 'all 300ms',

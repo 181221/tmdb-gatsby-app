@@ -3,10 +3,8 @@
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-// eslint-disable-next-line import/no-unresolved
-// eslint-disable-next-line import/extensions
+import { setContext } from 'apollo-link-context';
 import { query } from '../components/gql';
-import { authLink } from './helper';
 
 const httpLink = createHttpLink({
   uri: process.env.PRISMA_ENDPOINT,
@@ -24,10 +22,26 @@ const cache = new InMemoryCache({
     }
   },
 });
-export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache,
+
+let User;
+let client;
+const authLink = setContext(async (_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: User.token,
+    },
+  };
 });
+
+export const createApolloClient = user => {
+  User = user;
+  client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache,
+  });
+  return client;
+};
 
 export const addUserToCache = user => {
   user.__typename = 'User';

@@ -6,8 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
-import { useApolloClient } from 'react-apollo-hooks';
 import Alert from '@material-ui/lab/Alert';
 import { getOptions, getOptionsRead } from './helper';
 import { getUserFromCache } from '../../../../apollo';

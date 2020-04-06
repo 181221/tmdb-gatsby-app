@@ -10,8 +10,6 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-
-import { useApolloClient } from 'react-apollo-hooks';
 import { getUserFromCache } from '../../../../apollo';
 import { query } from '../../../gql';
 import { prisma_endpoint } from '../../../../constants/route';

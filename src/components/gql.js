@@ -26,6 +26,21 @@ export const query = gql`
     }
   }
 `;
+export const GET_IN_RADARR_COLLECTION = gql`
+  query inRadarrCollection($tmdbId: Int!) {
+    radarrCollection(tmdbId: $tmdbId) {
+      title
+      img
+      tmdb_id
+      release_date
+      overview
+      downloaded
+      id
+      tmdbId
+      hasFile
+    }
+  }
+`;
 
 export const updateUserQuery = `mutation updateUser(
   $email: String!

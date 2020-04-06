@@ -1,15 +1,17 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import { graphql, useStaticQuery, navigate } from 'gatsby';
+import { ApolloProvider } from '@apollo/react-hooks';
 import LoadingApp from '../../components/LoadingApp';
 import Error from '../../components/error';
-import { addUserToCache } from '../../apollo/index';
+import { createApolloClient, addUserToCache } from '../../apollo/index';
 import { landing } from '../../constants/route';
 import { silentAuth } from './auth';
 
 const SessionCheck = ({ children, location }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [client, setClient] = useState(undefined);
   const hasSettings = useStaticQuery(graphql`
     query RadarrSettings {
       radarrSettings {
@@ -30,6 +32,7 @@ const SessionCheck = ({ children, location }) => {
       } else {
         user.hasSettings = false;
       }
+      setClient(createApolloClient(user));
       addUserToCache(user);
     }
     if (user && !user.error !== undefined) {
@@ -45,7 +48,12 @@ const SessionCheck = ({ children, location }) => {
     silentAuth(handleCheckSession);
   }, []);
   if (error) return <Error />;
-  if (!loading) return <>{children}</>;
+  if (!loading && client)
+    return (
+      <>
+        <ApolloProvider client={client}>{children}</ApolloProvider>
+      </>
+    );
 
   return <LoadingApp />;
 };
