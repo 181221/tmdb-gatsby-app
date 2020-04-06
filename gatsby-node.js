@@ -159,14 +159,8 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
   const prismaUrl = hasPrisma(envVariables, reporter, path)
     ? 'http://localhost:4000'
     : process.env.PRISMA_ENDPOINT;
-  const hasRadarrSetup = checkRadarr(envVariables);
-  reporter.info(`Radarr settings found - ${hasRadarrSetup.toString().toUpperCase()}`);
-  if (!hasRadarrSetup) {
-    const radarEnv =
-      '\nRADARR_API_KEY=""\nRADARR_API_ENDPOINT="http://localhost:7878/api"\nRADARR_ROOT_FOLDER_PATH=""';
-    fs.appendFileSync(path, radarEnv);
-  }
   reporter.info('Environment file - OK');
+  let hasRadarrSetup = false;
   const options = getOptions();
   const response = await fetch(prismaUrl, options).catch(error => {
     return { ok: false, message: error.message };
@@ -185,23 +179,19 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     }
     if (config) {
       if (config.radarrApiKey && config.radarrEndpoint && config.radarrRootFolder) {
-        const res = await fetch(`${config.radarrEndpoint}/movie?apikey=${config.radarrApiKey}`, {
+        const radarrEndpoint =
+          env === 'development' ? 'http://localhost:7878/api' : config.radarrEndpoint;
+        const res = await fetch(`${radarrEndpoint}/movie?apikey=${config.radarrApiKey}`, {
           method: 'HEAD',
         });
         if (res.ok) {
           reporter.info(`Radarr Endpoint - OK`);
+          hasRadarrSetup = true;
         } else {
           reporter.error(
             `Failed to request Radarr ${res.status} ${res.statusText} \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
           );
         }
-        const fileContent = fs
-          .readFileSync(path, 'utf8')
-          .toString()
-          .split('\n');
-        const updatedContent = updateRadarrSettings(fileContent, config);
-
-        fs.writeFileSync(path, updatedContent.join('\n'));
       }
     }
   }

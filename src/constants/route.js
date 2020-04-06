@@ -1,4 +1,3 @@
-export const radarr_url = process.env.RADARR_API_ENDPOINT;
 export const prisma_endpoint = process.env.PRISMA_ENDPOINT;
 export const img_tmdb_medium = 'https://image.tmdb.org/t/p/w500';
 export const img_tmdb_small = 'https://image.tmdb.org/t/p/w300';

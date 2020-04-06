@@ -33,9 +33,9 @@ export default function RadarrDialog({ dialog, flash }) {
   const [loading, setLoading] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
   const user = getUserFromCache();
-  const radarrUrl = useForminput(process.env.RADARR_API_ENDPOINT);
-  const radarrApi = useForminput(process.env.RADARR_API_KEY);
-  const radarrFolder = useForminput(process.env.RADARR_ROOT_FOLDER_PATH);
+  const radarrUrl = useForminput('');
+  const radarrApi = useForminput('');
+  const radarrFolder = useForminput('');
 
   const { urlFeilmelding, apiFeilmelding, folderFeilmelding } = state;
   const handleSubmit = e => {

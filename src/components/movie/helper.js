@@ -1,10 +1,4 @@
-import {
-  radarr_url,
-  prisma_endpoint,
-  img_tmdb_medium,
-  landing,
-  tmdb_endpoint,
-} from '../../constants/route';
+import { img_tmdb_medium, tmdb_endpoint } from '../../constants/route';
 
 export const getLocationId = ({ pathname }) => {
   const regex = /account\/movie\/[0-9]+/gm;
