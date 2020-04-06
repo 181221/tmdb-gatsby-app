@@ -41,6 +41,21 @@ export const GET_IN_RADARR_COLLECTION = gql`
     }
   }
 `;
+export const GET_SIMILAR_MOVIES = gql`
+  query similar($tmdbId: Int) {
+    similarMovies(tmdbId: $tmdbId) {
+      id
+      title
+      genre_ids
+      release_date
+      vote_average
+      overview
+      downloaded
+      poster_path
+      backdrop_path
+    }
+  }
+`;
 
 export const updateUserQuery = `mutation updateUser(
   $email: String!

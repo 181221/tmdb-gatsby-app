@@ -9,7 +9,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
 import { useQuery } from '@apollo/react-hooks';
 import Library from './library';
-import Similar from './similar/similar';
+import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
 import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 import RequestMovie from './requestMovie';
@@ -84,6 +84,9 @@ const Movie = ({ location }) => {
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
+      if (locationId && Number(loc) !== locationId) {
+        setMovie(state);
+      }
       setLocationId(Number(loc));
     } else {
       setError(true);
@@ -102,22 +105,10 @@ const Movie = ({ location }) => {
     setLoading(true);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
       FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading, setError);
-    } else if (state && state.fetchSimilar) {
-      handleRequest(getUrl(state.id, true))
-        .then(json => {
-          state.similar = json.results;
-          setMovie({ ...state });
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error(err);
-          setError({ isError: true, message: 'Failed to fetch radarr' });
-          setLoading(false);
-        });
     } else {
+      setMovie(state);
       setLoading(false);
     }
-    setMovie(getMovie(movie, state));
     return () => {
       setInRadarrCollection(undefined);
       setHasFile(undefined);
@@ -155,6 +146,7 @@ const Movie = ({ location }) => {
           }, 5000);
         });
     };
+    console.log('movie', movie);
     return (
       <>
         <Wrapper>
@@ -230,7 +222,11 @@ const Movie = ({ location }) => {
               </MovieContainer>
             </>
           )}
-          <Similar key={movie.id} movies={movie.similar} />
+          {state.similar ? (
+            <Similar movies={state.similar} />
+          ) : (
+            <SimilarFetch key={movie.id} id={locationId} />
+          )}
         </Wrapper>
       </>
     );
