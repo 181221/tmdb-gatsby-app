@@ -10,6 +10,7 @@ import { Link } from 'gatsby';
 import Library from './library';
 import Similar from './similar/similar';
 import MovieSkeleton from './skeleton';
+import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 import RequestMovie from './requestMovie';
 import { gen } from './card';
 import { radarr_url, prisma_endpoint, landing } from '../../constants/route';
@@ -30,34 +31,6 @@ export const Image = styled(Img)`
   box-shadow: rgba(0, 0, 0, 0.4) 0px 12px 40px -5px;
   box-sizing: border-box;
   border-radius: 10px;
-`;
-export const MovieContainer = styled.div`
-  display: flex;
-  margin: auto;
-  width: 50%;
-
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-  }
-  @media (max-width: 1100px) {
-    width: 80%;
-  }
-  @media (min-width: 1100px) {
-    width: 65%;
-  }
-`;
-export const ImageSection = styled.div`
-  margin-right: 20px;
-  @media (max-width: 768px) {
-    align-self: center;
-    margin: 0;
-  }
-`;
-export const InformationSection = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 const Overview = styled.div`
   margin-top: auto;

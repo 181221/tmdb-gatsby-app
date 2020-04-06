@@ -81,7 +81,6 @@ const initState = {
 export default function PushoverDialog({ dialog, flash }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, initState);
-  const [loading, setLoading] = useState(undefined);
   const [error, setError] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
   const [test, setTest] = useState(false);

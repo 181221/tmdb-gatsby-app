@@ -37,7 +37,7 @@ export const subscribePush = async user => {
 };
 
 export const deleteSubscriptionID = async (subscription, user) => {
-  let response = await handleRequest('false', user);
+  const response = await handleRequest('false', user);
   console.log('reponse', response);
 };
 

@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import Skeleton from '@material-ui/lab/Skeleton';
-
-import { MovieContainer, ImageSection, InformationSection } from './movie';
+import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 
 const MovieSkeleton = () => {
   return (

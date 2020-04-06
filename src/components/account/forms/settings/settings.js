@@ -10,8 +10,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-import { getUserFromCache } from '../../../../apollo';
-import { query } from '../../../gql';
+import { getUserFromCache, writeToCache } from '../../../../apollo';
 import { prisma_endpoint } from '../../../../constants/route';
 import { getOptions } from './helper';
 import { isPushSupported, getSubscription, unsubscribePush, subscribePush } from './notification';
@@ -112,13 +111,8 @@ export default function SettingsDialog({ dialog }) {
               setSuccess(false);
             }, 5000);
           }
-          data.user.name = state.name;
-          client.writeQuery({
-            query,
-            data: {
-              user: data.user,
-            },
-          });
+          user.name = state.name;
+          writeToCache(user);
         });
     }
   }, [state, state.isValid]);

@@ -60,6 +60,14 @@ export const addUserToCache = user => {
 
   return false;
 };
+export const writeToCache = data => {
+  client.writeQuery({
+    query,
+    data: {
+      data,
+    },
+  });
+};
 export const getUserFromCache = () => {
   const data = client.readQuery({ query });
   const { user } = data;
