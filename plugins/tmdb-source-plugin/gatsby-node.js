@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
 exports.sourceNodes = async (
-  { actions: { createNode, touchNode }, createContentDigest, store, cache, createNodeId },
+  { actions: { createNode, touchNode }, reporter, createContentDigest, store, cache, createNodeId },
   configOptions,
 ) => {
   // Create nodes here, generally by downloading data
@@ -21,7 +21,7 @@ exports.sourceNodes = async (
     const nodeData = {
       ...data,
       id: nodeId,
-      tmdb_id: data.id,
+      tmdbId: data.id,
       parent: null,
       children: [],
       internal: {
@@ -43,8 +43,8 @@ exports.sourceNodes = async (
   const pageNr = configOptions.pageNr ? configOptions.pageNr : 2;
   const promises = [];
   if (!datatmdb) {
-    console.log('no elements in cache');
-    console.log('doing calls');
+    reporter.info(`No elements in cache`);
+    reporter.info('Fetching https://api.themoviedb.org/3/movie/popular');
     datatmdb = [];
     for (let i = 0; i < pageNr; i++) {
       const url = `https://api.themoviedb.org/3/movie/popular?api_key=${
@@ -52,6 +52,7 @@ exports.sourceNodes = async (
       }&page=${i + 1}`;
       promises.push(url);
     }
+    reporter.info('Fetching Similar Movies');
     const data = await Promise.all(promises.map(el => asyncStuff(el))).then(responses => {
       const tmdbPromis = responses.map(async response => {
         const proms = [];

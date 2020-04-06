@@ -7,7 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import Library from './library';
 import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
@@ -72,10 +72,24 @@ const Movie = ({ location }) => {
     setCreated(true);
     setClick(true);
   };
-  const [createMovie] = useMutation(CREATE_MOVIE, { onCompleted });
+  const [createMovie] = useMutation(CREATE_MOVIE, {
+    onCompleted,
+    update(cache, { data }) {
+      const movieInCollection = cache.readQuery({
+        query: GET_IN_RADARR_COLLECTION,
+        variables: { tmdbId: movie.id },
+      });
+      movieInCollection.radarrCollection.isRequested = true;
+      cache.writeQuery({
+        query: GET_IN_RADARR_COLLECTION,
+        data: { ...movieInCollection },
+      });
+    },
+  });
   const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
+  console.log('data', data);
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
@@ -89,12 +103,11 @@ const Movie = ({ location }) => {
   }, [location]);
   useEffect(() => {
     if (data && data.radarrCollection) {
-      setInRadarrCollection(true);
-      const { hasFile: h, downloaded: d } = data.radarrCollection;
-      if (h) setHasFile(h);
-      if (d) setDownloaded(d);
-    } else {
-      setClick(false);
+      const { hasFile: h, downloaded: d, isRequested } = data.radarrCollection;
+      setClick(isRequested);
+      setInRadarrCollection(isRequested);
+      setHasFile(h);
+      setDownloaded(d);
     }
   }, [data]);
 
@@ -113,6 +126,7 @@ const Movie = ({ location }) => {
       setDownloaded(undefined);
       setImgToFetch(undefined);
       setMovie(undefined);
+      setCreated(undefined);
     };
   }, [state, error]);
 
@@ -124,7 +138,7 @@ const Movie = ({ location }) => {
         variables: {
           title,
           img: rightImg,
-          tmdb_id: id,
+          tmdbId: id,
           genres,
           vote_average,
           release_date,

@@ -14,7 +14,7 @@ const cache = new InMemoryCache({
   dataIdFromObject: object => {
     switch (object.__typename) {
       case 'Movie':
-        return object.id; // use the `key` field as the identifier
+        return object.id || object.tmdbId; // use the `key` field as the identifier
       case 'User':
         return object.email; // append `bar` to the `blah` field as the identifier
       default:

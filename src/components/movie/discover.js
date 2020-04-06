@@ -34,7 +34,7 @@ const Discover = () => {
           overview
           genre_ids
           release_date
-          tmdb_id
+          tmdbId
           similar {
             poster_path
             id
@@ -81,7 +81,7 @@ const Discover = () => {
             overview={el.overview}
             genres={el.genre_ids}
             vote_average={el.vote_average}
-            id={el.tmdb_id}
+            id={el.tmdbId}
             release_date={el.release_date}
             posterUrl={el.poster_path}
             similar={el.similar}

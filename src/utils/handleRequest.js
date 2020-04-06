@@ -35,7 +35,7 @@ export const options_getToken = user => {
           id
           title
           img
-          tmdb_id
+          tmdbId
           genres
           release_date
           createdAt

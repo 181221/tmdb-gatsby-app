@@ -15,7 +15,7 @@ export const query = gql`
         id
         title
         img
-        tmdb_id
+        tmdbId
         genres
         release_date
         createdAt
@@ -29,15 +29,12 @@ export const query = gql`
 export const GET_IN_RADARR_COLLECTION = gql`
   query inRadarrCollection($tmdbId: Int) {
     radarrCollection(tmdbId: $tmdbId) {
-      title
-      img
-      tmdb_id
-      release_date
-      overview
-      downloaded
-      id
-      tmdbId
+      isRequested
       hasFile
+      downloaded
+      status
+      timeleft
+      title
     }
   }
 `;
@@ -46,7 +43,7 @@ export const GET_SIMILAR_MOVIES = gql`
     similarMovies(tmdbId: $tmdbId) {
       id
       title
-      genre_ids
+      genres
       release_date
       vote_average
       overview
@@ -91,7 +88,7 @@ export const CREATE_MOVIE = gql`
   mutation createMovie(
     $title: String!
     $img: String
-    $tmdb_id: Int
+    $tmdbId: Int
     $genres: [Int]
     $vote_average: Float
     $release_date: String
@@ -100,7 +97,7 @@ export const CREATE_MOVIE = gql`
     createMovie(
       title: $title
       img: $img
-      tmdb_id: $tmdb_id
+      tmdbId: $tmdbId
       overview: $overview
       genres: $genres
       release_date: $release_date
@@ -108,7 +105,7 @@ export const CREATE_MOVIE = gql`
     ) {
       title
       img
-      tmdb_id
+      tmdbId
       genres
       release_date
       vote_average

@@ -36,34 +36,9 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
 
 const fs = require('fs');
 
-const updateRadarrSettings = (fileContent, config) => {
-  const newContent = fileContent.map(el => {
-    const [left, right] = el.split('=');
-    if (!left) {
-      return;
-    }
-    let identifier = right;
-    if (left === 'RADARR_API_KEY' && identifier) {
-      identifier = config.radarrApiKey;
-    }
-    if (left === 'RADARR_API_ENDPOINT' && identifier) {
-      identifier = config.radarrEndpoint;
-    }
-    if (left === 'RADARR_ROOT_FOLDER_PATH' && identifier) {
-      identifier = config.radarrRootFolder;
-    }
-    return `${left}=${identifier}`;
-  });
-  return newContent;
-};
-
 const getOptions = () => {
   const ql = `query {
-    configuration(id: "configurations") {
-      radarrApiKey
-      radarrEndpoint
-      radarrRootFolder
-    }
+    checkConfiguration
   }
   `;
   const options = {
@@ -83,9 +58,6 @@ AUTH0_CLIENTID=""
 AUTH0_CALLBACK=""
 TMDB_API_KEY=""
 PRISMA_ENDPOINT="http://localhost:4000"
-RADARR_API_KEY=""
-RADARR_API_ENDPOINT="http://localhost:7878/api"
-RADARR_ROOT_FOLDER_PATH=""
 `;
 
 const getEnvironmentVariables = async path => {
@@ -100,12 +72,6 @@ const getEnvironmentVariables = async path => {
     return map;
   }, {});
   return result;
-};
-const checkRadarr = result => {
-  if (!result.RADARR_API_KEY || !result.RADARR_API_ENDPOINT || !result.RADARR_ROOT_FOLDER_PATH) {
-    return false;
-  }
-  return true;
 };
 const hasPrisma = async (result, reporter, path) => {
   if (!result.PRISMA_ENDPOINT) {
@@ -171,28 +137,16 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     );
   } else {
     const json = await response.json();
-    const config = json.data.configuration;
-    if (!json.data.configuration) {
+    if (!json.data.checkConfiguration) {
       reporter.info(
         `No configuration found in the database, please create a config\nConfiguration can be created when you login at account/settings or you can setup the config in the .env file`,
       );
-    }
-    if (config) {
-      if (config.radarrApiKey && config.radarrEndpoint && config.radarrRootFolder) {
-        const radarrEndpoint =
-          env === 'development' ? 'http://localhost:7878/api' : config.radarrEndpoint;
-        const res = await fetch(`${radarrEndpoint}/movie?apikey=${config.radarrApiKey}`, {
-          method: 'HEAD',
-        });
-        if (res.ok) {
-          reporter.info(`Radarr Endpoint - OK`);
-          hasRadarrSetup = true;
-        } else {
-          reporter.error(
-            `Failed to request Radarr ${res.status} ${res.statusText} \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
-          );
-        }
-      }
+      reporter.error(
+        `Failed to request Radarr  \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
+      );
+    } else {
+      reporter.info(`Radarr Endpoint - OK`);
+      hasRadarrSetup = true;
     }
   }
   const node = {
