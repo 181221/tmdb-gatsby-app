@@ -84,6 +84,19 @@ export const UPDATE_RADARR_CONFIG = gql`
   }
 `;
 
+export const GET_CONFIG = gql`
+  query configuration {
+    configuration {
+      radarrApiKey
+      radarrEndpoint
+      radarrRootFolder
+      pushoverEndpoint
+      pushoverApiKey
+      pushoverUserKey
+    }
+  }
+`;
+
 export const CREATE_MOVIE = gql`
   mutation createMovie(
     $title: String!

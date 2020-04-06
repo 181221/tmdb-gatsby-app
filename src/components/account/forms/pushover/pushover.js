@@ -7,7 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-import { getOptions, getOptionsRead } from './helper';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_CONFIG } from '../../../gql';
+import { getOptions } from './helper';
 import { getUserFromCache } from '../../../../apollo';
 
 const reducer = (state, { el, type }) => {
@@ -92,6 +94,15 @@ export default function PushoverDialog({ dialog, flash }) {
   const userKey = useForminput('');
   const pushoverEndpoint = useForminput('https://api.pushover.net/1/messages.json');
 
+  const { data } = useQuery(GET_CONFIG);
+
+  useEffect(() => {
+    if (data && data.configuration) {
+      api.setValue(data.configuration.pushoverApiKey);
+      userKey.setValue(data.configuration.pushoverUserKey);
+      pushoverEndpoint.setValue(data.configuration.pushoverEndpoint);
+    }
+  }, [data]);
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
@@ -112,21 +123,6 @@ export default function PushoverDialog({ dialog, flash }) {
       });
     }
   };
-  useEffect(() => {
-    const options = getOptionsRead(user, state);
-    fetch(process.env.PRISMA_ENDPOINT, options)
-      .then(res => res.json())
-      .then(json => {
-        const jsonData = json.data.configurationPrivate;
-        if (jsonData) {
-          api.setValue(jsonData.pushoverApiKey);
-          userKey.setValue(jsonData.pushoverUserKey);
-          if (jsonData.pushoverEndpoint) {
-            pushoverEndpoint.setValue(jsonData.pushoverEndpoint);
-          }
-        }
-      });
-  }, []);
   useEffect(() => {
     if (test && state.uri) {
       const endpoint = state.uri.href;

@@ -6,6 +6,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_CONFIG } from '../../../gql';
 import { getUserFromCache } from '../../../../apollo';
 import { reducer } from './reducer';
 import { getOptions } from './helper';
@@ -16,7 +18,7 @@ const useForminput = init => {
   const onChange = e => {
     setValue(e.target.value);
   };
-  return { value, onChange };
+  return { value, onChange, setValue };
 };
 const initState = {
   urlFeilmelding: ' ',
@@ -36,8 +38,15 @@ export default function RadarrDialog({ dialog, flash }) {
   const radarrUrl = useForminput('');
   const radarrApi = useForminput('');
   const radarrFolder = useForminput('');
-
+  const { data } = useQuery(GET_CONFIG);
   const { urlFeilmelding, apiFeilmelding, folderFeilmelding } = state;
+  useEffect(() => {
+    if (data && data.configuration) {
+      radarrUrl.setValue(data.configuration.radarrEndpoint);
+      radarrApi.setValue(data.configuration.radarrApiKey);
+      radarrFolder.setValue(data.configuration.radarrRootFolder);
+    }
+  }, [data]);
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
@@ -58,12 +67,12 @@ export default function RadarrDialog({ dialog, flash }) {
       });
     }
   };
+
   useEffect(() => {
     if (test && state.uri) {
       setTest(false);
       fetch(state.uri.href, { method: 'HEAD' })
         .then(res => {
-          console.log(res);
           if (res.status === 200) {
             setConnection(true);
             setError(false);
@@ -80,14 +89,11 @@ export default function RadarrDialog({ dialog, flash }) {
         });
     }
     if (!test && state.isValid) {
-      console.log('time to submit');
       const options = getOptions(user, state);
-      console.log('got someoptions', options);
       fetch(prisma_endpoint, options)
         .then(res => res.json())
         .then(json => {
           setLoading(false);
-          console.log('json', json);
           if (json.errors && json.errors.length > 0) {
             setError('An error has occoured');
             setTimeout(() => {
@@ -96,7 +102,7 @@ export default function RadarrDialog({ dialog, flash }) {
           } else {
             setSuccess(true);
             onClose();
-            flash('Radarr settings saved, restart app for changes to take effect');
+            flash('Radarr settings saved');
             setTimeout(() => {
               setSuccess(false);
             }, 5000);
@@ -130,7 +136,8 @@ export default function RadarrDialog({ dialog, flash }) {
             type="radarrUrl"
             helperText={urlFeilmelding}
             fullWidth
-            {...radarrUrl}
+            value={radarrUrl.value}
+            onChange={radarrUrl.onChange}
           />
           <TextField
             autoFocus
@@ -142,7 +149,8 @@ export default function RadarrDialog({ dialog, flash }) {
             helperText={apiFeilmelding}
             type="radarrAPI"
             fullWidth
-            {...radarrApi}
+            value={radarrApi.value}
+            onChange={radarrApi.onChange}
           />
           <TextField
             autoFocus
@@ -154,7 +162,8 @@ export default function RadarrDialog({ dialog, flash }) {
             label="Radarr root folder"
             type="radarrFolder"
             fullWidth
-            {...radarrFolder}
+            value={radarrFolder.value}
+            onChange={radarrFolder.onChange}
           />
         </DialogContent>
         <DialogActions>

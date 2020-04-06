@@ -22,13 +22,12 @@ const SessionCheck = ({ children, location }) => {
     }
   `);
   const settings = hasSettings.radarrSettings.internal.content;
-
   const handleCheckSession = user => {
     if (!user) {
       localStorage.setItem('isLoggedIn', false);
     } else {
       if (user.role === 'ADMIN') {
-        user.hasSettings = settings === 'true';
+        if (settings) user.hasSettings = settings === 'true';
       } else {
         user.hasSettings = false;
       }
@@ -54,8 +53,10 @@ const SessionCheck = ({ children, location }) => {
         <ApolloProvider client={client}>{children}</ApolloProvider>
       </>
     );
-
-  return <LoadingApp />;
+  if (loading) {
+    return <LoadingApp />;
+  }
+  return <>{children}</>;
 };
 
 export default SessionCheck;

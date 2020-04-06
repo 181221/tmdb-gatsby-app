@@ -141,9 +141,6 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
       reporter.info(
         `No configuration found in the database, please create a config\nConfiguration can be created when you login at account/settings or you can setup the config in the .env file`,
       );
-      reporter.error(
-        `Failed to request Radarr  \nCheck Radarr configuration at prisma http://localhost:4466/_admin`,
-      );
     } else {
       reporter.info(`Radarr Endpoint - OK`);
       hasRadarrSetup = true;

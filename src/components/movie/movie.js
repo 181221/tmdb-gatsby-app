@@ -89,7 +89,6 @@ const Movie = ({ location }) => {
   const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
-  console.log('data', data);
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
