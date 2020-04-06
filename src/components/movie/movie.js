@@ -7,6 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
+import { useQuery } from '@apollo/react-hooks';
 import Library from './library';
 import Similar from './similar/similar';
 import MovieSkeleton from './skeleton';
@@ -19,6 +20,7 @@ import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 import { FetchAllMovieData, handleRequest, getUrl, getLocationId } from './helper';
 import { getUserFromCache } from '../../apollo';
+import { GET_IN_RADARR_COLLECTION } from '../gql';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -61,7 +63,7 @@ const getMovie = (el, el1) => {
 };
 
 const Movie = ({ location }) => {
-  const [locationId, setLocationId] = useState(getLocationId(location));
+  const [locationId, setLocationId] = useState(undefined);
   const [error, setError] = useState(undefined);
   const [imgToFetch, setImgToFetch] = useState(false);
   const [movie, setMovie] = useState(undefined);
@@ -77,8 +79,17 @@ const Movie = ({ location }) => {
   const user = getUserFromCache();
   const [click, setClick] = useState(true);
 
+  const { data, loading: load, error: ql_err } = useQuery(GET_IN_RADARR_COLLECTION, {
+    variables: { tmdbId: locationId },
+  });
+  console.log('data', data);
   useEffect(() => {
-    if (!locationId) setError(true);
+    const loc = getLocationId(location);
+    if (loc) {
+      setLocationId(Number(loc));
+    } else {
+      setError(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -111,34 +122,6 @@ const Movie = ({ location }) => {
       setMovie(undefined);
     };
   }, [fetchMovie, state, error]);
-  useEffect(() => {
-    if (movie) {
-      fetch(process.env.PRISMA_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: user.token },
-        body: JSON.stringify({
-          query: `{ radarrCollection(tmdbId:${movie.id}) { title tmdbId hasFile downloaded} }`,
-        }),
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.data.radarrCollection.hasFile) {
-            setHasFile(true);
-          }
-          console.log('json', json);
-          /* setMovieStatus({
-            status: queueElement.status,
-            timeleft: queueElement.timeleft,
-          }); */
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error(err);
-          setError({ isError: true, message: 'Failed to fetch radarr' });
-          setLoading(false);
-        });
-    } else setClick(false);
-  }, [movie]);
 
   if (movie) {
     const { title, img, overview, genres, vote_average } = movie;
