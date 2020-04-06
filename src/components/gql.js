@@ -27,7 +27,7 @@ export const query = gql`
   }
 `;
 export const GET_IN_RADARR_COLLECTION = gql`
-  query inRadarrCollection($tmdbId: Int!) {
+  query inRadarrCollection($tmdbId: Int) {
     radarrCollection(tmdbId: $tmdbId) {
       title
       img

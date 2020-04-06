@@ -78,11 +78,9 @@ const Movie = ({ location }) => {
   const [movieStatus, setMovieStatus] = useState(undefined);
   const user = getUserFromCache();
   const [click, setClick] = useState(true);
-
-  const { data, loading: load, error: ql_err } = useQuery(GET_IN_RADARR_COLLECTION, {
+  const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
-  console.log('data', data);
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
@@ -90,7 +88,15 @@ const Movie = ({ location }) => {
     } else {
       setError(true);
     }
-  }, []);
+  }, [location]);
+  useEffect(() => {
+    if (data && data.radarrCollection) {
+      setInRadarrCollection(true);
+      const { hasFile: h, downloaded: d } = data.radarrCollection;
+      if (h) setHasFile(h);
+      if (d) setDownloaded(d);
+    }
+  }, [data]);
 
   useEffect(() => {
     setLoading(true);
@@ -117,7 +123,6 @@ const Movie = ({ location }) => {
       setHasFile(undefined);
       setLoading(undefined);
       setDownloaded(undefined);
-      setLocationId(undefined);
       setImgToFetch(undefined);
       setMovie(undefined);
     };
