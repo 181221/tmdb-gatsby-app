@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -28,14 +29,31 @@ const Container = styled.div`
 const MovieContainer = styled.div`
   margin-bottom: 60px;
 `;
+const SkeletonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+const SkeletonMargin = styled(Skeleton)`
+  margin: 12px 12px;
+`;
+const ScrollBarLoader = () => {
+  return (
+    <SkeletonContainer>
+      <SkeletonMargin variant="rect" width="200px" height="280px" />
+      <SkeletonMargin variant="rect" width="200px" height="280px" />
+      <SkeletonMargin variant="rect" width="200px" height="280px" />
+      <SkeletonMargin variant="rect" width="200px" height="280px" />
+      <SkeletonMargin variant="rect" width="200px" height="280px" />
+    </SkeletonContainer>
+  );
+};
+
 export const SimilarFetch = ({ id }) => {
   const classes = useStyles();
   const { data, loading, error } = useQuery(GET_SIMILAR_MOVIES, {
     variables: { tmdbId: id },
   });
-  if (loading) {
-    return <></>;
-  }
   if (error) {
     return <div>error</div>;
   }
@@ -46,7 +64,7 @@ export const SimilarFetch = ({ id }) => {
           Similar movies
         </Typography>
         <MovieContainer>
-          <ScrollBar movies={data.similarMovies} />
+          {loading ? <ScrollBarLoader /> : <ScrollBar movies={data.similarMovies} />}
         </MovieContainer>
       </Container>
     </>
