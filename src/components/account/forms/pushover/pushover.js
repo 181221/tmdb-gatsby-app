@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { useApolloClient } from 'react-apollo-hooks';
 import Alert from '@material-ui/lab/Alert';
 import { getOptions, getOptionsRead } from './helper';
-import { query } from '../../../gql';
+import { getUserFromCache } from '../../../../apollo';
 
 const reducer = (state, { el, type }) => {
   switch (type) {
@@ -89,9 +89,7 @@ export default function PushoverDialog({ dialog, flash }) {
   const [test, setTest] = useState(false);
   const [connection, setConnection] = useState(undefined);
   const { urlFeilmelding, apiFeilmelding, keyFeilmelding } = state;
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  const user = getUserFromCache();
 
   const api = useForminput('');
   const userKey = useForminput('');

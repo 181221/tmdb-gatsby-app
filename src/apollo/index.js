@@ -46,3 +46,8 @@ export const addUserToCache = user => {
 
   return false;
 };
+export const getUserFromCache = () => {
+  const data = client.readQuery({ query });
+  const { user } = data;
+  return user;
+};

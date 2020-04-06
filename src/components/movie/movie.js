@@ -19,6 +19,7 @@ import { createOptions } from '../../utils/movieHelper';
 import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 import { FetchAllMovieData, handleRequest, getUrl, getLocationId } from './helper';
+import { getUserFromCache } from '../../apollo';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -102,10 +103,7 @@ const Movie = ({ location }) => {
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movieStatus, setMovieStatus] = useState(undefined);
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-
-  const { user } = data;
+  const user = getUserFromCache();
   const [click, setClick] = useState(true);
 
   useEffect(() => {

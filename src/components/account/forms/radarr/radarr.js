@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useApolloClient } from 'react-apollo-hooks';
 import { query } from '../../../gql';
+import { getUserFromCache } from '../../../../apollo';
 import { reducer } from './reducer';
 import { getOptions } from './helper';
 import { prisma_endpoint } from '../../../../constants/route';
@@ -33,9 +34,7 @@ export default function RadarrDialog({ dialog, flash }) {
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  const user = getUserFromCache();
   const radarrUrl = useForminput(process.env.RADARR_API_ENDPOINT);
   const radarrApi = useForminput(process.env.RADARR_API_KEY);
   const radarrFolder = useForminput(process.env.RADARR_ROOT_FOLDER_PATH);

@@ -8,6 +8,7 @@ import Card from './card';
 import SearchBar from '../search/search-bar';
 import { query } from '../gql';
 import { account_settings } from '../../constants/route';
+import { getUserFromCache } from '../../apollo';
 
 const Heading = styled.div`
   margin: 24px;
@@ -22,9 +23,11 @@ const CardContainer = styled.div`
 `;
 
 const Discover = () => {
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  const user = getUserFromCache();
+
+  /* const { data, loading, error } = useQuery(GET_RADARRCOLLECTION, {
+    variables: 419704,
+  }); */
   const gatsbyRepoData = useStaticQuery(graphql`
     query MyQuery {
       allTmdbMoviePopular(sort: { fields: title }, limit: 50) {

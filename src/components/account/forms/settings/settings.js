@@ -12,6 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 
 import { useApolloClient } from 'react-apollo-hooks';
+import { getUserFromCache } from '../../../../apollo';
 import { query } from '../../../gql';
 import { prisma_endpoint } from '../../../../constants/route';
 import { getOptions } from './helper';
@@ -54,9 +55,7 @@ export default function SettingsDialog({ dialog }) {
   const [loading, setLoading] = useState(undefined);
   const [error, setError] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
-  const client = useApolloClient();
-  const data = client.readQuery({ query });
-  const { user } = data;
+  const user = getUserFromCache();
   const [value, setValue] = useState(user.name);
   const [checked, setChecked] = useState(user.notification);
 
