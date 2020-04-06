@@ -7,20 +7,18 @@ import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import Library from './library';
 import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
 import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 import RequestMovie from './requestMovie';
 import { gen } from './card';
-import { radarr_url, prisma_endpoint, landing } from '../../constants/route';
-import { createOptions } from '../../utils/movieHelper';
+import { landing } from '../../constants/route';
 import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
-import { FetchAllMovieData, handleRequest, getUrl, getLocationId } from './helper';
-import { getUserFromCache } from '../../apollo';
-import { GET_IN_RADARR_COLLECTION } from '../gql';
+import { FetchAllMovieData, getLocationId } from './helper';
+import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE } from '../gql';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -56,11 +54,6 @@ const ChipContent = styled.div`
   margin-top: 12px;
   margin-bottom: 12px;
 `;
-const getMovie = (el, el1) => {
-  if (el && Object.keys(el).length > 1) return el;
-  if (el1 && Object.keys(el1).length > 1) return el1;
-  return undefined;
-};
 
 const Movie = ({ location }) => {
   const [locationId, setLocationId] = useState(undefined);
@@ -68,16 +61,18 @@ const Movie = ({ location }) => {
   const [imgToFetch, setImgToFetch] = useState(false);
   const [movie, setMovie] = useState(undefined);
   const { state = {} } = location;
-  const [fetchMovie, setFetchMovie] = useState(false);
   const [created, setCreated] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
-  const [radarrCollection, setRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movieStatus, setMovieStatus] = useState(undefined);
-  const user = getUserFromCache();
   const [click, setClick] = useState(true);
+  const onCompleted = () => {
+    setCreated(true);
+    setClick(true);
+  };
+  const [createMovie] = useMutation(CREATE_MOVIE, { onCompleted });
   const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
@@ -98,6 +93,8 @@ const Movie = ({ location }) => {
       const { hasFile: h, downloaded: d } = data.radarrCollection;
       if (h) setHasFile(h);
       if (d) setDownloaded(d);
+    } else {
+      setClick(false);
     }
   }, [data]);
 
@@ -117,36 +114,24 @@ const Movie = ({ location }) => {
       setImgToFetch(undefined);
       setMovie(undefined);
     };
-  }, [fetchMovie, state, error]);
+  }, [state, error]);
 
   if (movie) {
-    const { title, img, overview, genres, vote_average } = movie;
+    const { title, img, id, overview, release_date, genres, vote_average } = movie;
     const handleMovieRequest = () => {
       const rightImg = imgToFetch || img.src;
-      const { options, options1 } = createOptions(movie, rightImg, user);
-      const url_collection = `${radarr_url}/movie?apikey=${process.env.RADARR_API_KEY}`;
-      setLoading(true);
-      handleRequest(url_collection, options1)
-        .then(() => {
-          setCreated(true);
-          setInRadarrCollection(true);
-          setClick(true);
-          handleRequest(prisma_endpoint, options);
-          setLoading(false);
-          setTimeout(() => {
-            setCreated(undefined);
-          }, 2000);
-        })
-        .catch(err => {
-          console.error(err);
-          setError(true);
-          setLoading(false);
-          setTimeout(() => {
-            setError(undefined);
-          }, 5000);
-        });
+      createMovie({
+        variables: {
+          title,
+          img: rightImg,
+          tmdb_id: id,
+          genres,
+          vote_average,
+          release_date,
+          overview,
+        },
+      });
     };
-    console.log('movie', movie);
     return (
       <>
         <Wrapper>

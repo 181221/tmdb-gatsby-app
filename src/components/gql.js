@@ -57,23 +57,62 @@ export const GET_SIMILAR_MOVIES = gql`
   }
 `;
 
-export const updateUserQuery = `mutation updateUser(
-  $email: String!
-  $notification: Boolean
-  $subscription: String
-  $name: String
-) {
-  updateUser(
-    email: $email
-    notification: $notification
-    subscription: $subscription
-    name: $name
-  ) {
-    role
-    subscription
-    id
-    name
-    email
-    notification
+export const UPDATE_USER_SUBSCRIPTION = gql`
+  mutation UpdateUser($email: String!, $subscription: String!) {
+    updateUser(email: $email, subscription: $subscription) {
+      name
+      subscription
+    }
   }
-}`;
+`;
+
+export const UPDATE_RADARR_CONFIG = gql`
+  mutation updateConfiguration(
+    $radarrApiKey: String
+    $radarrEndpoint: String
+    $radarrRootFolder: String
+  ) {
+    updateConfiguration(
+      radarrApiKey: $radarrApiKey
+      radarrEndpoint: $radarrEndpoint
+      radarrRootFolder: $radarrRootFolder
+    ) {
+      user {
+        name
+      }
+      radarrApiKey
+      radarrEndpoint
+      radarrRootFolder
+    }
+  }
+`;
+
+export const CREATE_MOVIE = gql`
+  mutation createMovie(
+    $title: String!
+    $img: String
+    $tmdb_id: Int
+    $genres: [Int]
+    $vote_average: Float
+    $release_date: String
+    $overview: String
+  ) {
+    createMovie(
+      title: $title
+      img: $img
+      tmdb_id: $tmdb_id
+      overview: $overview
+      genres: $genres
+      release_date: $release_date
+      vote_average: $vote_average
+    ) {
+      title
+      img
+      tmdb_id
+      genres
+      release_date
+      vote_average
+      overview
+    }
+  }
+`;

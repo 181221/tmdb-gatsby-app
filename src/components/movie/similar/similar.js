@@ -34,7 +34,7 @@ export const SimilarFetch = ({ id }) => {
     variables: { tmdbId: id },
   });
   if (loading) {
-    return <div>Loading</div>;
+    return <></>;
   }
   if (error) {
     return <div>error</div>;
