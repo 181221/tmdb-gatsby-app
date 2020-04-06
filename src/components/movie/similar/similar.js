@@ -54,9 +54,6 @@ export const SimilarFetch = ({ id }) => {
   const { data, loading, error } = useQuery(GET_SIMILAR_MOVIES, {
     variables: { tmdbId: id },
   });
-  if (error) {
-    return <div>error</div>;
-  }
   return (
     <>
       <Container>
@@ -64,7 +61,7 @@ export const SimilarFetch = ({ id }) => {
           Similar movies
         </Typography>
         <MovieContainer>
-          {loading ? <ScrollBarLoader /> : <ScrollBar movies={data.similarMovies} />}
+          {loading || error ? <ScrollBarLoader /> : <ScrollBar movies={data.similarMovies} />}
         </MovieContainer>
       </Container>
     </>

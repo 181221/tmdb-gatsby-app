@@ -6,6 +6,7 @@ export const theme = {
     width: '240px',
     height: 30,
     padding: '10px 20px',
+    minWidth: '-webkit-fill-available',
     fontFamily: 'Helvetica, sans-serif',
     fontWeight: 300,
     fontSize: 16,
