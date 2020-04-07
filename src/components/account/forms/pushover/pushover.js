@@ -58,7 +58,6 @@ const reducer = (state, { el, type }) => {
     case 'submit': {
       const isValid = state.urlIsValid && state.apiIsValid && state.apiIsValid;
       if (isValid) {
-        console.log('shit is valid', state);
         return { ...state, isValid: true };
       }
       return { ...state, isValid };
@@ -166,10 +165,7 @@ export default function PushoverDialog({ dialog, flash }) {
           }
           res.json();
         })
-        .then(json => {
-          console.log('json', json);
-        })
-        .catch(err => console.error(err));
+        .catch(err => setError(err));
     }
     return () => {
       setTest(false);

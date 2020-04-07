@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -26,16 +24,6 @@ const useStyles = makeStyles({
     },
   },
 });
-const Test = () => {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <CircularProgress color="secondary" />
-      <Typography variant="body1" component="p" style={{ margin: 'auto', marginLeft: '10px' }}>
-        Getting information
-      </Typography>
-    </div>
-  );
-};
 const RequestMovie = ({ handleMovieRequest, click }) => {
   const classes = useStyles();
   return (

@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 self.addEventListener('push', e => {
   const data = e.data.json();
-  console.log('Push Recieved', data);
   const { title } = data;
   const options = {
     body: `Movie has been downloaded`,

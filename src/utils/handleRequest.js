@@ -1,23 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-shadow */
-const { createApolloFetch } = require('apollo-fetch');
-
-export const apolloFetch = (user, url) => {
-  const apollo = createApolloFetch({
-    uri: url,
-  });
-  apollo.use(async ({ request, options }, next) => {
-    if (!options.headers) {
-      options.headers = {}; // Create the headers object if needed.
-    }
-    if (!options.headers.authorization) {
-      options.headers.authorization = `Bearer ${user.token}`;
-    }
-    next();
-  });
-  return apollo;
-};
-
 export const options_getToken = user => {
   const ql1 = `mutation {
     getToken(
@@ -96,7 +76,9 @@ export const handleRequest = (user, url, setUserData) => {
               setUserData(j.data.getToken);
               return j;
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              return { isError: true, message: err.message.toString() };
+            });
         }
       } else {
         setUserData(json.data.getToken);
@@ -104,7 +86,6 @@ export const handleRequest = (user, url, setUserData) => {
       return json;
     })
     .catch(err => {
-      console.error(err);
       return { isError: true, message: err.message.toString() };
     });
 };

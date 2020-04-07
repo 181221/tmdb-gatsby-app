@@ -50,7 +50,6 @@ export const FetchAllMovieData = async (
     })
     .catch(err => {
       setError({ isError: true, message: err.message.toString() });
-      console.error(err);
       setLoading(false);
     });
 };

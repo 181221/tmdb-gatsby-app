@@ -46,16 +46,12 @@ export const reducer = (state, { el, type }) => {
     }
     case 'submit': {
       // validate everything and submit the form
-      console.log('submit');
-      console.log('state', state);
       const isValid = state.urlIsValid && state.apiIsValid && state.folderIsValid;
       if (isValid) {
-        console.log('form is valid');
         // form is valid and we can submit
         return { ...state, isValid };
       }
       // form is not valid
-      console.log('form is not valid');
       return { ...state, isValid };
     }
     default: {

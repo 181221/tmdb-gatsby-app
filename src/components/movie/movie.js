@@ -7,7 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import Library from './library';
 import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
@@ -66,7 +66,7 @@ const Movie = ({ location }) => {
   const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
-  const [movieStatus, setMovieStatus] = useState(undefined);
+  const [movieStatus] = useState(undefined);
   const [click, setClick] = useState(true);
   const onCompleted = () => {
     setCreated(true);
@@ -74,7 +74,7 @@ const Movie = ({ location }) => {
   };
   const [createMovie] = useMutation(CREATE_MOVIE, {
     onCompleted,
-    update(cache, { data }) {
+    update(cache) {
       const movieInCollection = cache.readQuery({
         query: GET_IN_RADARR_COLLECTION,
         variables: { tmdbId: movie.id },

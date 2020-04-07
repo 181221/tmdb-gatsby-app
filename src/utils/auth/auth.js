@@ -60,7 +60,6 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('token', user.token);
       user.error = json.isError;
-      console.log('user', user);
       localStorage.setItem('user', user);
       cb(user);
     });

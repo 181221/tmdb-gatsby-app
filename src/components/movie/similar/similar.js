@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -9,11 +9,9 @@ import { GET_SIMILAR_MOVIES } from '../../gql';
 
 import ScrollBar from './scroll/scrollBar';
 
-const useStyles = makeStyles(theme => ({
-  root: props => ({
-    padding: '24px 10% 0 10%',
-  }),
-}));
+const useStyles = makeStyles({
+  root: { padding: '24px 10% 0 10%' },
+});
 
 const Container = styled.div`
   width: 80%;

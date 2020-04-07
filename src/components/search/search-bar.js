@@ -26,8 +26,7 @@ const handleRequest = query => {
   const encodedsearch = encodeURI(uri);
   return fetch(encodedsearch)
     .then(res => res.json())
-    .then(json => json)
-    .catch(err => console.error(err));
+    .then(json => json);
 };
 const searchAPIDebounced = AwesomeDebouncePromise(handleRequest, 100);
 

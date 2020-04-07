@@ -32,7 +32,7 @@ export default function RadarrDialog({ dialog, flash }) {
   const [test, setTest] = useState(false);
   const [connection, setConnection] = useState(undefined);
   const [error, setError] = useState(undefined);
-  const [loading, setLoading] = useState(undefined);
+  const [, setLoading] = useState(undefined);
   const [success, setSuccess] = useState(undefined);
   const user = getUserFromCache();
   const radarrUrl = useForminput('');
@@ -83,8 +83,7 @@ export default function RadarrDialog({ dialog, flash }) {
             setConnection(false);
           }
         })
-        .catch(err => {
-          console.log('error', err.toString());
+        .catch(() => {
           setError('Failed to connect to service');
         });
     }

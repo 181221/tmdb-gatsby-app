@@ -1,4 +1,4 @@
-import { urlBase64ToUint8Array, handleRequest } from './util';
+import { urlBase64ToUint8Array } from './util';
 
 // To check `push notification` is supported or not
 export const getSubscription = async () => {
@@ -9,21 +9,18 @@ export const getSubscription = async () => {
 export const isPushSupported = () => {
   // To check `push notification` permission is denied by user
   if (Notification.permission === 'denied') {
-    alert('User has blocked push notification.');
     return;
   }
 
   // Check `push notification` is supported or not
   if (!('PushManager' in window)) {
-    alert("Sorry, Push notification isn't supported in your browser.");
     return;
   }
   return true;
 };
-export const subscribePush = async user => {
+export const subscribePush = async () => {
   const serviceWorker = await navigator.serviceWorker.ready;
   if (!serviceWorker.pushManager) {
-    alert("Your browser doesn't support push notification.");
     return false;
   }
   const subscription = await serviceWorker.pushManager.subscribe({
@@ -31,30 +28,12 @@ export const subscribePush = async user => {
     applicationServerKey: urlBase64ToUint8Array(),
   });
   const stringifySub = JSON.stringify(subscription);
-  const response = await handleRequest(stringifySub, user);
-  console.info('Push notification subscribed.');
-  console.log(response);
+  return stringifySub;
 };
-
-export const deleteSubscriptionID = async (subscription, user) => {
-  const response = await handleRequest('false', user);
-  console.log('reponse', response);
-};
-
-export const unsubscribePush = async user => {
+export const unsubscribePush = async () => {
   const subscription = await getSubscription();
   if (!subscription) {
-    alert('Unable to unregister push notification.');
     return;
   }
-  subscription
-    .unsubscribe()
-    .then(function() {
-      console.info('Push notification unsubscribed.');
-      console.log(subscription);
-      deleteSubscriptionID(subscription, user);
-    })
-    .catch(function(error) {
-      console.error(error);
-    });
+  subscription.unsubscribe();
 };

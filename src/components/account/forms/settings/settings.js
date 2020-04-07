@@ -10,6 +10,8 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
+import { useMutation } from '@apollo/react-hooks';
+import { UPDATE_USER_SUBSCRIPTION } from '../../../gql';
 import { getUserFromCache, writeToCache } from '../../../../apollo';
 import { prisma_endpoint } from '../../../../constants/route';
 import { getOptions } from './helper';
@@ -49,31 +51,36 @@ const reducer = (state, { el, type }) => {
 export default function SettingsDialog({ dialog }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
-  const [loading, setLoading] = useState(undefined);
+  const [, setLoading] = useState(undefined);
   const [error, setError] = useState(undefined);
-  const [success, setSuccess] = useState(undefined);
+  const [, setSuccess] = useState(undefined);
   const user = getUserFromCache();
   const [value, setValue] = useState(user.name);
   const [checked, setChecked] = useState(user.notification);
-
+  const [UpdateUser] = useMutation(UPDATE_USER_SUBSCRIPTION);
   const handleChange = async e => {
     setChecked(e.target.checked);
     if (isPushSupported()) {
-      console.log(typeof e.target.checked);
-
       if (e.target.checked) {
-        console.log('getting sub');
         const sub = await getSubscription();
-        console.log('getting subscription', sub);
         if (sub) {
-          console.log('allready subbed');
           return;
         }
-        console.log('saving subscription');
-        await subscribePush(user);
+        const stringifySub = await subscribePush();
+        UpdateUser({
+          variables: {
+            email: user.email,
+            subscription: stringifySub,
+          },
+        });
       } else {
-        console.log('deleting sub');
-        await unsubscribePush(user);
+        await unsubscribePush();
+        UpdateUser({
+          variables: {
+            email: user.email,
+            subscription: '',
+          },
+        });
       }
     }
   };
@@ -82,7 +89,7 @@ export default function SettingsDialog({ dialog }) {
     setValue(e.target.value);
   };
 
-  const { nameFeilmelding, notificationFeilmelding, name } = state;
+  const { nameFeilmelding } = state;
   const handleSubmit = e => {
     e.preventDefault();
     const elements = Array.from(e.target.elements);
