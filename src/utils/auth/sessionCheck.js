@@ -23,6 +23,7 @@ const SessionCheck = ({ children, location }) => {
   `);
   const settings = hasSettings.radarrSettings.internal.content;
   const handleCheckSession = user => {
+    console.log('user', user);
     if (!user) {
       localStorage.setItem('isLoggedIn', false);
     } else {

@@ -61,10 +61,11 @@
     "tslint-react": "^4.1.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.11.2",
-    "@graphql-codegen/typescript": "1.11.2",
-    "@graphql-codegen/typescript-operations": "1.11.2",
-    "@graphql-codegen/typescript-react-apollo": "1.11.2",
+    "@graphql-codegen/cli": "^1.13.2",
+    "@graphql-codegen/typescript": "1.13.1",
+    "@graphql-codegen/typescript-operations": "1.13.1",
+    "@graphql-codegen/typescript-react-apollo": "1.13.1",
+    "@graphql-codegen/typescript-resolvers": "1.13.2",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",

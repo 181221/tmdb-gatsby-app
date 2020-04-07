@@ -1,11 +1,12 @@
 overwrite: true
 schema: 'http://localhost:4000/'
-documents: './src/components/query.ts'
+documents: './src/graphql/index.ts'
 generates:
   src/generated/graphql.tsx:
     plugins:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-react-apollo'
+      - 'typescript-resolvers'
     config:
       withHooks: true

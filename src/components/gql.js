@@ -41,15 +41,17 @@ export const GET_IN_RADARR_COLLECTION = gql`
 export const GET_SIMILAR_MOVIES = gql`
   query similar($tmdbId: Int) {
     similarMovies(tmdbId: $tmdbId) {
+      adult
+      backdrop_path
+      genre_ids
       id
+      original_language
+      poster_path
       title
-      genres
-      release_date
       vote_average
       overview
-      downloaded
-      poster_path
-      backdrop_path
+      vote_count
+      popularity
     }
   }
 `;

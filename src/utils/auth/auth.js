@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
-import { handleRequest } from '../handleRequest';
+import { handleRequest, getUserOptions } from '../handleRequest';
 import { prisma_endpoint } from '../../constants/route';
 
 const isBrowser = typeof window !== 'undefined';
@@ -51,7 +51,7 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
   }
 
   if (authResult && authResult.accessToken && authResult.idToken) {
-    const expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
+    const expiresAt = authResult.expiresIn + new Date().getTime();
     tokens.accessToken = authResult.accessToken;
     tokens.idToken = authResult.idToken;
     tokens.expiresAt = expiresAt;
@@ -60,8 +60,17 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('token', user.token);
       user.error = json.isError;
-      localStorage.setItem('user', user);
-      cb(user);
+      if (!json.isError) {
+        fetch(prisma_endpoint, getUserOptions(user))
+          .then(res => res.json())
+          .then(data => {
+            user = { ...user, ...data.data.user };
+            localStorage.setItem('user', user);
+            cb(user);
+          });
+      } else {
+        cb(user);
+      }
     });
   }
 };
