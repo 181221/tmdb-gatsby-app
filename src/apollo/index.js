@@ -23,19 +23,17 @@ const cache = new InMemoryCache({
   },
 });
 
-let User;
 let client;
 const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: User.token,
+      authorization: localStorage.getItem('token'),
     },
   };
 });
 
-export const createApolloClient = user => {
-  User = user;
+export const createApolloClient = () => {
   client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache,

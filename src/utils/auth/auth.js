@@ -1,6 +1,7 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
-import { handleRequest, getUserOptions } from '../handleRequest';
+import { GET_USER_BY_EMAIL } from '../../components/gql';
+import { handleRequest, getUserOptions, handleFetch, options_getToken } from '../handleRequest';
 import { prisma_endpoint } from '../../constants/route';
 
 const isBrowser = typeof window !== 'undefined';
@@ -32,7 +33,6 @@ export const isAuthenticated = () => {
   if (!isBrowser) {
     return;
   }
-
   return localStorage.getItem('isLoggedIn') === 'true';
 };
 
@@ -56,22 +56,21 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
     tokens.idToken = authResult.idToken;
     tokens.expiresAt = expiresAt;
     user = authResult.idTokenPayload;
-    handleRequest(user, prisma_endpoint, setUserData).then(json => {
-      localStorage.setItem('isLoggedIn', true);
-      localStorage.setItem('token', user.token);
-      user.error = json.isError;
-      if (!json.isError) {
-        fetch(prisma_endpoint, getUserOptions(user))
-          .then(res => res.json())
-          .then(data => {
-            user = { ...user, ...data.data.user };
-            localStorage.setItem('user', user);
-            cb(user);
-          });
-      } else {
-        cb(user);
-      }
-    });
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('isLoggedIn', true);
+    const options = {
+      body: {
+        query: GET_USER_BY_EMAIL,
+        variables: {
+          email: user.email,
+        },
+      },
+    };
+    const userResponse = await handleFetch(prisma_endpoint, options).catch(error =>
+      console.error(error),
+    );
+    user = { ...user, ...userResponse.data.user };
+    cb(user);
   }
 };
 

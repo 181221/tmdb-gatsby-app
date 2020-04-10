@@ -5,6 +5,41 @@ const fetch = require('node-fetch');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
+const genresMap = {
+  28: 'Action',
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Science Fiction',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10752: 'War',
+  37: 'Western',
+};
+
+const mapTmdbObject = tmdbMovie => {
+  return {
+    title: tmdbMovie.title,
+    tmdbId: tmdbMovie.id,
+    img: tmdbMovie.poster_path,
+    genres: Object.values(tmdbMovie.genre_ids).map(id => genresMap[id]),
+    overview: tmdbMovie.overview,
+    voteCount: tmdbMovie.vote_count,
+    voteAverage: tmdbMovie.vote_average,
+    year: new Date(tmdbMovie.release_date).getFullYear(),
+  };
+};
+
 exports.sourceNodes = async (
   { actions: { createNode, touchNode }, reporter, createContentDigest, store, cache, createNodeId },
   configOptions,
@@ -18,10 +53,12 @@ exports.sourceNodes = async (
   const processData = data => {
     const nodeId = createNodeId(`tmdb-movie-${data.id}`);
     const nodeContent = JSON.stringify(data);
+    const tmdbMovie = mapTmdbObject(data);
     const nodeData = {
+      ...tmdbMovie,
       ...data,
+      local_poster_path: data.local_poster_path,
       id: nodeId,
-      tmdbId: data.id,
       parent: null,
       children: [],
       internal: {
@@ -60,11 +97,14 @@ exports.sourceNodes = async (
           const url = `https://api.themoviedb.org/3/movie/${response.results[i].id}/similar?api_key=${configOptions.key}`;
           proms.push(url);
         }
-        const similar = await Promise.all(proms.map(el => asyncStuff(el))).then(res =>
-          res.map(el => el.results),
-        );
+        const similar = await Promise.all(proms.map(el => asyncStuff(el))).then(res => {
+          return res.map(el => el.results);
+        });
         response.results.map((el, index) => {
-          el.similar = similar[index];
+          const item = similar[index];
+          el.similar = Object.values(item).map(tmdbMovie => {
+            return mapTmdbObject(tmdbMovie);
+          });
         });
         return response;
       });

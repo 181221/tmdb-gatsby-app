@@ -5,9 +5,6 @@ export const getOptions = (user, state) => {
       radarrEndpoint: "${state.url}"
       radarrRootFolder: "${state.folder}"
     ) {
-      user {
-        name
-      }
       radarrApiKey
       radarrEndpoint
       radarrRootFolder

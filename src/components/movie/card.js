@@ -56,17 +56,7 @@ const Div = styled.div`
   min-height: 75px;
   margin-bottom: 48px;
 `;
-const Card = ({
-  img,
-  title,
-  genres,
-  id,
-  vote_average,
-  overview,
-  release_date,
-  posterUrl,
-  similar,
-}) => {
+const Card = ({ img, title, genres, tmdbId, voteAverage, overview, year, similar }) => {
   const classes = useStyles();
 
   return (
@@ -74,16 +64,15 @@ const Card = ({
       <MovieBlock>
         <MoviePoster>
           <Link
-            to={`${account_movie}/${id}`}
+            to={`${account_movie}/${tmdbId}`}
             state={{
               img,
               title,
               genres,
-              id,
-              vote_average,
+              tmdbId,
+              voteAverage,
               overview,
-              release_date,
-              posterUrl,
+              year,
               similar,
             }}
           >
@@ -101,9 +90,7 @@ const Card = ({
             </Typography>
             <div style={{ minHeight: '24px', maxHeight: '24px' }}>
               <Typography variant="body1" component="p" align="center" className={classes.genres}>
-                {genres.map((el, index) =>
-                  genres.length - 1 === index ? `${gen[el]}` : `${gen[el]}, `,
-                )}
+                {genres.map((el, index) => (genres.length - 1 === index ? `${el}` : `${el}, `))}.
               </Typography>
             </div>
           </Div>

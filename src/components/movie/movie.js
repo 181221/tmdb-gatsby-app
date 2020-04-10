@@ -18,7 +18,7 @@ import { landing } from '../../constants/route';
 import FlashMessage, { FlashContainer } from '../flash';
 import ImageLoader from '../img';
 import { FetchAllMovieData, getLocationId } from './helper';
-import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE } from '../gql';
+import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE, GET_TMDB_MOVIE } from '../gql';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -77,7 +77,7 @@ const Movie = ({ location }) => {
     update(cache) {
       const movieInCollection = cache.readQuery({
         query: GET_IN_RADARR_COLLECTION,
-        variables: { tmdbId: movie.id },
+        variables: { tmdbId: movie.tmdbId },
       });
       movieInCollection.radarrCollection.isRequested = true;
       cache.writeQuery({
@@ -130,17 +130,17 @@ const Movie = ({ location }) => {
   }, [state, error]);
 
   if (movie) {
-    const { title, img, id, overview, release_date, genres, vote_average } = movie;
+    const { title, img, tmdbId, overview, year, genres, voteAverage } = movie;
     const handleMovieRequest = () => {
       const rightImg = imgToFetch || img.src;
       createMovie({
         variables: {
           title,
           img: rightImg,
-          tmdbId: id,
+          tmdbId,
           genres,
-          vote_average,
-          release_date,
+          voteAverage,
+          year,
           overview,
         },
       });
@@ -186,7 +186,7 @@ const Movie = ({ location }) => {
                   <StarDiv>
                     <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
                     <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
-                      {vote_average}
+                      {voteAverage}
                     </Typography>
                     <Library
                       inRadarrCollection={inRadarrCollection}
@@ -203,7 +203,7 @@ const Movie = ({ location }) => {
                             margin: '5px',
                           }}
                         >
-                          <StyledChip key={el} label={gen[el]} variant="outlined" />
+                          <StyledChip key={el} label={el} variant="outlined" />
                         </div>
                       ))}
                   </ChipContent>
@@ -223,7 +223,7 @@ const Movie = ({ location }) => {
           {state.similar ? (
             <Similar movies={state.similar} />
           ) : (
-            <SimilarFetch key={movie.id} id={locationId} />
+            <SimilarFetch key={movie.tmdbId} id={locationId} />
           )}
         </Wrapper>
       </>

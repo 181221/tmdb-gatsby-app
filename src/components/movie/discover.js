@@ -8,6 +8,28 @@ import SearchBar from '../search/search-bar';
 import { account_settings } from '../../constants/route';
 import { getUserFromCache } from '../../apollo';
 
+const genresMap = {
+  28: 'Action',
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Science Fiction',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10752: 'War',
+  37: 'Western',
+};
+
 const Heading = styled.div`
   margin: 24px;
 `;
@@ -26,21 +48,24 @@ const Discover = () => {
     query MyQuery {
       allTmdbMoviePopular(sort: { fields: title }, limit: 50) {
         nodes {
-          title
-          vote_average
-          vote_count
-          original_title
           id
-          overview
-          genre_ids
-          release_date
+          title
+          img
           tmdbId
+          genres
+          year
+          voteCount
+          voteAverage
+          overview
           similar {
-            poster_path
-            id
+            tmdbId
+            img
             title
             overview
-            genre_ids
+            genres
+            voteCount
+            voteAverage
+            year
           }
           local_poster_path {
             url
@@ -79,11 +104,10 @@ const Discover = () => {
             img={el.local_poster_path.childImageSharp.fixed}
             title={el.title}
             overview={el.overview}
-            genres={el.genre_ids}
-            vote_average={el.vote_average}
-            id={el.tmdbId}
-            release_date={el.release_date}
-            posterUrl={el.poster_path}
+            genres={el.genres}
+            voteAverage={el.voteAverage}
+            tmdbId={el.tmdbId}
+            year={el.year}
             similar={el.similar}
           />
         ))}

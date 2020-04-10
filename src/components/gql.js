@@ -9,7 +9,6 @@ export const query = gql`
       name
       email
       notification
-      token
       hasSettings
       movies {
         id
@@ -17,11 +16,37 @@ export const query = gql`
         img
         tmdbId
         genres
-        release_date
-        createdAt
-        vote_average
+        year
+        voteCount
+        voteAverage
         overview
         downloaded
+        hasFile
+      }
+    }
+  }
+`;
+export const GET_USER_BY_EMAIL = `
+  query($email: String!) {
+    user(email: $email) {
+      role
+      subscription
+      id
+      name
+      email
+      notification
+      movies {
+        id
+        title
+        img
+        tmdbId
+        genres
+        year
+        voteCount
+        voteAverage
+        overview
+        downloaded
+        hasFile
       }
     }
   }
@@ -41,17 +66,14 @@ export const GET_IN_RADARR_COLLECTION = gql`
 export const GET_SIMILAR_MOVIES = gql`
   query similar($tmdbId: Int) {
     similarMovies(tmdbId: $tmdbId) {
-      adult
-      backdrop_path
-      genre_ids
-      id
-      original_language
-      poster_path
       title
-      vote_average
+      img
+      tmdbId
+      genres
+      year
+      voteCount
+      voteAverage
       overview
-      vote_count
-      popularity
     }
   }
 `;
@@ -76,9 +98,6 @@ export const UPDATE_RADARR_CONFIG = gql`
       radarrEndpoint: $radarrEndpoint
       radarrRootFolder: $radarrRootFolder
     ) {
-      user {
-        name
-      }
       radarrApiKey
       radarrEndpoint
       radarrRootFolder
@@ -98,16 +117,31 @@ export const GET_CONFIG = gql`
     }
   }
 `;
+export const GET_TMDB_MOVIE = gql`
+  query getTmdbMovie($tmdbId: Int!) {
+    tmdbMovie(tmdbId: $tmdbId) {
+      title
+      genres
+      img
+      tmdbId
+      year
+      voteCount
+      voteAverage
+      overview
+    }
+  }
+`;
 
 export const CREATE_MOVIE = gql`
   mutation createMovie(
     $title: String!
     $img: String
     $tmdbId: Int
-    $genres: [Int]
-    $vote_average: Float
-    $release_date: String
+    $genres: [String]
+    $voteAverage: Float
+    $year: Int
     $overview: String
+    $voteCount: Int
   ) {
     createMovie(
       title: $title
@@ -115,16 +149,22 @@ export const CREATE_MOVIE = gql`
       tmdbId: $tmdbId
       overview: $overview
       genres: $genres
-      release_date: $release_date
-      vote_average: $vote_average
+      year: $year
+      voteAverage: $voteAverage
+      voteCount: $voteCount
     ) {
+      id
       title
       img
       tmdbId
       genres
-      release_date
-      vote_average
+      year
+      voteCount
+      voteAverage
       overview
+      downloaded
+      hasFile
+      runtime
     }
   }
 `;
