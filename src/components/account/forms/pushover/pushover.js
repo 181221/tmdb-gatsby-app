@@ -8,9 +8,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CONFIG } from '../../../gql';
-import { getOptions } from './helper';
-import { getUserFromCache } from '../../../../apollo';
+import { GET_CONFIG, UPDATE_CONFIG } from '../../../gql';
+import { handleFetch } from '../../../../utils/handleRequest';
 
 const reducer = (state, { el, type }) => {
   switch (type) {
@@ -87,7 +86,6 @@ export default function PushoverDialog({ dialog, flash }) {
   const [test, setTest] = useState(false);
   const [connection, setConnection] = useState(undefined);
   const { urlFeilmelding, apiFeilmelding, keyFeilmelding } = state;
-  const user = getUserFromCache();
 
   const api = useForminput('');
   const userKey = useForminput('');
@@ -152,18 +150,24 @@ export default function PushoverDialog({ dialog, flash }) {
       });
     }
     if (!test && state.isValid) {
-      const options = getOptions(user, state);
-      fetch(process.env.PRISMA_ENDPOINT, options)
-        .then(res => {
-          if (res.ok) {
-            setSuccess('config added');
-            setTimeout(() => {
-              setSuccess(false);
-            }, 4000);
-            onClose();
-            flash('Pushover settings saved, restart app for changes to take effect');
-          }
-          res.json();
+      const options = {
+        body: {
+          query: UPDATE_CONFIG,
+          variables: {
+            pushoverEndpoint: state.url,
+            pushoverApiKey: state.api,
+            pushoverUserKey: state.key,
+          },
+        },
+      };
+      handleFetch(process.env.PRISMA_ENDPOINT, options)
+        .then(_ => {
+          setSuccess('config added');
+          setTimeout(() => {
+            setSuccess(false);
+          }, 4000);
+          onClose();
+          flash('Pushover settings saved, restart app for changes to take effect');
         })
         .catch(err => setError(err));
     }

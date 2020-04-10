@@ -27,7 +27,7 @@ export const query = gql`
   }
 `;
 export const GET_USER_BY_EMAIL = `
-  query($email: String!) {
+  query getUser($email: String!) {
     user(email: $email) {
       role
       subscription
@@ -87,20 +87,29 @@ export const UPDATE_USER_SUBSCRIPTION = gql`
   }
 `;
 
-export const UPDATE_RADARR_CONFIG = gql`
+export const UPDATE_CONFIG = gql`
   mutation updateConfiguration(
     $radarrApiKey: String
     $radarrEndpoint: String
     $radarrRootFolder: String
+    $pushoverEndpoint: String
+    $pushoverApiKey: String
+    $pushoverUserKey: String
   ) {
     updateConfiguration(
       radarrApiKey: $radarrApiKey
       radarrEndpoint: $radarrEndpoint
       radarrRootFolder: $radarrRootFolder
+      pushoverEndpoint: $pushoverEndpoint
+      pushoverApiKey: $pushoverApiKey
+      pushoverUserKey: $pushoverUserKey
     ) {
       radarrApiKey
       radarrEndpoint
       radarrRootFolder
+      pushoverEndpoint
+      pushoverApiKey
+      pushoverUserKey
     }
   }
 `;

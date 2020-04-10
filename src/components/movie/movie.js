@@ -13,11 +13,11 @@ import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
 import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 import RequestMovie from './requestMovie';
-import { gen } from './card';
-import { landing } from '../../constants/route';
+import { landing, prisma_endpoint, img_tmdb_medium } from '../../constants/route';
 import FlashMessage, { FlashContainer } from '../flash';
+import { getLocationId } from './helper';
 import ImageLoader from '../img';
-import { FetchAllMovieData, getLocationId } from './helper';
+import { handleFetch } from '../../utils/handleRequest';
 import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE, GET_TMDB_MOVIE } from '../gql';
 
 const Wrapper = styled.div`
@@ -58,14 +58,13 @@ const ChipContent = styled.div`
 const Movie = ({ location }) => {
   const [locationId, setLocationId] = useState(undefined);
   const [error, setError] = useState(undefined);
-  const [imgToFetch, setImgToFetch] = useState(false);
-  const [movie, setMovie] = useState(undefined);
-  const { state = {} } = location;
-  const [created, setCreated] = useState(undefined);
   const [loading, setLoading] = useState(false);
+  const [created, setCreated] = useState(undefined);
   const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
+  const [movie, setMovie] = useState(undefined);
+  const { state = {} } = location;
   const [movieStatus] = useState(undefined);
   const [click, setClick] = useState(true);
   const onCompleted = () => {
@@ -113,7 +112,24 @@ const Movie = ({ location }) => {
   useEffect(() => {
     setLoading(true);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
-      FetchAllMovieData(getLocationId(location), setMovie, setImgToFetch, setLoading, setError);
+      if (locationId) {
+        const tmdbMovieOptions = {
+          body: {
+            query: GET_TMDB_MOVIE,
+            variables: {
+              tmdbId: locationId,
+            },
+          },
+        };
+        handleFetch(prisma_endpoint, tmdbMovieOptions)
+          .then(m => {
+            setLoading(false);
+            // eslint-disable-next-line no-param-reassign
+            m.data.tmdbMovie.img = img_tmdb_medium + m.data.tmdbMovie.img;
+            setMovie(m.data.tmdbMovie);
+          })
+          .catch(e => console.log('mad error', e));
+      }
     } else {
       setMovie(state);
       setLoading(false);
@@ -123,7 +139,6 @@ const Movie = ({ location }) => {
       setHasFile(undefined);
       setLoading(undefined);
       setDownloaded(undefined);
-      setImgToFetch(undefined);
       setMovie(undefined);
       setCreated(undefined);
     };
@@ -132,11 +147,10 @@ const Movie = ({ location }) => {
   if (movie) {
     const { title, img, tmdbId, overview, year, genres, voteAverage } = movie;
     const handleMovieRequest = () => {
-      const rightImg = imgToFetch || img.src;
       createMovie({
         variables: {
           title,
-          img: rightImg,
+          img,
           tmdbId,
           genres,
           voteAverage,

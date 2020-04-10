@@ -7,11 +7,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CONFIG } from '../../../gql';
+import { GET_CONFIG, UPDATE_CONFIG } from '../../../gql';
 import { getUserFromCache } from '../../../../apollo';
 import { reducer } from './reducer';
 import { getOptions } from './helper';
 import { prisma_endpoint } from '../../../../constants/route';
+import { handleFetch } from '../../../../utils/handleRequest';
 
 const useForminput = init => {
   const [value, setValue] = useState(init);
@@ -88,25 +89,32 @@ export default function RadarrDialog({ dialog, flash }) {
         });
     }
     if (!test && state.isValid) {
-      const options = getOptions(user, state);
-      fetch(prisma_endpoint, options)
-        .then(res => res.json())
-        .then(json => {
-          setLoading(false);
-          if (json.errors && json.errors.length > 0) {
-            setError('An error has occoured');
-            setTimeout(() => {
-              setError(false);
-            }, 5000);
-          } else {
-            setSuccess(true);
-            onClose();
-            flash('Radarr settings saved');
-            setTimeout(() => {
-              setSuccess(false);
-            }, 5000);
-          }
-        });
+      const options = {
+        body: {
+          query: UPDATE_CONFIG,
+          variables: {
+            radarrApiKey: state.api,
+            radarrEndpoint: state.url,
+            radarrRootFolder: state.folder,
+          },
+        },
+      };
+      handleFetch(process.env.PRISMA_ENDPOINT, options).then(res => {
+        setLoading(false);
+        if (res.errors && res.errors.length > 0) {
+          setError('An error has occoured');
+          setTimeout(() => {
+            setError(false);
+          }, 5000);
+        } else {
+          setSuccess(true);
+          onClose();
+          flash('Radarr settings saved');
+          setTimeout(() => {
+            setSuccess(false);
+          }, 5000);
+        }
+      });
       return () => {
         setTest(false);
       };

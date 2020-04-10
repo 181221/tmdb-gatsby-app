@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
 import { GET_USER_BY_EMAIL } from '../../components/gql';
-import { handleRequest, getUserOptions, handleFetch, options_getToken } from '../handleRequest';
+import { handleFetch } from '../handleRequest';
 import { prisma_endpoint } from '../../constants/route';
 
 const isBrowser = typeof window !== 'undefined';
@@ -23,11 +23,6 @@ const tokens = {
 };
 
 let user = {};
-
-const setUserData = data => {
-  user.token = data.token;
-  user = { ...user, ...data.user };
-};
 
 export const isAuthenticated = () => {
   if (!isBrowser) {
@@ -69,6 +64,7 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
     const userResponse = await handleFetch(prisma_endpoint, options).catch(error =>
       console.error(error),
     );
+    console.log('userResponse', userResponse);
     user = { ...user, ...userResponse.data.user };
     cb(user);
   }
