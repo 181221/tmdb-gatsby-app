@@ -64,7 +64,6 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
     const userResponse = await handleFetch(prisma_endpoint, options).catch(error =>
       console.error(error),
     );
-    console.log('userResponse', userResponse);
     user = { ...user, ...userResponse.data.user };
     cb(user);
   }

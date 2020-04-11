@@ -64,27 +64,53 @@ const Movie = ({ location }) => {
   const [downloaded, setDownloaded] = useState(undefined);
   const [hasFile, setHasFile] = useState(undefined);
   const [movie, setMovie] = useState(undefined);
+  const [hasFetch, setHasFetch] = useState(false);
   const { state = {} } = location;
   const [movieStatus] = useState(undefined);
   const [click, setClick] = useState(true);
 
-  const { data, loading: l, error: e } = useQuery(GET_IN_RADARR_COLLECTION, {
+  const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
-  useEffect(() => {
-    setError(e);
-  }, [l, e]);
+
+  const fetchAllMovieData = loc => {
+    const tmdbMovieOptions = {
+      body: {
+        query: GET_TMDB_MOVIE,
+        variables: {
+          tmdbId: Number(loc),
+        },
+      },
+    };
+    handleFetch(prisma_endpoint, tmdbMovieOptions)
+      .then(m => {
+        // eslint-disable-next-line no-param-reassign
+        m.data.tmdbMovie.img = img_tmdb_medium + m.data.tmdbMovie.img;
+        setMovie(m.data.tmdbMovie);
+        setLoading(false);
+      })
+      .catch(e => setError(e));
+  };
+
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
-      if (locationId && Number(loc) !== locationId) {
+      const movieInState = !((state && Object.keys(state).length < 2) || state.fetchAll);
+      if ((locationId && Number(loc) !== locationId) || movieInState) {
         setMovie(state);
+      } else if (!movieInState && !hasFetch) {
+        setHasFetch(true);
+        fetchAllMovieData(loc);
       }
-      setLocationId(Number(loc));
     } else {
       setError(true);
     }
+    setLocationId(Number(loc));
+    return () => {
+      setCreated(false);
+    };
   }, [location]);
+
   useEffect(() => {
     if (data && data.radarrCollection) {
       const { hasFile: h, downloaded: d, isRequested } = data.radarrCollection;
@@ -93,42 +119,8 @@ const Movie = ({ location }) => {
       setHasFile(h);
       setDownloaded(d);
     }
-  }, [data]);
-
-  useEffect(() => {
-    if ((state && Object.keys(state).length < 2) || state.fetchAll) {
-      if (locationId) {
-        const tmdbMovieOptions = {
-          body: {
-            query: GET_TMDB_MOVIE,
-            variables: {
-              tmdbId: locationId,
-            },
-          },
-        };
-        handleFetch(prisma_endpoint, tmdbMovieOptions)
-          .then(m => {
-            // eslint-disable-next-line no-param-reassign
-            m.data.tmdbMovie.img = img_tmdb_medium + m.data.tmdbMovie.img;
-            setMovie(m.data.tmdbMovie);
-            setLoading(false);
-          })
-          .catch(e => setError(e));
-      }
-    } else {
-      setMovie(state);
-      setLoading(false);
-    }
-    return () => {
-      setInRadarrCollection(undefined);
-      setHasFile(undefined);
-      setDownloaded(undefined);
-      setMovie(undefined);
-      setCreated(undefined);
-    };
-  }, [state, error]);
-  console.log('loading', loading);
-  console.log('movie', movie);
+    if (movie) setLoading(false);
+  }, [data, movie]);
 
   return (
     <>

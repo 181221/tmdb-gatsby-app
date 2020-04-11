@@ -7,7 +7,7 @@ import { graphql } from 'gatsby';
 const StyledImg = styled(Img)`
   background-size: cover;
   background-position: center;
-  height: 91vh;
+  height: 100vh;
 `;
 export default ({ data }) => {
   return (

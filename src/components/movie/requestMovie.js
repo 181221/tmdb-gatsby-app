@@ -37,23 +37,19 @@ const RequestMovie = ({ setCreated, movie, click, setClick }) => {
   const [createMovie, { error, loading, data: movieData }] = useMutation(CREATE_MOVIE, {
     onCompleted,
     update(cache, { data }) {
-      console.log('datacache', data);
-      /*
       const movieInCollection = cache.readQuery({
         query: GET_IN_RADARR_COLLECTION,
-        variables: { tmdbId: movie.tmdbId },
+        variables: { tmdbId: data.createMovie.tmdbId },
       });
       movieInCollection.radarrCollection.isRequested = true;
       cache.writeQuery({
         query: GET_IN_RADARR_COLLECTION,
         data: { ...movieInCollection },
       });
-      */
     },
   });
 
   const handleMovieRequest = () => {
-    console.log('movieData', movieData);
     const { title, img, tmdbId, overview, year, genres, voteAverage, voteCount } = movie;
     createMovie({
       variables: {
@@ -68,6 +64,9 @@ const RequestMovie = ({ setCreated, movie, click, setClick }) => {
       },
     });
   };
+  if (error) {
+    return <div>error</div>;
+  }
 
   return (
     <>
