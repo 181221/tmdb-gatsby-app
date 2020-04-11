@@ -71,7 +71,7 @@ const Movie = ({ location }) => {
     setCreated(true);
     setClick(true);
   };
-  const [createMovie] = useMutation(CREATE_MOVIE, {
+  const [createMovie, { error: createMovieError }] = useMutation(CREATE_MOVIE, {
     onCompleted,
     update(cache) {
       const movieInCollection = cache.readQuery({
@@ -88,6 +88,7 @@ const Movie = ({ location }) => {
   const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
+
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
@@ -143,19 +144,20 @@ const Movie = ({ location }) => {
       setCreated(undefined);
     };
   }, [state, error]);
-
   if (movie) {
-    const { title, img, tmdbId, overview, year, genres, voteAverage } = movie;
+    const { title, img, tmdbId, overview, year, genres, voteAverage, voteCount } = movie;
     const handleMovieRequest = () => {
+      console.log('movie', movie);
       createMovie({
         variables: {
           title,
-          img,
+          img: img.src ? img.src : img,
           tmdbId,
           genres,
           voteAverage,
           year,
           overview,
+          voteCount,
         },
       });
     };
@@ -164,7 +166,7 @@ const Movie = ({ location }) => {
         <Wrapper>
           <FlashContainer>
             <FlashMessage
-              error={error}
+              error={error || createMovieError}
               success={created}
               downloaded={downloaded}
               hasFile={hasFile}

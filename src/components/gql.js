@@ -156,10 +156,10 @@ export const CREATE_MOVIE = gql`
       title: $title
       img: $img
       tmdbId: $tmdbId
-      overview: $overview
       genres: $genres
-      year: $year
       voteAverage: $voteAverage
+      year: $year
+      overview: $overview
       voteCount: $voteCount
     ) {
       id
@@ -173,7 +173,6 @@ export const CREATE_MOVIE = gql`
       overview
       downloaded
       hasFile
-      runtime
     }
   }
 `;

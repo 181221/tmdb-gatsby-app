@@ -56,7 +56,7 @@ const Div = styled.div`
   min-height: 75px;
   margin-bottom: 48px;
 `;
-const Card = ({ img, title, genres, tmdbId, voteAverage, overview, year, similar }) => {
+const Card = ({ img, title, genres, tmdbId, voteAverage, voteCount, overview, year, similar }) => {
   const classes = useStyles();
 
   return (
@@ -71,6 +71,7 @@ const Card = ({ img, title, genres, tmdbId, voteAverage, overview, year, similar
               genres,
               tmdbId,
               voteAverage,
+              voteCount,
               overview,
               year,
               similar,

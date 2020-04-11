@@ -106,6 +106,7 @@ const Discover = () => {
             overview={el.overview}
             genres={el.genres}
             voteAverage={el.voteAverage}
+            voteCount={el.voteCount}
             tmdbId={el.tmdbId}
             year={el.year}
             similar={el.similar}

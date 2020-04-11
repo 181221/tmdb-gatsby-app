@@ -21,6 +21,28 @@ const StyledSpan = styled.span`
 `;
 const StyledContainer = styled.div``;
 
+const genresMap = {
+  28: 'Action',
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Science Fiction',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10752: 'War',
+  37: 'Western',
+};
+
 const handleRequest = query => {
   const uri = `${tmdb_endpoint}/search/movie?query=${query}&api_key=${process.env.TMDB_API_KEY}`;
   const encodedsearch = encodeURI(uri);
@@ -36,14 +58,14 @@ const getSuggestions = req => {
     const date = new Date(el.release_date).getFullYear();
     const obj = {
       name: `${el.title} - ${date}`,
-      id: el.id,
+      tmdbId: el.id,
       title: el.title,
       overview: el.overview,
-      genres: el.genre_ids,
-      vote_average: el.vote_average,
+      genres: Object.values(el.genre_ids).map(id => genresMap[id]),
+      voteAverage: el.vote_average,
       img: img_tmdb_medium + el.poster_path,
-      posterUrl: el.poster_path ? el.poster_path.url : '',
-      release_date: el.release_date,
+      voteCount: el.vote_count,
+      year: el.date,
       fetchSimilar: true,
     };
     return obj;
@@ -65,26 +87,26 @@ const renderSuggestion = suggestion => {
     img,
     title,
     genres,
-    id,
-    vote_average,
+    voteAverage,
     overview,
-    release_date,
+    year,
+    voteCount,
+    tmdbId,
     name,
-    posterUrl,
     fetchSimilar,
   } = suggestion;
   return (
     <StyledContainer>
       <StyledLink
-        to={`${account_movie}/${id}`}
+        to={`${account_movie}/${tmdbId}`}
         state={{
           img,
           title,
           genres,
-          id,
-          vote_average,
-          release_date,
-          posterUrl,
+          voteAverage,
+          tmdbId,
+          year,
+          voteCount,
           overview,
           fetchSimilar,
           image_load: true,
