@@ -28,6 +28,7 @@ module.exports = {
         },
       },
     },
+    'gatsby-plugin-styled-components',
     'gatsby-plugin-typescript',
     {
       resolve: `gatsby-source-filesystem`,
@@ -45,7 +46,7 @@ module.exports = {
         pageNr: 1,
       },
     },
-    'gatsby-plugin-styled-components',
+
     'babel-plugin-styled-components',
     'gatsby-plugin-less',
     {

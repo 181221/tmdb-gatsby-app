@@ -35,5 +35,6 @@ export const unsubscribePush = async () => {
   if (!subscription) {
     return;
   }
-  subscription.unsubscribe();
+  const res = await subscription.unsubscribe();
+  return res;
 };

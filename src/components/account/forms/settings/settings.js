@@ -56,7 +56,6 @@ export default function SettingsDialog({ dialog }) {
   const [click, setClick] = useState(true);
   const onCompleted = () => {
     setSuccess(true);
-    onClose();
     setTimeout(() => {
       setSuccess(false);
     }, 5000);
@@ -75,16 +74,18 @@ export default function SettingsDialog({ dialog }) {
     setClick(false);
     if (isPushSupported()) {
       if (e.target.checked) {
-        const sub = await getSubscription();
-        if (sub) {
-          return;
-        }
-        const stringifySub = await subscribePush();
-        UpdateUser({
-          variables: {
-            email: user.email,
-            subscription: stringifySub,
-          },
+        await getSubscription().then(sub => {
+          if (sub) {
+            return;
+          }
+          subscribePush().then(stringifySub => {
+            UpdateUser({
+              variables: {
+                email: user.email,
+                subscription: stringifySub,
+              },
+            });
+          });
         });
       } else {
         await unsubscribePush();
@@ -92,6 +93,7 @@ export default function SettingsDialog({ dialog }) {
           variables: {
             email: user.email,
             subscription: '',
+            notification: false,
           },
         });
       }
@@ -99,7 +101,6 @@ export default function SettingsDialog({ dialog }) {
   };
 
   const handleName = e => {
-    console.log('asdad', !(e.target.value !== ''));
     setClick(!(e.target.value !== ''));
     setValue(e.target.value);
   };
@@ -114,6 +115,7 @@ export default function SettingsDialog({ dialog }) {
         el,
       });
     });
+    onClose();
   };
   useEffect(() => {
     if (state.isValid) {

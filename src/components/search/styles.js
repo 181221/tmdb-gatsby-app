@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 export const theme = {
   container: {
     position: 'relative',
