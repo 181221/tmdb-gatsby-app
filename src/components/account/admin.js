@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert';
 import FormDialog from './forms/formDialog';
 import RadarrDialog from './forms/radarr/radarr';
 import SettingsDialog from './forms/settings/settings';
-import PushoverDialog from './forms/pushover/pushover';
+import PushoverDialog from './forms/pushover';
 
 const Container = styled.div`
   margin: 0 10%;

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { graphql, useStaticQuery, navigate } from 'gatsby';
 import { ApolloProvider } from '@apollo/react-hooks';
-import LoadingApp from '../../components/LoadingApp';
-import Error from '../../components/error';
+import LoadingApp from '../../components/miscellaneous/LoadingApp';
+import Error from '../../components/miscellaneous/error';
 import { createApolloClient, addUserToCache } from '../../apollo/index';
 import { landing } from '../../constants/route';
 import { silentAuth } from './auth';

@@ -5,7 +5,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
 
-import { GET_SIMILAR_MOVIES } from '../../gql';
+import { GET_SIMILAR_MOVIES } from '../../../graphql/gql';
 
 import ScrollBar from './scroll/scrollBar';
 

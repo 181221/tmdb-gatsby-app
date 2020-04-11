@@ -78,11 +78,22 @@ export const GET_SIMILAR_MOVIES = gql`
   }
 `;
 
-export const UPDATE_USER_SUBSCRIPTION = gql`
-  mutation UpdateUser($email: String!, $subscription: String!) {
-    updateUser(email: $email, subscription: $subscription) {
+export const UPDATE_USER = gql`
+  mutation UpdateUser(
+    $email: String!
+    $subscription: String
+    $name: String
+    $notification: Boolean
+  ) {
+    updateUser(
+      email: $email
+      subscription: $subscription
+      name: $name
+      notification: $notification
+    ) {
       name
       subscription
+      notification
     }
   }
 `;

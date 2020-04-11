@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
-import { GET_USER_BY_EMAIL } from '../../components/gql';
+import { GET_USER_BY_EMAIL } from '../../graphql/gql';
 import { handleFetch } from '../handleRequest';
 import { prisma_endpoint } from '../../constants/route';
 

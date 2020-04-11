@@ -14,11 +14,11 @@ import MovieSkeleton from './skeleton';
 import { MovieContainer, ImageSection, InformationSection } from './movie-styles';
 import RequestMovie from './requestMovie';
 import { landing, prisma_endpoint, img_tmdb_medium } from '../../constants/route';
-import FlashMessage, { FlashContainer } from '../flash';
+import FlashMessage, { FlashContainer } from '../miscellaneous/flash';
 import { getLocationId } from './helper';
 import ImageLoader from '../img';
 import { handleFetch } from '../../utils/handleRequest';
-import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE, GET_TMDB_MOVIE } from '../gql';
+import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE, GET_TMDB_MOVIE } from '../../graphql/gql';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -129,7 +129,7 @@ const Movie = ({ location }) => {
             m.data.tmdbMovie.img = img_tmdb_medium + m.data.tmdbMovie.img;
             setMovie(m.data.tmdbMovie);
           })
-          .catch(e => console.log('mad error', e));
+          .catch(e => setError(e));
       }
     } else {
       setMovie(state);
@@ -147,7 +147,6 @@ const Movie = ({ location }) => {
   if (movie) {
     const { title, img, tmdbId, overview, year, genres, voteAverage, voteCount } = movie;
     const handleMovieRequest = () => {
-      console.log('movie', movie);
       createMovie({
         variables: {
           title,

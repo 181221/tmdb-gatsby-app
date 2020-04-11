@@ -7,10 +7,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CONFIG, UPDATE_CONFIG } from '../../../gql';
+import { GET_CONFIG, UPDATE_CONFIG } from '../../../../graphql/gql';
 import { getUserFromCache } from '../../../../apollo';
 import { reducer } from './reducer';
-import { prisma_endpoint } from '../../../../constants/route';
 import { handleFetch } from '../../../../utils/handleRequest';
 
 const useForminput = init => {
@@ -39,7 +38,6 @@ export default function RadarrDialog({ dialog, flash }) {
   const radarrApi = useForminput('');
   const radarrFolder = useForminput('');
   const { data } = useQuery(GET_CONFIG);
-  console.log('data', data);
   const { urlFeilmelding, apiFeilmelding, folderFeilmelding } = state;
   useEffect(() => {
     if (data && data.configuration) {

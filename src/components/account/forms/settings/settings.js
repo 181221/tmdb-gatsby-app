@@ -11,10 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useMutation } from '@apollo/react-hooks';
-import { UPDATE_USER_SUBSCRIPTION } from '../../../gql';
+import { UPDATE_USER } from '../../../../graphql/gql';
 import { getUserFromCache, writeToCache } from '../../../../apollo';
-import { prisma_endpoint } from '../../../../constants/route';
-import { getOptions } from './helper';
 import { isPushSupported, getSubscription, unsubscribePush, subscribePush } from './notification';
 
 const reducer = (state, { el, type }) => {
@@ -32,7 +30,7 @@ const reducer = (state, { el, type }) => {
       return {
         ...state,
         notificationFeilmelding: '',
-        notification: el.value,
+        notification: el.value === 'true',
         notificationIsValid: true,
       };
     }
@@ -51,13 +49,23 @@ const reducer = (state, { el, type }) => {
 export default function SettingsDialog({ dialog }) {
   const { onClose, title } = dialog;
   const [state, dispatch] = useReducer(reducer, '');
-  const [, setLoading] = useState(undefined);
-  const [error, setError] = useState(undefined);
   const [, setSuccess] = useState(undefined);
   const user = getUserFromCache();
   const [value, setValue] = useState(user.name);
   const [checked, setChecked] = useState(user.notification);
-  const [UpdateUser] = useMutation(UPDATE_USER_SUBSCRIPTION);
+
+  const onCompleted = e => {
+    user.name = e.updateUser.name;
+    writeToCache(user);
+    setSuccess(true);
+    onClose();
+    setTimeout(() => {
+      setSuccess(false);
+    }, 5000);
+  };
+  const [UpdateUser, { error }] = useMutation(UPDATE_USER, {
+    onCompleted,
+  });
   const handleChange = async e => {
     setChecked(e.target.checked);
     if (isPushSupported()) {
@@ -102,25 +110,13 @@ export default function SettingsDialog({ dialog }) {
   };
   useEffect(() => {
     if (state.isValid) {
-      setLoading(true);
-      const options = getOptions(user, state);
-      fetch(prisma_endpoint, options)
-        .then(res => res.json())
-        .then(json => {
-          setLoading(false);
-          if (json.errors && json.errors.length > 0) {
-            setError(true);
-          } else {
-            setSuccess(true);
-            setChecked(json.data.updateUser.notification);
-            onClose();
-            setTimeout(() => {
-              setSuccess(false);
-            }, 5000);
-          }
-          user.name = state.name;
-          writeToCache(user);
-        });
+      UpdateUser({
+        variables: {
+          email: user.email,
+          notification: state.notification,
+          name: state.name,
+        },
+      });
     }
   }, [state, state.isValid]);
   return (

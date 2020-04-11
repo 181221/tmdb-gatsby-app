@@ -10,7 +10,7 @@ import { logout, login, isAuthenticated } from '../../utils/auth/auth';
 import { useStyles } from './styles';
 import { landing, account_settings } from '../../constants/route';
 
-import { query } from '../gql';
+import { query } from '../../graphql/gql';
 
 const StyledLink = styled(Link)`
   text-decoration: none;

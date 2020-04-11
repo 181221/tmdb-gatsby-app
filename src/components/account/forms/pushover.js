@@ -8,8 +8,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CONFIG, UPDATE_CONFIG } from '../../../gql';
-import { handleFetch } from '../../../../utils/handleRequest';
+import { GET_CONFIG, UPDATE_CONFIG } from '../../../graphql/gql';
+import { handleFetch } from '../../../utils/handleRequest';
 
 const reducer = (state, { el, type }) => {
   switch (type) {
