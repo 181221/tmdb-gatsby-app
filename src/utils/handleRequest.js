@@ -1,3 +1,5 @@
+const isBrowser = typeof window !== 'undefined';
+
 const reAuthenticateOptions = {
   method: 'POST',
   headers: {
@@ -6,7 +8,7 @@ const reAuthenticateOptions = {
   body: JSON.stringify({
     query: `mutation {
       getToken(
-        email: "${localStorage.getItem('email')}"
+        email: "${isBrowser ? localStorage.getItem('email') : ''}"
       ) {
         token
       }
