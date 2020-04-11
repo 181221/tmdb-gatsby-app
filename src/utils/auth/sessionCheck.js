@@ -56,6 +56,7 @@ const SessionCheck = ({ children, location }) => {
   if (loading) {
     return <LoadingApp />;
   }
+  console.log('return without client', client);
   return <>{children}</>;
 };
 

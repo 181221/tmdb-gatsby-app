@@ -97,7 +97,10 @@ export default function PushoverDialog({ dialog, flash }) {
     if (data && data.configuration) {
       api.setValue(data.configuration.pushoverApiKey);
       userKey.setValue(data.configuration.pushoverUserKey);
-      pushoverEndpoint.setValue(data.configuration.pushoverEndpoint);
+      const thaValue = data.configuration.pushoverEndpoint
+        ? data.configuration.pushoverEndpoint
+        : pushoverEndpoint.value;
+      pushoverEndpoint.setValue(thaValue);
     }
   }, [data]);
   const handleSubmit = e => {

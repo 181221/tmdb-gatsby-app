@@ -10,7 +10,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { UPDATE_USER } from '../../../../graphql/gql';
 import { getUserFromCache, writeToCache } from '../../../../apollo';
 import { isPushSupported, getSubscription, unsubscribePush, subscribePush } from './notification';
@@ -53,10 +53,8 @@ export default function SettingsDialog({ dialog }) {
   const user = getUserFromCache();
   const [value, setValue] = useState(user.name);
   const [checked, setChecked] = useState(user.notification);
-
-  const onCompleted = e => {
-    user.name = e.updateUser.name;
-    writeToCache(user);
+  const [click, setClick] = useState(true);
+  const onCompleted = () => {
     setSuccess(true);
     onClose();
     setTimeout(() => {
@@ -65,9 +63,16 @@ export default function SettingsDialog({ dialog }) {
   };
   const [UpdateUser, { error }] = useMutation(UPDATE_USER, {
     onCompleted,
+    update(cache, { data }) {
+      user.name = data.updateUser.name;
+      user.notification = data.updateUser.notification;
+      user.subscription = data.updateUser.subscription;
+      writeToCache(user);
+    },
   });
   const handleChange = async e => {
     setChecked(e.target.checked);
+    setClick(false);
     if (isPushSupported()) {
       if (e.target.checked) {
         const sub = await getSubscription();
@@ -94,6 +99,8 @@ export default function SettingsDialog({ dialog }) {
   };
 
   const handleName = e => {
+    console.log('asdad', !(e.target.value !== ''));
+    setClick(!(e.target.value !== ''));
     setValue(e.target.value);
   };
 
@@ -158,7 +165,7 @@ export default function SettingsDialog({ dialog }) {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <Button type="submit" color="primary" name="submit">
+          <Button type="submit" color="primary" name="submit" disabled={click}>
             Submit
           </Button>
         </DialogActions>

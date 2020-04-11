@@ -26,6 +26,14 @@ export const query = gql`
     }
   }
 `;
+export const GET_USER = gql`
+  query {
+    user {
+      name
+      notification
+    }
+  }
+`;
 export const GET_USER_BY_EMAIL = `
   query getUser($email: String!) {
     user(email: $email) {
@@ -184,6 +192,14 @@ export const CREATE_MOVIE = gql`
       overview
       downloaded
       hasFile
+    }
+  }
+`;
+
+export const CREATE_USER = gql`
+  mutation createUser($email: String!) {
+    createToken(email: $email) {
+      token
     }
   }
 `;

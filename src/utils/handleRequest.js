@@ -31,6 +31,7 @@ export const handleFetch = async (url, options = { method: 'GET' }) => {
     if (message === 'Unauthorized' || message === 'jwt malformed') {
       const tokenResponse = await fetch(url, reAuthenticateOptions);
       let token = await tokenResponse.json();
+      if (token.errors) throw new Error(token.errors[0].message);
       token = token.data.getToken.token;
       localStorage.setItem('token', token);
       handleFetch(url, fetchOptions);

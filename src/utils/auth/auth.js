@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js';
 import { navigate } from 'gatsby';
-import { GET_USER_BY_EMAIL } from '../../graphql/gql';
+import { GET_USER_BY_EMAIL, CREATE_USER } from '../../graphql/gql';
 import { handleFetch } from '../handleRequest';
 import { prisma_endpoint } from '../../constants/route';
 
@@ -61,9 +61,21 @@ const setSession = (cb = () => {}) => async (err, authResult) => {
         },
       },
     };
-    const userResponse = await handleFetch(prisma_endpoint, options).catch(error =>
-      console.error(error),
-    );
+    const userResponse = await handleFetch(prisma_endpoint, options).catch(async error => {
+      if (error.message === 'No such user found') {
+        const createTokenForUser = await handleFetch(prisma_endpoint, {
+          body: {
+            query: CREATE_USER,
+            variables: {
+              email: user.email,
+            },
+          },
+        });
+        localStorage.setItem('token', createTokenForUser.data.createToken.token);
+        const res = await handleFetch(prisma_endpoint, options);
+        return res;
+      }
+    });
     user = { ...user, ...userResponse.data.user };
     cb(user);
   }
