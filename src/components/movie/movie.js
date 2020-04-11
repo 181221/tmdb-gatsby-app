@@ -7,7 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'gatsby';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Library from './library';
 import { Similar, SimilarFetch } from './similar/similar';
 import MovieSkeleton from './skeleton';
@@ -18,7 +18,7 @@ import FlashMessage, { FlashContainer } from '../miscellaneous/flash';
 import { getLocationId } from './helper';
 import ImageLoader from '../img';
 import { handleFetch } from '../../utils/handleRequest';
-import { GET_IN_RADARR_COLLECTION, CREATE_MOVIE, GET_TMDB_MOVIE } from '../../graphql/gql';
+import { GET_IN_RADARR_COLLECTION, GET_TMDB_MOVIE } from '../../graphql/gql';
 
 const Wrapper = styled.div`
   margin-top: 48px;
@@ -58,7 +58,7 @@ const ChipContent = styled.div`
 const Movie = ({ location }) => {
   const [locationId, setLocationId] = useState(undefined);
   const [error, setError] = useState(undefined);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [created, setCreated] = useState(undefined);
   const [inRadarrCollection, setInRadarrCollection] = useState(undefined);
   const [downloaded, setDownloaded] = useState(undefined);
@@ -67,28 +67,13 @@ const Movie = ({ location }) => {
   const { state = {} } = location;
   const [movieStatus] = useState(undefined);
   const [click, setClick] = useState(true);
-  const onCompleted = () => {
-    setCreated(true);
-    setClick(true);
-  };
-  const [createMovie, { error: createMovieError }] = useMutation(CREATE_MOVIE, {
-    onCompleted,
-    update(cache) {
-      const movieInCollection = cache.readQuery({
-        query: GET_IN_RADARR_COLLECTION,
-        variables: { tmdbId: movie.tmdbId },
-      });
-      movieInCollection.radarrCollection.isRequested = true;
-      cache.writeQuery({
-        query: GET_IN_RADARR_COLLECTION,
-        data: { ...movieInCollection },
-      });
-    },
-  });
-  const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
+
+  const { data, loading: l, error: e } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
-
+  useEffect(() => {
+    setError(e);
+  }, [l, e]);
   useEffect(() => {
     const loc = getLocationId(location);
     if (loc) {
@@ -111,7 +96,6 @@ const Movie = ({ location }) => {
   }, [data]);
 
   useEffect(() => {
-    setLoading(true);
     if ((state && Object.keys(state).length < 2) || state.fetchAll) {
       if (locationId) {
         const tmdbMovieOptions = {
@@ -124,10 +108,10 @@ const Movie = ({ location }) => {
         };
         handleFetch(prisma_endpoint, tmdbMovieOptions)
           .then(m => {
-            setLoading(false);
             // eslint-disable-next-line no-param-reassign
             m.data.tmdbMovie.img = img_tmdb_medium + m.data.tmdbMovie.img;
             setMovie(m.data.tmdbMovie);
+            setLoading(false);
           })
           .catch(e => setError(e));
       }
@@ -138,113 +122,102 @@ const Movie = ({ location }) => {
     return () => {
       setInRadarrCollection(undefined);
       setHasFile(undefined);
-      setLoading(undefined);
       setDownloaded(undefined);
       setMovie(undefined);
       setCreated(undefined);
     };
   }, [state, error]);
-  if (movie) {
-    const { title, img, tmdbId, overview, year, genres, voteAverage, voteCount } = movie;
-    const handleMovieRequest = () => {
-      createMovie({
-        variables: {
-          title,
-          img: img.src ? img.src : img,
-          tmdbId,
-          genres,
-          voteAverage,
-          year,
-          overview,
-          voteCount,
-        },
-      });
-    };
-    return (
-      <>
-        <Wrapper>
-          <FlashContainer>
-            <FlashMessage
-              error={error || createMovieError}
-              success={created}
-              downloaded={downloaded}
-              hasFile={hasFile}
-              inRadarrCollection={inRadarrCollection}
-              movieStatus={movieStatus}
-            />
-          </FlashContainer>
-          <ReturnDiv>
-            <Typography variant="body1" component="p">
-              <StyledLink to={landing}>
-                <ArrowBackIcon />
-                Go back
-              </StyledLink>
-            </Typography>
-          </ReturnDiv>
-          {loading ? (
-            <MovieSkeleton />
-          ) : (
-            <>
-              <MovieContainer>
-                <ImageSection>
-                  {img && img.src && <Image fixed={img} />}
-                  {movie && typeof movie.img === 'string' && (
-                    <ImageLoader src={movie.img} width="300px" height="450px" />
-                  )}
-                </ImageSection>
-                <InformationSection>
-                  <div style={{ paddingLeft: '10px' }}>
-                    <Typography variant="h4" component="h4">
-                      {title}
-                    </Typography>
-                  </div>
-                  <StarDiv>
-                    <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
-                    <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
-                      {voteAverage}
-                    </Typography>
-                    <Library
-                      inRadarrCollection={inRadarrCollection}
-                      hasFile={hasFile}
-                      movieStatus={movieStatus}
-                    />
-                  </StarDiv>
-                  <ChipContent>
-                    {genres &&
-                      genres.map(el => (
-                        <div
-                          key={el}
-                          style={{
-                            margin: '5px',
-                          }}
-                        >
-                          <StyledChip key={el} label={el} variant="outlined" />
-                        </div>
-                      ))}
-                  </ChipContent>
-                  <Overview>
-                    <Typography variant="h4" component="h4">
-                      Overview
-                    </Typography>
-                    <Typography variant="body1" component="p">
-                      {overview}
-                    </Typography>
-                  </Overview>
-                  <RequestMovie handleMovieRequest={handleMovieRequest} click={click} />
-                </InformationSection>
-              </MovieContainer>
-            </>
-          )}
-          {state.similar ? (
-            <Similar movies={state.similar} />
-          ) : (
-            <SimilarFetch key={movie.tmdbId} id={locationId} />
-          )}
-        </Wrapper>
-      </>
-    );
-  }
-  return null;
+  console.log('loading', loading);
+  console.log('movie', movie);
+
+  return (
+    <>
+      <Wrapper>
+        <FlashContainer>
+          <FlashMessage
+            error={error}
+            success={created}
+            downloaded={downloaded}
+            hasFile={hasFile}
+            inRadarrCollection={inRadarrCollection}
+            movieStatus={movieStatus}
+          />
+        </FlashContainer>
+        <ReturnDiv>
+          <Typography variant="body1" component="p">
+            <StyledLink to={landing}>
+              <ArrowBackIcon />
+              Go back
+            </StyledLink>
+          </Typography>
+        </ReturnDiv>
+        {loading ? (
+          <MovieSkeleton />
+        ) : (
+          <>
+            <MovieContainer>
+              <ImageSection>
+                {movie && movie.img && movie.img.src && <Image fixed={movie.img} />}
+                {movie && typeof movie.img === 'string' && (
+                  <ImageLoader src={movie.img} width="300px" height="450px" />
+                )}
+              </ImageSection>
+              <InformationSection>
+                <div style={{ paddingLeft: '10px' }}>
+                  <Typography variant="h4" component="h4">
+                    {movie.title}
+                  </Typography>
+                </div>
+                <StarDiv>
+                  <StarRateIcon style={{ fontSize: '42px', color: '#ff6987e6' }} />
+                  <Typography variant="h4" component="h4" style={{ lineHeigh: 2 }}>
+                    {movie.voteAverage}
+                  </Typography>
+                  <Library
+                    inRadarrCollection={inRadarrCollection}
+                    hasFile={hasFile}
+                    movieStatus={movieStatus}
+                  />
+                </StarDiv>
+                <ChipContent>
+                  {movie.genres &&
+                    movie.genres.map(el => (
+                      <div
+                        key={el}
+                        style={{
+                          margin: '5px',
+                        }}
+                      >
+                        <StyledChip key={el} label={el} variant="outlined" />
+                      </div>
+                    ))}
+                </ChipContent>
+                <Overview>
+                  <Typography variant="h4" component="h4">
+                    Overview
+                  </Typography>
+                  <Typography variant="body1" component="p">
+                    {movie.overview}
+                  </Typography>
+                </Overview>
+                <RequestMovie
+                  movie={movie}
+                  setCreated={setCreated}
+                  click={click}
+                  setClick={setClick}
+                />
+              </InformationSection>
+            </MovieContainer>
+            {state.similar ? (
+              <Similar movies={state.similar} />
+            ) : (
+              <SimilarFetch key={movie.tmdbId} id={locationId} />
+            )}
+          </>
+        )}
+      </Wrapper>
+    </>
+  );
 };
 const StyledChip = withStyles({
   root: {
