@@ -34,7 +34,7 @@ export const GET_USER = gql`
     }
   }
 `;
-export const GET_USER_BY_EMAIL = `
+export const GET_USER_BY_EMAIL = gql`
   query getUser($email: String!) {
     user(email: $email) {
       role

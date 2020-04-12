@@ -30,7 +30,7 @@ export const handleFetch = async (url, options = { method: 'GET' }) => {
   const json = await response.json();
   if (json.errors) {
     const { message } = json.errors[0];
-    if (message === 'Unauthorized' || message === 'jwt malformed') {
+    if (message === 'Unauthorized' || message === 'jwt malformed' || message === 'jwt expired') {
       const tokenResponse = await fetch(url, reAuthenticateOptions);
       let token = await tokenResponse.json();
       if (token.errors) throw new Error(token.errors[0].message);
