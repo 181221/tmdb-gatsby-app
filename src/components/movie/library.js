@@ -10,14 +10,14 @@ const LibContainer = styled.div`
 const Library = ({ hasFile, inRadarrCollection, movieStatus }) => {
   const [message, setMessage] = useState('');
   useEffect(() => {
-    if (hasFile) {
-      setMessage('In Library');
-    }
     if (inRadarrCollection) {
       setMessage('Awaiting confirmation');
     }
-    if (movieStatus) {
-      setMessage('Downloading');
+    if (hasFile) {
+      setMessage('In Library');
+    }
+    if (movieStatus && movieStatus.status === 'Downloading') {
+      setMessage(`Downloading`);
     }
     return () => {
       setMessage('');

@@ -22,6 +22,7 @@ const FlashMessage = ({
   success,
   hasFile,
   downloaded,
+  radarrError,
   inRadarrCollection,
   message = sucessMessage,
   movieStatus,
@@ -30,12 +31,13 @@ const FlashMessage = ({
   const classes = useStyles();
   return (
     <>
-      {error && (
-        <Alert severity="error" className={classes.root}>
-          <AlertTitle>Error</AlertTitle>
-          {error.message ? error.message : 'There was an error'}
-        </Alert>
-      )}
+      {error ||
+        (radarrError && (
+          <Alert severity="error" className={classes.root}>
+            <AlertTitle>Error</AlertTitle>
+            {error.message ? error.message : 'There was an error'}
+          </Alert>
+        ))}
       {success && (
         <Alert severity="success" className={classes.root}>
           <AlertTitle>Success</AlertTitle>
@@ -81,7 +83,7 @@ const FlashMessage = ({
 };
 
 const InfoBox = ({ movieStatus }) => {
-  if (movieStatus) {
+  if (movieStatus && movieStatus === 'Downloading') {
     return (
       <>
         <AlertTitle>Movie is beeing downloaded</AlertTitle>

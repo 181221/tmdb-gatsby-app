@@ -66,10 +66,10 @@ const Movie = ({ location }) => {
   const [movie, setMovie] = useState(undefined);
   const [hasFetch, setHasFetch] = useState(false);
   const { state = {} } = location;
-  const [movieStatus] = useState(undefined);
+  const [movieStatus, setMovieStatus] = useState(undefined);
   const [click, setClick] = useState(true);
 
-  const { data } = useQuery(GET_IN_RADARR_COLLECTION, {
+  const { data, loading: radarrLoading, error: radarrError } = useQuery(GET_IN_RADARR_COLLECTION, {
     variables: { tmdbId: locationId },
   });
 
@@ -113,15 +113,15 @@ const Movie = ({ location }) => {
 
   useEffect(() => {
     if (data && data.radarrCollection) {
-      const { hasFile: h, downloaded: d, isRequested } = data.radarrCollection;
+      const { hasFile: h, downloaded: d, isRequested, status, timeleft } = data.radarrCollection;
       setClick(isRequested);
+      setMovieStatus({ status, timeleft });
       setInRadarrCollection(isRequested);
       setHasFile(h);
       setDownloaded(d);
     }
     if (movie) setLoading(false);
   }, [data, movie]);
-
   return (
     <>
       <Wrapper>
@@ -133,6 +133,7 @@ const Movie = ({ location }) => {
             hasFile={hasFile}
             inRadarrCollection={inRadarrCollection}
             movieStatus={movieStatus}
+            radarrError={radarrError}
           />
         </FlashContainer>
         <ReturnDiv>
@@ -143,7 +144,7 @@ const Movie = ({ location }) => {
             </StyledLink>
           </Typography>
         </ReturnDiv>
-        {loading ? (
+        {loading || radarrLoading ? (
           <MovieSkeleton />
         ) : (
           <>

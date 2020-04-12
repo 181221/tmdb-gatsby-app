@@ -35,7 +35,7 @@ const SkeletonContainer = styled.div`
 const SkeletonMargin = styled(Skeleton)`
   margin: 12px 12px;
 `;
-const ScrollBarLoader = () => {
+export const ScrollBarLoader = () => {
   return (
     <SkeletonContainer>
       <SkeletonMargin variant="rect" width="200px" height="280px" />
