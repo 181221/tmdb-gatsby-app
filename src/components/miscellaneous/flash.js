@@ -83,7 +83,7 @@ const FlashMessage = ({
 };
 
 const InfoBox = ({ movieStatus }) => {
-  if (movieStatus && movieStatus === 'Downloading') {
+  if (movieStatus && movieStatus.status === 'Downloading') {
     return (
       <>
         <AlertTitle>Movie is beeing downloaded</AlertTitle>

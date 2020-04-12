@@ -6,7 +6,7 @@ self.addEventListener('push', e => {
     body: `Movie has been downloaded`,
     vibrate: [300, 100, 400],
   };
-  self.registration.showNotification(title, options);
+  e.waitUntil(self.registration.showNotification(title, options));
 });
 /**
  * This is a script appended to the service worker. You will have noe access 
