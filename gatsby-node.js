@@ -42,7 +42,7 @@ const getOptions = () => {
   }
   `;
   const options = {
-    method: 'POST',
+    method: 'OPTIONS',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -128,7 +128,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
   reporter.info('Environment file - OK');
   let hasRadarrSetup = false;
   const options = getOptions();
-  const response = await fetch(prismaUrl, options).catch(error => {
+  const response = await fetch(`${prismaUrl}/api/checkConfiguration`, options).catch(error => {
     return { ok: false, message: error.message };
   });
   if (!response.ok) {
@@ -137,7 +137,7 @@ exports.onPreBootstrap = async gatsbyNodeHelpers => {
     );
   } else {
     const json = await response.json();
-    if (!json.data.checkConfiguration) {
+    if (!json.hasSettings) {
       reporter.info(
         `No configuration found in the database, please create a config\nConfiguration can be created when you login at account/settings or you can setup the config in the .env file`,
       );
