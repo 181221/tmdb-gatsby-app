@@ -45,12 +45,18 @@ export const createApolloClient = () => {
 
 export const addUserToCache = user => {
   user.__typename = 'User';
+  if (user.error) {
+    user.movies = [];
+    user.role = 'CUSTOMER';
+    user.subscription = '';
+    user.notification = false;
+    user.id = '1';
+  }
   if (user.movies) {
     user.movies.forEach(movie => {
       movie.__typename = 'Movie';
     });
   }
-
   client.writeQuery({
     query,
     data: {
@@ -69,7 +75,17 @@ export const writeToCache = data => {
   });
 };
 export const getUserFromCache = () => {
-  const data = client.readQuery({ query });
-  const { user } = data;
+  let data;
+  let user;
+
+  try {
+    data = client.readQuery({ query });
+    user = data.user;
+  } catch (err) {
+    if (err) {
+      return undefined;
+    }
+  }
+
   return user;
 };

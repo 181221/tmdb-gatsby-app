@@ -24,9 +24,17 @@ export default function ButtonAppBar() {
   let user;
   const loggedIN = localStorage.getItem('isLoggedIn') === 'true';
   if (loggedIN) {
-    const client = useApolloClient();
-    const data = client.readQuery({ query });
-    user = data.user;
+    let client;
+    let error = false;
+    try {
+      client = useApolloClient();
+    } catch (err) {
+      error = true;
+    }
+    if (!error) {
+      const data = client.readQuery({ query });
+      user = data.user;
+    }
   }
   return (
     <StyledDiv className={classes.root}>
@@ -41,7 +49,7 @@ export default function ButtonAppBar() {
               <Typography variant="h6">Settings</Typography>
             </StyledLink>
           )}
-          {isAuthenticated() ? (
+          {user ? (
             <Button
               href="#logout"
               onClick={e => {
